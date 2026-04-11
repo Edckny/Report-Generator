@@ -6,21 +6,14 @@
     <title>PsyDoc Suite | Clinical Documentation Tool</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             background: #eef2f7;
             font-family: 'Inter', sans-serif;
             padding: 2rem 1.5rem;
             color: #1e2a3e;
         }
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+        .app-container { max-width: 1400px; margin: 0 auto; }
         h1 {
             font-size: 1.9rem;
             font-weight: 600;
@@ -62,17 +55,9 @@
             color: white;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
-        .tab-pane {
-            display: none;
-            animation: fade 0.2s ease;
-        }
-        .tab-pane.active-pane {
-            display: block;
-        }
-        @keyframes fade {
-            from { opacity: 0; transform: translateY(5px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
+        .tab-pane { display: none; animation: fade 0.2s ease; }
+        .tab-pane.active-pane { display: block; }
+        @keyframes fade { from { opacity:0; transform:translateY(5px);} to { opacity:1; transform:translateY(0);} }
         .form-card {
             background: white;
             border-radius: 28px;
@@ -206,20 +191,21 @@
         @media (max-width: 700px) {
             .form-card { padding: 1.2rem; }
         }
+        hr { margin: 12px 0; }
     </style>
 </head>
 <body>
 <div class="app-container">
     <h1>📋 PsyDoc Clinical Suite</h1>
-    <div class="sub">Structured documentation · Initial interview · Progress notes · Discharge summary</div>
+    <div class="sub">Structured documentation · Initial interview · Progress notes · Work rehab report</div>
 
     <div class="tabs">
         <button class="tab-btn active" data-tab="initial">📝 Initial Interview</button>
         <button class="tab-btn" data-tab="progress">📈 Progress Note</button>
-        <button class="tab-btn" data-tab="discharge">📄 Discharge Summary</button>
+        <button class="tab-btn" data-tab="workrehab">💼 Work Rehab Report</button>
     </div>
 
-    <!-- ================= INITIAL INTERVIEW ================= -->
+    <!-- ================= INITIAL INTERVIEW (完整表單) ================= -->
     <div id="initial" class="tab-pane active-pane">
         <div class="form-card">
             <form id="initialForm">
@@ -444,7 +430,7 @@
         </div>
     </div>
 
-    <!-- ================= PROGRESS NOTE ================= -->
+    <!-- ================= PROGRESS NOTE (完整表單) ================= -->
     <div id="progress" class="tab-pane">
         <div class="form-card">
             <form id="progressForm">
@@ -550,25 +536,56 @@
         </div>
     </div>
 
-    <!-- ================= DISCHARGE SUMMARY ================= -->
-    <div id="discharge" class="tab-pane">
+    <!-- ================= WORK REHAB REPORT (完整表單) ================= -->
+    <div id="workrehab" class="tab-pane">
         <div class="form-card">
-            <h3>📄 Discharge Summary</h3>
-            <div class="grid-2"><div>Admission Date <input type="text" id="dischargeAdmDate"></div><div>Discharge Date <input type="text" id="dischargeDate"></div></div>
-            <div>Diagnosis at discharge <input type="text" id="dischargeDiagnosis"></div>
-            <div>Reason for discharge <textarea rows="2" id="dischargeReason"></textarea></div>
-            <div>Medications at discharge <textarea rows="2" id="dischargeMeds"></textarea></div>
-            <div>Follow-up plan <textarea rows="2" id="followupPlan"></textarea></div>
-            <div>Condition on discharge <textarea rows="2" id="conditionOnDischarge"></textarea></div>
-            <div>Additional remarks <textarea rows="2" id="dischargeRemarks"></textarea></div>
-            <div class="flex-btns"><button id="genDischargeReport">Generate Report</button></div>
-            <div id="dischargeReportArea" class="report-area" style="display:none;"><div class="report-text" id="dischargeReportText"></div><div class="flex-btns"><button class="copy-btn" data-copy="dischargeReportText">📋 Copy</button></div></div>
+            <form id="workRehabForm">
+                <div class="form-section">
+                    <h3>📋 Patient was interviewed and assessed for the work rehabilitation</h3>
+                </div>
+                <!-- EDUCATION AND WORK HISTORY -->
+                <div class="form-section">
+                    <h3>🎓 EDUCATION AND WORK HISTORY</h3>
+                    <div class="field-group"><label>Educated up to (single choice)</label><select id="eduLevel"><option value="">-- select --</option><option value="Primary level">Primary level</option><option value="Secondary level">Secondary level</option><option value="Tertiary Level">Tertiary Level</option><option value="Special School">Special School</option></select></div>
+                    <div class="field-group"><label>Current work status</label><select id="workStatus"><option value="">-- select --</option><option value="currently_working">Currently working as ...</option><option value="unemployed">Currently unemployed (for xx years / months)</option><option value="recently_resigned">Recently resigned from work as (JOB)</option><option value="prev_voc_training">Previously received vocational training in Day Activity Center / Psychiatric Day Hospital / Sunny-way program / On-the-job training / ERB course / VTC program</option><option value="never_employed">Never gainfully employed</option><option value="unstable_record">Unstable job record</option></select><div id="workStatusDetail" style="display:none; margin-top:8px;"><input type="text" id="workStatusText" placeholder="e.g., Full-time Open Employment / Supported Employment / job title / duration"></div></div>
+                    <div class="grid-2">
+                        <div class="field-group"><label>Longest job</label><input type="text" id="longestJobTitle" placeholder="Job title"><div class="radio-group" style="margin-top:4px;"><label><input type="radio" name="longestDurationType" value="duration"> for <input type="text" id="longestDurationNum" placeholder="number" style="width:70px;"> <select id="longestDurationUnit"><option value="years">years</option><option value="months">months</option></select></label><label><input type="radio" name="longestDurationType" value="range"> from <input type="text" id="longestFromMM" placeholder="MM" style="width:50px;"> / <input type="text" id="longestFromYY" placeholder="YY" style="width:50px;"> to <input type="text" id="longestToMM" placeholder="MM" style="width:50px;"> / <input type="text" id="longestToYY" placeholder="YY" style="width:50px;"></label></div></div>
+                        <div class="field-group"><label>Latest job</label><input type="text" id="latestJobTitle" placeholder="Job title"><div class="radio-group" style="margin-top:4px;"><label><input type="radio" name="latestDurationType" value="duration"> for <input type="text" id="latestDurationNum" placeholder="number" style="width:70px;"> <select id="latestDurationUnit"><option value="years">years</option><option value="months">months</option></select></label><label><input type="radio" name="latestDurationType" value="range"> from <input type="text" id="latestFromMM" placeholder="MM" style="width:50px;"> / <input type="text" id="latestFromYY" placeholder="YY" style="width:50px;"> to <input type="text" id="latestToMM" placeholder="MM" style="width:50px;"> / <input type="text" id="latestToYY" placeholder="YY" style="width:50px;"></label></div></div>
+                    </div>
+                    <div class="field-group"><label>Reason for quitting the job</label><div class="checkbox-group" id="quitReasonsGroup"><label><input type="checkbox" value="overwhelmed by workload"> overwhelmed by workload</label><label><input type="checkbox" value="interpersonal difficulty"> interpersonal difficulty</label><label><input type="checkbox" value="has another job offer"> has another job offer</label><label><input type="checkbox" value="dislikes the job nature"> dislikes the job nature</label><label><input type="checkbox" value="being dismissed due to"> being dismissed due to <input type="text" id="dismissReason" placeholder="specify"></label><label><input type="checkbox" value="others"> others: <input type="text" id="quitOthers" placeholder="specify"></label></div></div>
+                </div>
+                <!-- CURRENT WORK FUNCTIONING -->
+                <div class="form-section">
+                    <h3>⚙️ CURRENT WORK FUNCTIONING</h3>
+                    <div class="sub-section"><label>🧠 Cognitive Screening</label><div><label><input type="radio" name="cognitiveIndicated" value="Indicated"> Indicated</label> <label><input type="radio" name="cognitiveIndicated" value="not indicated"> not indicated</label></div><div>HK-MoCA was conducted on <input type="text" id="mocaDate" placeholder="DD/MM/YYYY">. Result indicated <input type="text" id="mocaResult" placeholder="score / findings">. Details please refer to previous progress note</div></div>
+                    <div class="sub-section"><label>📋 Work Readiness and Preference</label><div>Chinese Lam Assessment of Employment Readiness (C.L.A.S.E.R.) was conducted on <input type="text" id="claserDate" placeholder="DD/MM/YYYY"></div><div>Chinese Work Interest Inventory (CWII) were done on <input type="text" id="cwiiDate" placeholder="DD/MM/YYYY"></div></div>
+                    <div class="sub-section"><label>📊 C.L.A.S.E.R.</label><div>Based on the assessment, patient was in <select id="claserStage"><option value="">--</option><option value="Pre-contemplation">Pre-contemplation</option><option value="Contemplation">Contemplation</option><option value="Action">Action</option></select> (<input type="text" id="claserScore" placeholder="score" style="width:60px;">/30 for Pre-contemplation, /20 for others)</div><div>Self-efficacy in return-to-work: <input type="text" id="selfEfficacyRTW" placeholder="/10">/10</div><div>Self-efficacy in seeking job successfully: <input type="text" id="selfEfficacySeek" placeholder="/10">/10</div><div>Patient-perceived obstacles(s) in employability including</div><div class="checkbox-group" id="obstaclesGroup"><label><input type="checkbox" value="taking care of children or elderly"> taking care of children or elderly</label><label><input type="checkbox" value="unfamiliar with public transportation"> unfamiliar with public transportation</label><label><input type="checkbox" value="inadequate work skills"> inadequate work skills</label><label><input type="checkbox" value="inadequate work experience"> inadequate work experience</label><label><input type="checkbox" value="no work direction"> no work direction</label><label><input type="checkbox" value="difficulty in learning"> difficulty in learning</label><label><input type="checkbox" value="inadequate social skill"> inadequate social skill</label><label><input type="checkbox" value="limited qualification"> limited qualification</label><label><input type="checkbox" value="limited physical stamina"> limited physical stamina</label><label><input type="checkbox" value="problem in drug abuse"> problem in drug abuse</label><label><input type="checkbox" value="unstable mental state"> unstable mental state</label><label><input type="checkbox" value="limited volition"> limited volition</label><label><input type="checkbox" value="physical disability"> physical disability</label><label><input type="checkbox" value="no obstacle perceived"> no obstacle perceived</label><label><input type="checkbox" value="others"> others: <input type="text" id="obstaclesOthers" placeholder="specify"></label></div></div>
+                    <div class="sub-section"><label>📈 CWII</label><div>Patient shown job preference in <div class="checkbox-group" id="jobPreference"><label><input type="checkbox" value="clerical"> clerical</label><label><input type="checkbox" value="sales"> sales</label><label><input type="checkbox" value="service"> service</label><label><input type="checkbox" value="physical work"> physical work</label><label><input type="checkbox" value="driving and operating"> driving and operating</label><label><input type="checkbox" value="mechanical and repairing"> mechanical and repairing</label><label><input type="checkbox" value="caring and helping"> caring and helping</label><label><input type="checkbox" value="creative"> creative</label></div></div><div>Patient showed interest in <div class="checkbox-group" id="interestTraining"><label><input type="checkbox" value="shop assistant"> shop assistant</label><label><input type="checkbox" value="cleansing worker"> cleansing worker</label><label><input type="checkbox" value="office assistant"> office assistant</label><label><input type="checkbox" value="clerical worker"> clerical worker</label><label><input type="checkbox" value="waiter"> waiter</label><label><input type="checkbox" value="waitress"> waitress</label><label><input type="checkbox" value="bartender"> bartender</label><label><input type="checkbox" value="coffee barista"> coffee barista</label></div></div></div>
+                </div>
+                <!-- Standardized Work Assessment -->
+                <div class="form-section">
+                    <h3>📏 Standardized Work Assessment</h3>
+                    <div class="sub-section"><label>Valpar 4 (Upper extremity range of motion)</label><div>Rate of work: <input type="text" id="valpar4Rate" placeholder="%">%; with comparison to Worker Qualification Profile (WQP):</div><div class="radio-group"><label><input type="radio" name="valpar4WQP" value="met may exceed speed requirement"> met may exceed speed requirement</label><label><input type="radio" name="valpar4WQP" value="met speed requirement"> met speed requirement</label><label><input type="radio" name="valpar4WQP" value="did not meet (A) speed requirement & needed to redo same assessment"> did not meet (A) speed requirement & needed to redo same assessment</label><label><input type="radio" name="valpar4WQP" value="did not meet (B) speed requirement & needed to redo assessment with lower demand"> did not meet (B) speed requirement & needed to redo assessment with lower demand</label></div></div>
+                    <div class="sub-section"><label>Valpar 7 (Multi-level sorting)</label><div>Rate of work: <input type="text" id="valpar7Rate" placeholder="%">%; with comparison to Worker Qualification Profile (WQP):</div><div class="radio-group"><label><input type="radio" name="valpar7WQP" value="met may exceed speed requirement"> met may exceed speed requirement</label><label><input type="radio" name="valpar7WQP" value="met speed requirement"> met speed requirement</label><label><input type="radio" name="valpar7WQP" value="did not meet (A) speed requirement & needed to redo same assessment"> did not meet (A) speed requirement & needed to redo same assessment</label><label><input type="radio" name="valpar7WQP" value="did not meet (B) speed requirement & needed to redo assessment with lower demand"> did not meet (B) speed requirement & needed to redo assessment with lower demand</label></div><div>Error: <input type="text" id="valpar7Error" placeholder="error count">; <select id="valpar7Accuracy"><option value="">--</option><option value="Met">Met</option><option value="Did not meet">Did not meet</option></select> accuracy requirement</div></div>
+                    <div class="sub-section"><label>Valpar 8 (Simulated work assembly)</label><div>Rate of work: <input type="text" id="valpar8Rate" placeholder="%">%; with comparison to Worker Qualification Profile (WQP):</div><div class="radio-group"><label><input type="radio" name="valpar8WQP" value="met may exceed speed requirement"> met may exceed speed requirement</label><label><input type="radio" name="valpar8WQP" value="met speed requirement"> met speed requirement</label><label><input type="radio" name="valpar8WQP" value="did not meet (A) speed requirement & needed to redo same assessment"> did not meet (A) speed requirement & needed to redo same assessment</label><label><input type="radio" name="valpar8WQP" value="did not meet (B) speed requirement & needed to redo assessment with lower demand"> did not meet (B) speed requirement & needed to redo assessment with lower demand</label></div></div>
+                    <div class="sub-section"><label>Valpar 9 (Whole body range of motion)</label><div>Rate of work: <input type="text" id="valpar9Rate" placeholder="%">%; with comparison to Worker Qualification Profile (WQP):</div><div class="radio-group"><label><input type="radio" name="valpar9WQP" value="met may exceed speed requirement"> met may exceed speed requirement</label><label><input type="radio" name="valpar9WQP" value="met speed requirement"> met speed requirement</label><label><input type="radio" name="valpar9WQP" value="did not meet (A) speed requirement & needed to redo same assessment"> did not meet (A) speed requirement & needed to redo same assessment</label><label><input type="radio" name="valpar9WQP" value="did not meet (B) speed requirement & needed to redo assessment with lower demand"> did not meet (B) speed requirement & needed to redo assessment with lower demand</label></div></div>
+                    <div class="sub-section"><label>Overall Performance</label><div>Patient demonstrated <select id="workBehavRating"><option value="">--</option><option value="good">good</option><option value="satisfactory">satisfactory</option></select> work behaviors such as <div class="checkbox-group" id="goodBehaviors"><label><input type="checkbox" value="concentration"> concentration</label><label><input type="checkbox" value="tolerance"> tolerance</label><label><input type="checkbox" value="compliance"> compliance</label><label><input type="checkbox" value="consistency"> consistency</label><label><input type="checkbox" value="social interaction"> social interaction</label><label><input type="checkbox" value="problem solving"> problem solving</label><label><input type="checkbox" value="voice out needs"> voice out needs</label><label><input type="checkbox" value="request for assistance"> request for assistance</label><label><input type="checkbox" value="following rules and cautious on safety"> following rules and cautious on safety</label><label><input type="checkbox" value="other"> other: <input type="text" id="goodBehaviorOther"></label></div></div><div>However, patient was relatively <select id="weakInadequate"><option value="">--</option><option value="weak in">weak in</option><option value="inadequate in">inadequate in</option></select> <div class="checkbox-group" id="weakBehaviors"></div>; and poor in <div class="checkbox-group" id="poorBehaviors"></div>.</div><div>Odd behavior such as <input type="text" id="oddBehavior" placeholder="describe"> was noted during the assessment.</div><div>The overall result of standardized work assessment indicated patient’s vocational capacity was predicted <select id="vocCapacity"><option value="">--</option><option value="up to">up to</option><option value="borderline to">borderline to</option><option value="not up to">not up to</option></select> <select id="vocLevel"><option value="">--</option><option value="OE">OE</option><option value="SE">SE</option><option value="SWS">SWS</option></select> level.</div></div>
+                </div>
+                <!-- CURRENT STAGE OF CHANGE IN WORK & TREATMENT PLANS -->
+                <div class="form-section">
+                    <h3>🔄 CURRENT STAGE OF CHANGE IN WORK & TREATMENT PLANS</h3>
+                    <div>According to C-LASER / Staging Algorithm, client was in <select id="changeStage"><option value="">-- select --</option><option value="Pre-contemplation Stage">Pre-contemplation Stage</option><option value="Contemplation Stage">Contemplation Stage</option><option value="Preparation Stage">Preparation Stage</option><option value="Action Stage">Action Stage</option><option value="Maintenance Stage">Maintenance Stage</option></select></div>
+                    <div id="stageDetails" style="margin-top:12px;"></div>
+                </div>
+            </form>
+            <div class="flex-btns"><button id="genWorkRehabReport">📄 Generate Report</button></div>
+            <div id="workRehabReportArea" class="report-area" style="display:none;"><div class="report-text" id="workRehabReportText"></div><div class="flex-btns"><button class="copy-btn" data-copy="workRehabReportText">📋 Copy to Clipboard</button></div></div>
         </div>
     </div>
 </div>
 
 <script>
-    // 初始化日期
+    // ========== 初始化日期 ==========
     const todayDate = new Date();
     const yyyy = todayDate.getFullYear();
     const mm = String(todayDate.getMonth()+1).padStart(2,'0');
@@ -578,152 +595,117 @@
     document.getElementById('sofasDateI').value = todayStr;
     document.getElementById('sofasDateP').value = todayStr;
 
-    // ========== 動態控制函數 ==========
-    // Admission From Others
+    // ========== 通用動態控制 ==========
     const fromSelect = document.getElementById('admissionFrom');
     const otherInput = document.getElementById('admissionFromOther');
     fromSelect.addEventListener('change',()=>{ otherInput.style.display = fromSelect.value === 'Others' ? 'block' : 'none'; });
-    // SCS conditional
     const scsSelect = document.getElementById('scsSelect');
     const scsBox = document.getElementById('scsReasonYearBox');
     function toggleScsFields(){ scsBox.style.display = (scsSelect.value === 'SC' || scsSelect.value === 'SC(ex-IC)' || scsSelect.value === 'IC') ? 'flex' : 'none'; }
     scsSelect.addEventListener('change', toggleScsFields); toggleScsFields();
-    // Living with family
     const livingRadios = document.querySelectorAll('input[name="livingType"]');
     const familyDiv = document.getElementById('familyDetails');
     livingRadios.forEach(r => r.addEventListener('change',()=>{ familyDiv.style.display = document.querySelector('input[name="livingType"]:checked').value === 'family' ? 'block' : 'none'; }));
-    // Employment pattern
     const empPattern = document.getElementById('employmentPattern');
     const prevWorkDiv = document.getElementById('prevWorkFields');
     empPattern.addEventListener('change',()=>{ prevWorkDiv.style.display = empPattern.value === 'previously' ? 'block' : 'none'; });
-    // Past Psy since year
     const pastRadios = document.querySelectorAll('input[name="pastPsyType"]');
     const sinceBlock = document.getElementById('sinceYearBlock');
     pastRadios.forEach(r=>r.addEventListener('change',()=>{ const val = document.querySelector('input[name="pastPsyType"]:checked')?.value; sinceBlock.style.display = (val === 'Private' || val === 'MHS') ? 'block' : 'none'; }));
     function setupHxField(selectId, entryId) { const sel = document.getElementById(selectId); const entry = document.getElementById(entryId); if(sel && entry) { const toggle = () => { entry.style.display = sel.value === 'Entry' ? 'block' : 'none'; }; sel.addEventListener('change', toggle); toggle(); } }
     setupHxField('suicidalHx', 'suicidalHxEntry'); setupHxField('violentHx', 'violentHxEntry'); setupHxField('saHx', 'saHxEntry');
-    
-    // ADL/IADL support (Initial)
+    // ADL/IADL Initial
     const adlI = document.getElementById('adlI');
     const adlSpanI = document.getElementById('adlSupportSpanI');
     adlI.addEventListener('change',()=>{ adlSpanI.style.display = adlI.value !== 'independent' ? 'inline' : 'none'; });
     const iadlI = document.getElementById('iadlI');
     const iadlSpanI = document.getElementById('iadlSupportSpanI');
     const poorIADLContainerI = document.getElementById('poorIADLContainerI');
-    function toggleIADLInitial() {
-        iadlSpanI.style.display = iadlI.value !== 'independent' ? 'inline' : 'none';
-        poorIADLContainerI.style.display = iadlI.value !== 'independent' ? 'inline' : 'none';
-    }
-    iadlI.addEventListener('change', toggleIADLInitial);
-    toggleIADLInitial();
-    
-    // Hallucination/Delusion detail (Initial)
+    function toggleIADLInitial() { iadlSpanI.style.display = iadlI.value !== 'independent' ? 'inline' : 'none'; poorIADLContainerI.style.display = iadlI.value !== 'independent' ? 'inline' : 'none'; }
+    iadlI.addEventListener('change', toggleIADLInitial); toggleIADLInitial();
+    // Hallucination/Delusion Initial
     const hallSelI = document.getElementById('hallucinationSelectI');
     const hallDetailI = document.getElementById('hallucinationDetailI');
     hallSelI.addEventListener('change',()=>{ hallDetailI.style.display = hallSelI.value === 'details' ? 'inline-block' : 'none'; });
     const delSelI = document.getElementById('delusionSelectI');
     const delDetailI = document.getElementById('delusionDetailI');
     delSelI.addEventListener('change',()=>{ delDetailI.style.display = delSelI.value === 'details' ? 'inline-block' : 'none'; });
-    // BPSD (Initial)
     const bpsdSelI = document.getElementById('bpsdI');
     const bpsdFeatI = document.getElementById('bpsdFeaturesI');
     bpsdSelI.addEventListener('change',()=>{ bpsdFeatI.style.display = bpsdSelI.value === 'Observed' ? 'flex' : 'none'; });
-    // SOFAS description (Initial)
     const sofasScoreI = document.getElementById('sofasScoreI');
     const sofasDescI = document.getElementById('sofasDescriptionI');
-    function updateSofasDescI() {
-        let score = parseInt(sofasScoreI.value);
-        if (isNaN(score)) { sofasDescI.innerHTML = ''; return; }
-        let desc = '';
-        if (score >= 91) desc = '91 – 100: Superior functioning in a wide range of activities';
-        else if (score >= 81) desc = '81 – 90: Good functioning in all areas, occupationally and socially effective';
-        else if (score >= 71) desc = '71 – 80: No more than a slight impairment in social, occupational, or school functioning (e.g., infrequent interpersonal conflict, temporarily falling behind in school work)';
-        else if (score >= 61) desc = '61 – 70: Some difficulty in social, occupational, or school functioning, but generally functioning well, has some meaningful interpersonal relationships';
-        else if (score >= 51) desc = '51 – 60: Moderate difficulty in social, occupational, or school functioning (e.g., few friends, conflicts with peers or co-workers)';
-        else if (score >= 41) desc = '41 – 50: Serious impairment in social, occupational, or school functioning (e.g., no friends, unable to keep a job)';
-        else if (score >= 31) desc = '31 – 40: Major impairment in several areas, such as work or school, family relations (e.g., depressed man avoids friends, neglects family, and is unable to work; child frequently beats younger children, is defiant at home, and is failing at school)';
-        else if (score >= 21) desc = '21 – 30: Inability to function in almost all areas (e.g., stays in bed all day; no job, home, or friends)';
-        else if (score >= 11) desc = '11 – 20: Occasionally fails to maintain minimal personal hygiene; unable to function independently';
-        else if (score >= 1) desc = '1 – 10: Persistent inability to maintain minimal personal hygiene. Unable to function without harming self or others or without considerable external support (e.g., nursing care and supervision)';
-        else if (score === 0) desc = '0: Inadequate information';
-        sofasDescI.innerHTML = desc;
-    }
+    function updateSofasDescI() { let score = parseInt(sofasScoreI.value); if (isNaN(score)) { sofasDescI.innerHTML = ''; return; } let desc = ''; if (score >= 91) desc = '91 – 100: Superior functioning in a wide range of activities'; else if (score >= 81) desc = '81 – 90: Good functioning in all areas, occupationally and socially effective'; else if (score >= 71) desc = '71 – 80: No more than a slight impairment in social, occupational, or school functioning (e.g., infrequent interpersonal conflict, temporarily falling behind in school work)'; else if (score >= 61) desc = '61 – 70: Some difficulty in social, occupational, or school functioning, but generally functioning well, has some meaningful interpersonal relationships'; else if (score >= 51) desc = '51 – 60: Moderate difficulty in social, occupational, or school functioning (e.g., few friends, conflicts with peers or co-workers)'; else if (score >= 41) desc = '41 – 50: Serious impairment in social, occupational, or school functioning (e.g., no friends, unable to keep a job)'; else if (score >= 31) desc = '31 – 40: Major impairment in several areas, such as work or school, family relations (e.g., depressed man avoids friends, neglects family, and is unable to work; child frequently beats younger children, is defiant at home, and is failing at school)'; else if (score >= 21) desc = '21 – 30: Inability to function in almost all areas (e.g., stays in bed all day; no job, home, or friends)'; else if (score >= 11) desc = '11 – 20: Occasionally fails to maintain minimal personal hygiene; unable to function independently'; else if (score >= 1) desc = '1 – 10: Persistent inability to maintain minimal personal hygiene. Unable to function without harming self or others or without considerable external support (e.g., nursing care and supervision)'; else if (score === 0) desc = '0: Inadequate information'; sofasDescI.innerHTML = desc; }
     sofasScoreI.addEventListener('input', updateSofasDescI);
-
     // Progress 動態
-    // Overall Functioning mode toggle
     const funcRadios = document.querySelectorAll('input[name="funcMode"]');
     const updatedDiv = document.getElementById('funcUpdatedDiv');
     const goalDiv = document.getElementById('funcGoalDiv');
-    function toggleFuncDivs() {
-        const selected = document.querySelector('input[name="funcMode"]:checked')?.value;
-        updatedDiv.style.display = (selected === 'updated') ? 'block' : 'none';
-        goalDiv.style.display = (selected === 'goal') ? 'block' : 'none';
-    }
-    funcRadios.forEach(r => r.addEventListener('change', toggleFuncDivs));
-    toggleFuncDivs();
-    // ADL/IADL support (Progress)
+    function toggleFuncDivs() { const selected = document.querySelector('input[name="funcMode"]:checked')?.value; updatedDiv.style.display = (selected === 'updated') ? 'block' : 'none'; goalDiv.style.display = (selected === 'goal') ? 'block' : 'none'; }
+    funcRadios.forEach(r => r.addEventListener('change', toggleFuncDivs)); toggleFuncDivs();
     const adlP = document.getElementById('adlP');
     const adlSpanP = document.getElementById('adlSupportSpanP');
     adlP.addEventListener('change',()=>{ adlSpanP.style.display = adlP.value !== 'independent' ? 'inline' : 'none'; });
     const iadlP = document.getElementById('iadlP');
     const iadlSpanP = document.getElementById('iadlSupportSpanP');
     const poorIADLContainerP = document.getElementById('poorIADLContainerP');
-    function toggleIADLProgress() {
-        iadlSpanP.style.display = iadlP.value !== 'independent' ? 'inline' : 'none';
-        poorIADLContainerP.style.display = iadlP.value !== 'independent' ? 'inline' : 'none';
-    }
-    iadlP.addEventListener('change', toggleIADLProgress);
-    toggleIADLProgress();
-    // Hallucination/Delusion detail (Progress)
+    function toggleIADLProgress() { iadlSpanP.style.display = iadlP.value !== 'independent' ? 'inline' : 'none'; poorIADLContainerP.style.display = iadlP.value !== 'independent' ? 'inline' : 'none'; }
+    iadlP.addEventListener('change', toggleIADLProgress); toggleIADLProgress();
     const hallSelP = document.getElementById('hallucinationSelectP');
     const hallDetailP = document.getElementById('hallucinationDetailP');
     hallSelP.addEventListener('change',()=>{ hallDetailP.style.display = hallSelP.value === 'details' ? 'inline-block' : 'none'; });
     const delSelP = document.getElementById('delusionSelectP');
     const delDetailP = document.getElementById('delusionDetailP');
     delSelP.addEventListener('change',()=>{ delDetailP.style.display = delSelP.value === 'details' ? 'inline-block' : 'none'; });
-    // BPSD (Progress)
     const bpsdSelP = document.getElementById('bpsdP');
     const bpsdFeatP = document.getElementById('bpsdFeaturesP');
     bpsdSelP.addEventListener('change',()=>{ bpsdFeatP.style.display = bpsdSelP.value === 'Observed' ? 'flex' : 'none'; });
-    // OT mode toggle
     const otWard = document.getElementById('wardOtDiv');
     const otMain = document.getElementById('mainOtDiv');
     const otRadios = document.querySelectorAll('input[name="otMode"]');
-    function toggleOtDivs() {
-        const val = document.querySelector('input[name="otMode"]:checked')?.value;
-        otWard.style.display = (val === 'ward') ? 'block' : 'none';
-        otMain.style.display = (val === 'main') ? 'block' : 'none';
-    }
-    otRadios.forEach(r => r.addEventListener('change', toggleOtDivs));
-    toggleOtDivs();
-    // SOFAS description (Progress)
+    function toggleOtDivs() { const val = document.querySelector('input[name="otMode"]:checked')?.value; otWard.style.display = (val === 'ward') ? 'block' : 'none'; otMain.style.display = (val === 'main') ? 'block' : 'none'; }
+    otRadios.forEach(r => r.addEventListener('change', toggleOtDivs)); toggleOtDivs();
     const sofasScoreP = document.getElementById('sofasScoreP');
     const sofasDescP = document.getElementById('sofasDescriptionP');
-    function updateSofasDescP() {
-        let score = parseInt(sofasScoreP.value);
-        if (isNaN(score)) { sofasDescP.innerHTML = ''; return; }
-        let desc = '';
-        if (score >= 91) desc = '91 – 100: Superior functioning in a wide range of activities';
-        else if (score >= 81) desc = '81 – 90: Good functioning in all areas, occupationally and socially effective';
-        else if (score >= 71) desc = '71 – 80: No more than a slight impairment in social, occupational, or school functioning (e.g., infrequent interpersonal conflict, temporarily falling behind in school work)';
-        else if (score >= 61) desc = '61 – 70: Some difficulty in social, occupational, or school functioning, but generally functioning well, has some meaningful interpersonal relationships';
-        else if (score >= 51) desc = '51 – 60: Moderate difficulty in social, occupational, or school functioning (e.g., few friends, conflicts with peers or co-workers)';
-        else if (score >= 41) desc = '41 – 50: Serious impairment in social, occupational, or school functioning (e.g., no friends, unable to keep a job)';
-        else if (score >= 31) desc = '31 – 40: Major impairment in several areas, such as work or school, family relations (e.g., depressed man avoids friends, neglects family, and is unable to work; child frequently beats younger children, is defiant at home, and is failing at school)';
-        else if (score >= 21) desc = '21 – 30: Inability to function in almost all areas (e.g., stays in bed all day; no job, home, or friends)';
-        else if (score >= 11) desc = '11 – 20: Occasionally fails to maintain minimal personal hygiene; unable to function independently';
-        else if (score >= 1) desc = '1 – 10: Persistent inability to maintain minimal personal hygiene. Unable to function without harming self or others or without considerable external support (e.g., nursing care and supervision)';
-        else if (score === 0) desc = '0: Inadequate information';
-        sofasDescP.innerHTML = desc;
-    }
+    function updateSofasDescP() { let score = parseInt(sofasScoreP.value); if (isNaN(score)) { sofasDescP.innerHTML = ''; return; } let desc = ''; if (score >= 91) desc = '91 – 100: Superior functioning in a wide range of activities'; else if (score >= 81) desc = '81 – 90: Good functioning in all areas, occupationally and socially effective'; else if (score >= 71) desc = '71 – 80: No more than a slight impairment in social, occupational, or school functioning (e.g., infrequent interpersonal conflict, temporarily falling behind in school work)'; else if (score >= 61) desc = '61 – 70: Some difficulty in social, occupational, or school functioning, but generally functioning well, has some meaningful interpersonal relationships'; else if (score >= 51) desc = '51 – 60: Moderate difficulty in social, occupational, or school functioning (e.g., few friends, conflicts with peers or co-workers)'; else if (score >= 41) desc = '41 – 50: Serious impairment in social, occupational, or school functioning (e.g., no friends, unable to keep a job)'; else if (score >= 31) desc = '31 – 40: Major impairment in several areas, such as work or school, family relations (e.g., depressed man avoids friends, neglects family, and is unable to work; child frequently beats younger children, is defiant at home, and is failing at school)'; else if (score >= 21) desc = '21 – 30: Inability to function in almost all areas (e.g., stays in bed all day; no job, home, or friends)'; else if (score >= 11) desc = '11 – 20: Occasionally fails to maintain minimal personal hygiene; unable to function independently'; else if (score >= 1) desc = '1 – 10: Persistent inability to maintain minimal personal hygiene. Unable to function without harming self or others or without considerable external support (e.g., nursing care and supervision)'; else if (score === 0) desc = '0: Inadequate information'; sofasDescP.innerHTML = desc; }
     sofasScoreP.addEventListener('input', updateSofasDescP);
+    // Work Rehab 動態
+    const workStatusSelect = document.getElementById('workStatus');
+    const workStatusDetailDiv = document.getElementById('workStatusDetail');
+    workStatusSelect.addEventListener('change', () => { workStatusDetailDiv.style.display = (workStatusSelect.value !== '') ? 'block' : 'none'; });
+    const changeStageSelect = document.getElementById('changeStage');
+    const stageDetailsDiv = document.getElementById('stageDetails');
+    function updateStageInterventions() {
+        const stage = changeStageSelect.value;
+        let html = '';
+        if (stage === 'Pre-contemplation Stage') { html = `<div class="checkbox-group"><label><input type="checkbox" value="Rehab Focus: Amplify motivation for work"> Rehab Focus: Amplify motivation for work</label><label><input type="checkbox" value="OT intervention: Motivational enhancement for return-to-work: (1) Engaging clients to promote awareness on worker role, (2) Uncovering discrepancy between present & desired future, (3) Promoting hope and intention for employment, and (4) Promoting change talk on value and importance of work"> OT: Motivational enhancement</label><label><input type="checkbox" value="Rehab Focus: explore adaptive structural daytime engagement"> Rehab Focus: explore adaptive structural daytime engagement</label><label><input type="checkbox" value="OT intervention: explore adaptive structural daytime engagement: (1) Refer ICCMW for daytime engagement (2) Refer PDH for daytime engagement & continuous rehab (3) Interests exploration & facilitate structured routine"> OT: explore adaptive daytime engagement</label></div>`; }
+        else if (stage === 'Contemplation Stage') { html = `<div class="checkbox-group"><label><input type="checkbox" value="Rehab Focus: Amplify motivation for work"> Rehab Focus: Amplify motivation for work</label><label><input type="checkbox" value="OT intervention: Motivational enhancement for return-to-work: (1) Engaging clients to promote awareness on worker role, (2) Uncovering discrepancy between present & desired future, (3) Promoting hope and intention for employment, and (4) Promoting change talk on value and importance of work"> OT: Motivational enhancement</label><label><input type="checkbox" value="Rehab Focus: Begin vocational exploration"> Rehab Focus: Begin vocational exploration</label><label><input type="checkbox" value="OT intervention: Vocational exploration: (1) Identifying vocational interest, (2) Orienting to job market, (3) Evaluating work capacity and potential"> OT: Vocational exploration</label></div>`; }
+        else if (stage === 'Preparation Stage') { html = `<div class="checkbox-group"><label><input type="checkbox" value="Rehab Focus: Facilitate vocational choice and decision making via Vocational exploration"> Rehab Focus: Facilitate vocational choice and decision making</label><label><input type="checkbox" value="OT intervention: (1) Identifying vocational interest, (2) Orienting to job market, (3) Evaluating work capacity and potential, and (4) Reviewing expectation and anticipated challenge to promote job-person match"> OT: Vocational exploration & job-person match</label><label><input type="checkbox" value="Rehab Focus: Facilitate vocational goal-setting and action plan"> Rehab Focus: Facilitate vocational goal-setting and action plan</label><label><input type="checkbox" value="OT intervention: (1) Educating SMART goal principles, and (2) Formulating vocational goal and action plan"> OT: SMART goal & action plan</label></div>`; }
+        else if (stage === 'Action Stage') { html = `<div><strong>Rehab Focus: Enhance vocational skills and promote employability</strong></div><div class="checkbox-group"><label><input type="checkbox" value="Pending job-post training (JPT)"> Pending job-post training (JPT)</label><label><input type="checkbox" value="Started job-post training (JPT)"> Started job-post training (JPT)</label><label><input type="checkbox" value="Continued job-post training (JPT)"> Continued job-post training (JPT)</label><label><input type="checkbox" value="Pending job acquisition skills training"> Pending job acquisition skills training</label><label><input type="checkbox" value="Started job acquisition skills training"> Started job acquisition skills training</label><label><input type="checkbox" value="Continued job acquisition skills training"> Continued job acquisition skills training</label><label><input type="checkbox" value="Pending work-related stress coping skill training"> Pending work-related stress coping skill training</label><label><input type="checkbox" value="Started work-related stress coping skill training"> Started work-related stress coping skill training</label><label><input type="checkbox" value="Continued work-related stress coping skill training"> Continued work-related stress coping skill training</label><label><input type="checkbox" value="Pending work-related social skill training (WRSS)"> Pending work-related social skill training (WRSS)</label><label><input type="checkbox" value="Started work-related social skill training (WRSS)"> Started work-related social skill training (WRSS)</label><label><input type="checkbox" value="Continued work-related social skill training (WRSS)"> Continued work-related social skill training (WRSS)</label><label><input type="checkbox" value="Pending computerized cognitive training (CCTP)"> Pending computerized cognitive training (CCTP)</label><label><input type="checkbox" value="Started computerized cognitive training (CCTP)"> Started computerized cognitive training (CCTP)</label><label><input type="checkbox" value="Continued computerized cognitive training (CCTP)"> Continued computerized cognitive training (CCTP)</label><label><input type="checkbox" value="Pending work-related problem solving"> Pending work-related problem solving</label><label><input type="checkbox" value="Started work-related problem solving"> Started work-related problem solving</label><label><input type="checkbox" value="Continued work-related problem solving"> Continued work-related problem solving</label><label><input type="checkbox" value="Pending compensatory cognitive training"> Pending compensatory cognitive training</label><label><input type="checkbox" value="Started compensatory cognitive training"> Started compensatory cognitive training</label><label><input type="checkbox" value="Continued compensatory cognitive training"> Continued compensatory cognitive training</label><label><input type="checkbox" value="Pending prospective memory training (PM)"> Pending prospective memory training (PM)</label><label><input type="checkbox" value="Started prospective memory training (PM)"> Started prospective memory training (PM)</label><label><input type="checkbox" value="Continued prospective memory training (PM)"> Continued prospective memory training (PM)</label><label><input type="checkbox" value="Pending executive function training (EF)"> Pending executive function training (EF)</label><label><input type="checkbox" value="Started executive function training (EF)"> Started executive function training (EF)</label><label><input type="checkbox" value="Continued executive function training (EF)"> Continued executive function training (EF)</label><label><input type="checkbox" value="Pending social cognitive interactive training (SCIT)"> Pending social cognitive interactive training (SCIT)</label><label><input type="checkbox" value="Started social cognitive interactive training (SCIT)"> Started social cognitive interactive training (SCIT)</label><label><input type="checkbox" value="Continued social cognitive interactive training (SCIT)"> Continued social cognitive interactive training (SCIT)</label><label><input type="checkbox" value="Pending refer SET"> Pending refer SET</label><label><input type="checkbox" value="Started refer SET"> Started refer SET</label><label><input type="checkbox" value="Continued refer SET"> Continued refer SET</label><label><input type="checkbox" value="Pending enrol ERB"> Pending enrol ERB</label><label><input type="checkbox" value="Started enrol ERB"> Started enrol ERB</label><label><input type="checkbox" value="Continued enrol ERB"> Continued enrol ERB</label></div>`; }
+        else if (stage === 'Maintenance Stage') { html = `<div><strong>Rehab Focus: Promote work adaptation</strong></div><div class="checkbox-group"><label><input type="checkbox" value="Pending cognitive strategies training"> Pending cognitive strategies training</label><label><input type="checkbox" value="Started cognitive strategies training"> Started cognitive strategies training</label><label><input type="checkbox" value="Continued cognitive strategies training"> Continued cognitive strategies training</label><label><input type="checkbox" value="Pending work-related social skill training"> Pending work-related social skill training</label><label><input type="checkbox" value="Started work-related social skill training"> Started work-related social skill training</label><label><input type="checkbox" value="Continued work-related social skill training"> Continued work-related social skill training</label><label><input type="checkbox" value="Pending work-related stress coping skill training"> Pending work-related stress coping skill training</label><label><input type="checkbox" value="Started work-related stress coping skill training"> Started work-related stress coping skill training</label><label><input type="checkbox" value="Continued work-related stress coping skill training"> Continued work-related stress coping skill training</label><label><input type="checkbox" value="Pending work-related problem solving skill training"> Pending work-related problem solving skill training</label><label><input type="checkbox" value="Started work-related problem solving skill training"> Started work-related problem solving skill training</label><label><input type="checkbox" value="Continued work-related problem solving skill training"> Continued work-related problem solving skill training</label><label><input type="checkbox" value="Pending cognitive-behavioural coping strategies training"> Pending cognitive-behavioural coping strategies training</label><label><input type="checkbox" value="Started cognitive-behavioural coping strategies training"> Started cognitive-behavioural coping strategies training</label><label><input type="checkbox" value="Continued cognitive-behavioural coping strategies training"> Continued cognitive-behavioural coping strategies training</label><label><input type="checkbox" value="Pending liaise with agency staff or employers"> Pending liaise with agency staff or employers</label><label><input type="checkbox" value="Started liaise with agency staff or employers"> Started liaise with agency staff or employers</label><label><input type="checkbox" value="Continued liaise with agency staff or employers"> Continued liaise with agency staff or employers</label><label><input type="checkbox" value="Pending job visit"> Pending job visit</label><label><input type="checkbox" value="Started job visit"> Started job visit</label><label><input type="checkbox" value="Continued job visit"> Continued job visit</label><label><input type="checkbox" value="Pending Job-post training (JPT)"> Pending Job-post training (JPT)</label><label><input type="checkbox" value="Started Job-post training (JPT)"> Started Job-post training (JPT)</label><label><input type="checkbox" value="Continued Job-post training (JPT)"> Continued Job-post training (JPT)</label><label><input type="checkbox" value="Pending Application to Salvation Army Heng On Integrated Service for Rehabilitation / Mental Health Association / Rehabilitation Power / New Life Psychiatric Rehabilitation Association as ..."> Pending Application to rehab agency</label><label><input type="checkbox" value="Started Application to rehab agency"> Started Application to rehab agency</label><label><input type="checkbox" value="Continued Application to rehab agency"> Continued Application to rehab agency</label><input type="text" id="agencyJob" placeholder="e.g., shop assistant" style="margin-top:6px;"></div>`; }
+        stageDetailsDiv.innerHTML = html;
+        // 複製行為選項至 weakBehaviors 和 poorBehaviors
+        const goodCheckboxes = document.querySelectorAll('#goodBehaviors input[type="checkbox"]');
+        const weakDiv = document.getElementById('weakBehaviors');
+        const poorDiv = document.getElementById('poorBehaviors');
+        weakDiv.innerHTML = ''; poorDiv.innerHTML = '';
+        goodCheckboxes.forEach(cb => {
+            const val = cb.value;
+            if (val !== 'other') {
+                const weakClone = document.createElement('label'); weakClone.innerHTML = `<input type="checkbox" value="${val}"> ${val}`;
+                const poorClone = document.createElement('label'); poorClone.innerHTML = `<input type="checkbox" value="${val}"> ${val}`;
+                weakDiv.appendChild(weakClone); poorDiv.appendChild(poorClone);
+            }
+        });
+    }
+    changeStageSelect.addEventListener('change', updateStageInterventions);
+    updateStageInterventions();
 
     // ========== 報告生成函數 ==========
-    // Initial Report (保留原有邏輯，但改用新的 Mood/Affect 取值方式)
+    // Initial Report
     function buildInitialReport() {
         let lines = [];
-        // 入住院訊息 (與之前相同，省略以節省篇幅，實際會完整)
+        // Admission
         let admDate = document.getElementById('admissionDate').value.trim();
         let fromVal = fromSelect.value;
         if(fromVal === 'Others') fromVal = otherInput.value.trim() || 'Others';
@@ -735,8 +717,10 @@
         let interviewDateVal = document.getElementById('interviewDate').value.trim();
         if(interviewDateVal) lines.push(`Initial interview was conducted on ${interviewDateVal}`);
         if(lines.length) lines.push('');
+        // Imp
         let impSelected = Array.from(document.querySelectorAll('#impGroup input[type="checkbox"]:checked')).map(cb=>{ if(cb.value==='Others') return `Others: ${document.getElementById('impOthers').value.trim()}`; else return cb.value; }).filter(v=>v);
         if(impSelected.length) lines.push(`Imp: ${impSelected.join(', ')}`);
+        // SCS
         let scsVal = scsSelect.value;
         if(scsVal){
             let scsFormatted = `SCS (${scsVal})`;
@@ -750,12 +734,13 @@
             }
             lines.push(scsFormatted);
         }
+        // Fall precaution
         let fallRad = document.querySelector('input[name="fallPrecaution"]:checked')?.value;
         let morse = document.getElementById('morseScale').value.trim();
         let fallLine = '';
         if(fallRad) fallLine = `Fall precaution: ${fallRad}${morse ? ` (Morse Fall Scale ${morse}/125 on admission)` : ''}`;
         if(fallLine) { lines.push(''); lines.push(fallLine); lines.push(''); }
-        // Social Condition (保留)
+        // Social Condition
         let livingType = document.querySelector('input[name="livingType"]:checked')?.value;
         let socialLine = '';
         if(livingType === 'alone') socialLine = `Social Condition: Living alone`;
@@ -776,7 +761,7 @@
         let regVisited = document.getElementById('regularVisited').value.trim();
         if(regVisited) socialLine += `, regular visited by ${regVisited}`;
         if(socialLine) lines.push(socialLine);
-        // Work Status (保留)
+        // Work Status
         let workParts = [];
         let edu = document.getElementById('education').value.trim();
         if(edu) workParts.push(`Educated up to ${edu}`);
@@ -803,7 +788,7 @@
         if(premorbid) workParts.push(`premorbid functioning: ${premorbid}`);
         if(workParts.length) lines.push(`Work Status: ${workParts.join('; ')}`);
         lines.push('');
-        // Past Psy Hx (保留)
+        // Past Psy Hx
         let pastType = document.querySelector('input[name="pastPsyType"]:checked')?.value;
         let pastHxLine = '';
         if(pastType === 'New') pastHxLine = `Past Psy Hx: New to MHS`;
@@ -829,6 +814,7 @@
         let saText = (document.getElementById('saHx').value === 'Nil') ? 'Nil' : document.getElementById('saHxEntry').value.trim();
         if(saText) lines.push(`SA Hx: ${saText}`);
         lines.push('');
+        // Last Admission
         let lastHosp = document.getElementById('lastHospital').value;
         let lastRange = document.getElementById('lastAdmRange').value.trim();
         let lastReason = document.getElementById('lastAdmReason').value.trim();
@@ -838,10 +824,11 @@
         if(lastLine) lines.push(lastLine);
         if(lastReason) lines.push(`Admitted for ${lastReason}`);
         lines.push('');
+        // Current Admission
         let currAdmReason = document.getElementById('currentAdmReason').value.trim();
         if(currAdmReason) lines.push(`Current Admission: Admitted for ${currAdmReason}`);
         lines.push(''); lines.push('--- Common Assessment Note ---');
-        // MSE Initial (使用新的 Mood/Affect checkbox 取值)
+        // MSE Initial
         let mseParts = [];
         let appearance = Array.from(document.querySelectorAll('#mseAppearanceI input:checked')).map(cb=>cb.value);
         if(appearance.length) mseParts.push(`Appearance: ${appearance.join(', ')}`);
@@ -881,8 +868,7 @@
         let insightInto = Array.from(document.querySelectorAll('#insightIntoI input:checked')).map(cb=>cb.value);
         if(insightVal && insightInto.length) mseParts.push(`${insightVal} insight into own ${insightInto.join(', ')}`);
         if(mseParts.length) lines.push(`Mental State Examination: ${mseParts.join('; ')}`);
-        
-        // Overall Functioning (Initial)
+        // Overall Functioning
         let funcParts = [];
         let adlVal = adlI.value;
         funcParts.push(`ADL: ${adlVal}`);
@@ -905,7 +891,6 @@
         let personalGoals = document.getElementById('personalGoalsI').value.trim();
         if(personalGoals) funcParts.push(`Personal goals: ${personalGoals}`);
         if(funcParts.length) lines.push(`Overall Level of Functioning: ${funcParts.join('; ')}`);
-        
         // SOFAS
         let sofasDate = document.getElementById('sofasDateI').value.trim();
         let sofasScore = sofasScoreI.value;
@@ -937,7 +922,7 @@
         document.getElementById('initialReportArea').style.display = 'block';
     });
 
-    // Progress Report (相似修改，省略以節省篇幅，但確保使用新的取值)
+    // Progress Report
     function buildProgressReport() {
         let lines = [];
         let mentalTrend = document.getElementById('mentalStateTrend').value;
@@ -981,7 +966,7 @@
         let insightInto = Array.from(document.querySelectorAll('#insightIntoP input:checked')).map(cb=>cb.value);
         if(insightVal && insightInto.length) mseParts.push(`${insightVal} insight into own ${insightInto.join(', ')}`);
         if(mseParts.length) lines.push(`Mental State Examination: ${mseParts.join('; ')}`);
-        
+        // Overall Functioning Progress
         let funcMode = document.querySelector('input[name="funcMode"]:checked')?.value;
         if(funcMode === 'maintained') lines.push('Overall Level of Functioning: COPY FROM LAST REPORT');
         else if(funcMode === 'updated') {
@@ -1009,6 +994,7 @@
             let goal = document.getElementById('personalGoalsP').value.trim();
             if(goal) lines.push(`Personal goals: ${goal}`);
         }
+        // SOFAS Progress
         let sofasDate = document.getElementById('sofasDateP').value.trim();
         let sofasScore = sofasScoreP.value;
         if(sofasDate || sofasScore) {
@@ -1017,6 +1003,7 @@
             if(desc) sofLine += ` (${desc})`;
             lines.push(sofLine);
         }
+        // OT Performance
         let otMode = document.querySelector('input[name="otMode"]:checked')?.value;
         if(otMode === 'ward') {
             let wardParts = [];
@@ -1040,6 +1027,7 @@
             if(social) mainParts.push(`Social: ${social}`);
             if(mainParts.length) lines.push(`Performance in Main OT: ${mainParts.join('; ')}`);
         }
+        // Recommendation
         let recSelected = Array.from(document.querySelectorAll('#recList input:checked')).map(cb=>cb.value);
         let recOther = document.getElementById('recOther').value.trim();
         if(recOther) recSelected.push(recOther);
@@ -1051,23 +1039,55 @@
         document.getElementById('progressReportArea').style.display = 'block';
     });
 
-    // Discharge Report
-    function buildDischargeReport(){
-        let out = [];
-        let adm = document.getElementById('dischargeAdmDate').value.trim();
-        let dis = document.getElementById('dischargeDate').value.trim();
-        if(adm && dis) out.push(`Admission: ${adm} | Discharge: ${dis}`);
-        let diag = document.getElementById('dischargeDiagnosis').value.trim(); if(diag) out.push(`Diagnosis: ${diag}`);
-        let reason = document.getElementById('dischargeReason').value.trim(); if(reason) out.push(`Reason for discharge: ${reason}`);
-        let meds = document.getElementById('dischargeMeds').value.trim(); if(meds) out.push(`Medications at discharge: ${meds}`);
-        let follow = document.getElementById('followupPlan').value.trim(); if(follow) out.push(`Follow-up: ${follow}`);
-        let condition = document.getElementById('conditionOnDischarge').value.trim(); if(condition) out.push(`Condition on discharge: ${condition}`);
-        let remarks = document.getElementById('dischargeRemarks').value.trim(); if(remarks) out.push(`Remarks: ${remarks}`);
-        return out.join('\n');
+    // Work Rehab Report
+    function buildWorkRehabReport() {
+        let lines = [];
+        lines.push(`Patient was interviewed and assessed for the work rehabilitation`);
+        let edu = document.getElementById('eduLevel').value; if(edu) lines.push(`Educated up to ${edu}`);
+        let workStatus = workStatusSelect.value; let wsText = document.getElementById('workStatusText').value.trim();
+        if(workStatus === 'currently_working') lines.push(`Currently working as ${wsText}`);
+        else if(workStatus === 'unemployed') lines.push(`Currently unemployed (${wsText})`);
+        else if(workStatus === 'recently_resigned') lines.push(`Recently resigned from work as ${wsText}`);
+        else if(workStatus === 'prev_voc_training') lines.push(`Previously received vocational training in ${wsText}`);
+        else if(workStatus === 'never_employed') lines.push(`Never gainfully employed`);
+        else if(workStatus === 'unstable_record') lines.push(`Unstable job record`);
+        let longestTitle = document.getElementById('longestJobTitle').value.trim();
+        if(longestTitle) { let dur = ''; if(document.querySelector('input[name="longestDurationType"]:checked')?.value === 'duration') { let num = document.getElementById('longestDurationNum').value.trim(); let unit = document.getElementById('longestDurationUnit').value; if(num) dur = `for ${num} ${unit}`; } else { let fmm = document.getElementById('longestFromMM').value.trim(), fyy = document.getElementById('longestFromYY').value.trim(), tmm = document.getElementById('longestToMM').value.trim(), tyy = document.getElementById('longestToYY').value.trim(); if(fmm && fyy && tmm && tyy) dur = `from ${fmm}/${fyy} to ${tmm}/${tyy}`; } lines.push(`Longest job: ${longestTitle} ${dur}`.trim()); }
+        let latestTitle = document.getElementById('latestJobTitle').value.trim();
+        if(latestTitle) { let dur = ''; if(document.querySelector('input[name="latestDurationType"]:checked')?.value === 'duration') { let num = document.getElementById('latestDurationNum').value.trim(); let unit = document.getElementById('latestDurationUnit').value; if(num) dur = `for ${num} ${unit}`; } else { let fmm = document.getElementById('latestFromMM').value.trim(), fyy = document.getElementById('latestFromYY').value.trim(), tmm = document.getElementById('latestToMM').value.trim(), tyy = document.getElementById('latestToYY').value.trim(); if(fmm && fyy && tmm && tyy) dur = `from ${fmm}/${fyy} to ${tmm}/${tyy}`; } lines.push(`Latest job: ${latestTitle} ${dur}`.trim()); }
+        let quitReasons = Array.from(document.querySelectorAll('#quitReasonsGroup input:checked')).map(cb=>{ if(cb.value === 'being dismissed due to') return `being dismissed due to ${document.getElementById('dismissReason').value.trim()}`; if(cb.value === 'others') return `others: ${document.getElementById('quitOthers').value.trim()}`; return cb.value; }).filter(v=>v);
+        if(quitReasons.length) lines.push(`Reason for quitting the job: ${quitReasons.join(', ')}`);
+        lines.push(``);
+        let cogIndicated = document.querySelector('input[name="cognitiveIndicated"]:checked')?.value; if(cogIndicated) lines.push(`Cognitive Screening: ${cogIndicated}`);
+        let mocaDate = document.getElementById('mocaDate').value.trim(), mocaResult = document.getElementById('mocaResult').value.trim(); if(mocaDate || mocaResult) lines.push(`HK-MoCA was conducted on ${mocaDate}. Result indicated ${mocaResult}. Details please refer to previous progress note`);
+        let claserDate = document.getElementById('claserDate').value.trim(); if(claserDate) lines.push(`Chinese Lam Assessment of Employment Readiness (C.L.A.S.E.R.) was conducted on ${claserDate}`);
+        let cwiiDate = document.getElementById('cwiiDate').value.trim(); if(cwiiDate) lines.push(`Chinese Work Interest Inventory (CWII) were done on ${cwiiDate}`);
+        let claserStage = document.getElementById('claserStage').value; let claserScore = document.getElementById('claserScore').value.trim(); if(claserStage) lines.push(`Based on the assessment, patient was in ${claserStage} (${claserScore}/30 for Pre-contemplation, /20 for others)`);
+        let selfRTW = document.getElementById('selfEfficacyRTW').value.trim(); if(selfRTW) lines.push(`Self-efficacy in return-to-work: ${selfRTW}/10`);
+        let selfSeek = document.getElementById('selfEfficacySeek').value.trim(); if(selfSeek) lines.push(`Self-efficacy in seeking job successfully: ${selfSeek}/10`);
+        let obstacles = Array.from(document.querySelectorAll('#obstaclesGroup input:checked')).map(cb=>{ if(cb.value === 'others') return `others: ${document.getElementById('obstaclesOthers').value.trim()}`; return cb.value; }).filter(v=>v);
+        if(obstacles.length) lines.push(`Patient-perceived obstacles(s) in employability including ${obstacles.join(', ')}`);
+        let prefJobs = Array.from(document.querySelectorAll('#jobPreference input:checked')).map(cb=>cb.value); if(prefJobs.length) lines.push(`Patient shown job preference in ${prefJobs.join(', ')} type of job`);
+        let interestTrain = Array.from(document.querySelectorAll('#interestTraining input:checked')).map(cb=>cb.value); if(interestTrain.length) lines.push(`Patient showed interest in ${interestTrain.join(', ')} training`);
+        lines.push(``);
+        function addValpar(name, rateId, wqpName) { let rate = document.getElementById(rateId).value.trim(); let wqp = document.querySelector(`input[name="${wqpName}"]:checked`)?.value; if(rate || wqp) lines.push(`${name}: ${rate ? `Rate of work: ${rate}%` : ''}${rate && wqp ? '; ' : ''}${wqp ? `with comparison to Worker Qualification Profile (WQP): ${wqp}` : ''}`); }
+        addValpar('Valpar 4 (Upper extremity range of motion)', 'valpar4Rate', 'valpar4WQP');
+        let v7rate = document.getElementById('valpar7Rate').value.trim(); let v7wqp = document.querySelector('input[name="valpar7WQP"]:checked')?.value; let v7err = document.getElementById('valpar7Error').value.trim(); let v7acc = document.getElementById('valpar7Accuracy').value; let v7parts = []; if(v7rate) v7parts.push(`Rate of work: ${v7rate}%`); if(v7wqp) v7parts.push(`with comparison to Worker Qualification Profile (WQP): ${v7wqp}`); if(v7err) v7parts.push(`Error: ${v7err}`); if(v7acc) v7parts.push(`${v7acc} accuracy requirement`); if(v7parts.length) lines.push(`Valpar 7 (Multi-level sorting): ${v7parts.join('; ')}`);
+        addValpar('Valpar 8 (Simulated work assembly)', 'valpar8Rate', 'valpar8WQP');
+        addValpar('Valpar 9 (Whole body range of motion)', 'valpar9Rate', 'valpar9WQP');
+        let workBehavRating = document.getElementById('workBehavRating').value; let goodBehav = Array.from(document.querySelectorAll('#goodBehaviors input:checked')).map(cb=>cb.value === 'other' ? document.getElementById('goodBehaviorOther').value.trim() : cb.value).filter(v=>v); if(workBehavRating && goodBehav.length) lines.push(`Patient demonstrated ${workBehavRating} work behaviors such as ${goodBehav.join(', ')}`);
+        let weakType = document.getElementById('weakInadequate').value; let weakBehav = Array.from(document.querySelectorAll('#weakBehaviors input:checked')).map(cb=>cb.value); let poorBehav = Array.from(document.querySelectorAll('#poorBehaviors input:checked')).map(cb=>cb.value); if(weakType && weakBehav.length) lines.push(`However, patient was relatively ${weakType} ${weakBehav.join(', ')}; and poor in ${poorBehav.join(', ')}`);
+        let oddBehavior = document.getElementById('oddBehavior').value.trim(); if(oddBehavior) lines.push(`Odd behavior such as ${oddBehavior} was noted during the assessment`);
+        let vocCap = document.getElementById('vocCapacity').value; let vocLevel = document.getElementById('vocLevel').value; if(vocCap && vocLevel) lines.push(`The overall result of standardized work assessment indicated patient’s vocational capacity was predicted ${vocCap} ${vocLevel} level`);
+        lines.push(``);
+        let changeStage = changeStageSelect.value; if(changeStage) lines.push(`According to C-LASER / Staging Algorithm, client was in ${changeStage}`);
+        let selectedInterventions = Array.from(stageDetailsDiv.querySelectorAll('input:checked')).map(cb=>cb.value).filter(v=>v);
+        if(selectedInterventions.length) lines.push(`Interventions: ${selectedInterventions.join('; ')}`);
+        return lines.join('\n');
     }
-    document.getElementById('genDischargeReport').addEventListener('click',()=>{
-        document.getElementById('dischargeReportText').innerText = buildDischargeReport() || 'No discharge data.';
-        document.getElementById('dischargeReportArea').style.display = 'block';
+    document.getElementById('genWorkRehabReport').addEventListener('click',()=>{
+        document.getElementById('workRehabReportText').innerText = buildWorkRehabReport() || 'No data entered.';
+        document.getElementById('workRehabReportArea').style.display = 'block';
     });
 
     // 複製按鈕
