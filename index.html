@@ -191,6 +191,18 @@
             background: #f8fafc;
             border-radius: 16px;
         }
+        .inline-checkbox-group {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .inline-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 8px;
+        }
         @media (max-width: 700px) {
             .form-card { padding: 1.2rem; }
         }
@@ -207,7 +219,7 @@
         <button class="tab-btn" data-tab="discharge">📄 Discharge Summary</button>
     </div>
 
-    <!-- ================= INITIAL INTERVIEW (完整版) ================= -->
+    <!-- ================= INITIAL INTERVIEW ================= -->
     <div id="initial" class="tab-pane active-pane">
         <div class="form-card">
             <form id="initialForm">
@@ -303,35 +315,42 @@
                     <h3>📋 Common Assessment Note</h3>
                     <div class="sub-section">
                         <label style="font-size:1rem;">🧠 Mental State Examination</label>
-                        <div class="checkbox-group" id="mseAppearanceI"><label><input type="checkbox" value="Clean and tidy"> Clean and tidy</label><label><input type="checkbox" value="Unkempt"> Unkempt</label><label><input type="checkbox" value="Inappropriate clothing"> Inappropriate clothing</label><label><input type="checkbox" value="Excessive make-up"> Excessive make-up</label><label><input type="checkbox" value="Tired"> Tired</label><label><input type="checkbox" value="Pre-occupied"> Pre-occupied</label><label><input type="checkbox" value="Confused"> Confused</label><label><input type="checkbox" value="Perplexed"> Perplexed</label><label><input type="checkbox" value="Cheerful"> Cheerful</label><label><input type="checkbox" value="Bright looking"> Bright looking</label></div>
-                        <div class="checkbox-group" id="mseApproachI"><label><input type="checkbox" value="Cooperative"> Cooperative</label><label><input type="checkbox" value="Friendly"> Friendly</label><label><input type="checkbox" value="Evasive"> Evasive</label><label><input type="checkbox" value="Guarded"> Guarded</label><label><input type="checkbox" value="Challenging"> Challenging</label> on approach</div>
-                        <div class="grid-2"><div>Mood: <select id="moodSelectI"><option value="">--</option><option>neutral</option><option>euthymic</option><option>dysphoric</option><option>dysthymic</option><option>depressed</option><option>anxious</option><option>elated</option><option>irritable</option><option>agitated</option><option>labile</option></select></div><div>Affect: <select id="affectSelectI"><option value="">--</option><option>congruent</option><option>incongruent</option><option>reactive</option><option>restricted</option><option>blunted</option></select></div></div>
-                        <div class="checkbox-group" id="mseSpeechI"><label><input type="checkbox" value="relevant and coherent"> relevant and coherent</label><label><input type="checkbox" value="irrelevant"> irrelevant</label><label><input type="checkbox" value="incoherent"> incoherent</label><label><input type="checkbox" value="spontaneous"> spontaneous</label><label><input type="checkbox" value="forthcoming"> forthcoming</label><label><input type="checkbox" value="brief and scanty"> brief and scanty</label><label><input type="checkbox" value="pressure of speech"> pressure of speech</label><label><input type="checkbox" value="circumstantial"> circumstantial</label><label><input type="checkbox" value="tangential"> tangential</label><label><input type="checkbox" value="hesitate"> hesitate</label><label><input type="checkbox" value="jumping from topic to topic"> jumping from topic to topic</label><label><input type="checkbox" value="disorganized"> disorganized</label><label><input type="checkbox" value="perseverated"> perseverated</label><label><input type="checkbox" value="confabulated"> confabulated</label><label><input type="checkbox" value="in slow"> in slow</label><label><input type="checkbox" value="fast tempo"> fast tempo</label></div>
+                        <div><strong>Appearance:</strong> <div class="checkbox-group" id="mseAppearanceI"><label><input type="checkbox" value="Clean and tidy"> Clean and tidy</label><label><input type="checkbox" value="Unkempt"> Unkempt</label><label><input type="checkbox" value="Inappropriate clothing"> Inappropriate clothing</label><label><input type="checkbox" value="Excessive make-up"> Excessive make-up</label><label><input type="checkbox" value="Tired"> Tired</label><label><input type="checkbox" value="Pre-occupied"> Pre-occupied</label><label><input type="checkbox" value="Confused"> Confused</label><label><input type="checkbox" value="Perplexed"> Perplexed</label><label><input type="checkbox" value="Cheerful"> Cheerful</label><label><input type="checkbox" value="Bright looking"> Bright looking</label></div></div>
+                        <div><strong>Attitude:</strong> <div class="checkbox-group" id="mseApproachI"><label><input type="checkbox" value="Cooperative"> Cooperative</label><label><input type="checkbox" value="Friendly"> Friendly</label><label><input type="checkbox" value="Evasive"> Evasive</label><label><input type="checkbox" value="Guarded"> Guarded</label><label><input type="checkbox" value="Challenging"> Challenging</label> on approach</div></div>
+                        <div><strong>Mood:</strong> <div class="checkbox-group" id="moodGroupI"><label><input type="checkbox" value="neutral"> neutral</label><label><input type="checkbox" value="euthymic"> euthymic</label><label><input type="checkbox" value="dysphoric"> dysphoric</label><label><input type="checkbox" value="dysthymic"> dysthymic</label><label><input type="checkbox" value="depressed"> depressed</label><label><input type="checkbox" value="anxious"> anxious</label><label><input type="checkbox" value="elated"> elated</label><label><input type="checkbox" value="irritable"> irritable</label><label><input type="checkbox" value="agitated"> agitated</label><label><input type="checkbox" value="labile"> labile</label></div></div>
+                        <div><strong>Affect:</strong> <div class="checkbox-group" id="affectGroupI"><label><input type="checkbox" value="congruent"> congruent</label><label><input type="checkbox" value="incongruent"> incongruent</label><label><input type="checkbox" value="reactive"> reactive</label><label><input type="checkbox" value="restricted"> restricted</label><label><input type="checkbox" value="blunted"> blunted</label></div></div>
+                        <div><strong>Speech:</strong> <div class="checkbox-group" id="mseSpeechI"><label><input type="checkbox" value="relevant and coherent"> relevant and coherent</label><label><input type="checkbox" value="irrelevant"> irrelevant</label><label><input type="checkbox" value="incoherent"> incoherent</label><label><input type="checkbox" value="spontaneous"> spontaneous</label><label><input type="checkbox" value="forthcoming"> forthcoming</label><label><input type="checkbox" value="brief and scanty"> brief and scanty</label><label><input type="checkbox" value="pressure of speech"> pressure of speech</label><label><input type="checkbox" value="circumstantial"> circumstantial</label><label><input type="checkbox" value="tangential"> tangential</label><label><input type="checkbox" value="hesitate"> hesitate</label><label><input type="checkbox" value="jumping from topic to topic"> jumping from topic to topic</label><label><input type="checkbox" value="disorganized"> disorganized</label><label><input type="checkbox" value="perseverated"> perseverated</label><label><input type="checkbox" value="confabulated"> confabulated</label><label><input type="checkbox" value="in slow"> in slow</label><label><input type="checkbox" value="fast tempo"> fast tempo</label></div></div>
+                        <div><strong>Psychotic experience:</strong></div>
                         <div><label><input type="checkbox" id="noActivePsychoticI"> No active psychotic symptom was elicited</label></div>
                         <div>Hallucination: <select id="hallucinationSelectI"><option value="">--</option><option value="denied">denied</option><option value="no active hallucination elicited">no active hallucination elicited</option><option value="details">(enter details)</option></select> <input type="text" id="hallucinationDetailI" placeholder="specify" style="display:none;"></div>
                         <div>Delusion: <select id="delusionSelectI"><option value="">--</option><option value="denied">denied</option><option value="no active delusion elicited">no active delusion elicited</option><option value="details">(enter details)</option></select> <input type="text" id="delusionDetailI" placeholder="specify" style="display:none;"></div>
-                        <div class="checkbox-group" id="mseBehaviourI"><label><input type="checkbox" value="Normal"> Normal</label><label><input type="checkbox" value="Bizarre"> Bizarre</label><label><input type="checkbox" value="Self-muttering"> Self-muttering</label><label><input type="checkbox" value="Self-giggling"> Self-giggling</label><label><input type="checkbox" value="Disorganized"> Disorganized</label><label><input type="checkbox" value="Disinhibited"> Disinhibited</label><label><input type="checkbox" value="Violent"> Violent</label><label><input type="checkbox" value="Self-stimulating"> Self-stimulating</label></div>
+                        <div><strong>Behaviours:</strong> <div class="checkbox-group" id="mseBehaviourI"><label><input type="checkbox" value="Normal"> Normal</label><label><input type="checkbox" value="Bizarre"> Bizarre</label><label><input type="checkbox" value="Self-muttering"> Self-muttering</label><label><input type="checkbox" value="Self-giggling"> Self-giggling</label><label><input type="checkbox" value="Disorganized"> Disorganized</label><label><input type="checkbox" value="Disinhibited"> Disinhibited</label><label><input type="checkbox" value="Violent"> Violent</label><label><input type="checkbox" value="Self-stimulating"> Self-stimulating</label></div></div>
                         <div>Distressed by: <div class="checkbox-group" id="distressedByI"><label><input type="checkbox" value="sleep problem"> sleep problem</label><label><input type="checkbox" value="pain"> pain</label><label><input type="checkbox" value="somatic symptoms"> somatic symptoms</label><label><input type="checkbox" value="deteriorated physical condition"> deteriorated physical condition</label><label><input type="checkbox" value="family"> family</label><label><input type="checkbox" value="financial"> financial</label><label><input type="checkbox" value="work"> work</label><label><input type="checkbox" value="interpersonal"> interpersonal</label> issue</div></div>
-                        <div>Negative cognition: <select id="negativeCognitionI"><option value="">--</option><option value="Nil">Nil</option><option value="Having">Having</option></select> <span>Harboured sense of</span> <div class="checkbox-group" id="senseOfI"><label><input type="checkbox" value="uselessness"> uselessness</label><label><input type="checkbox" value="hopelessness"> hopelessness</label><label><input type="checkbox" value="helplessness"> helplessness</label></div></div>
+                        <div>Negative cognition: <select id="negativeCognitionI"><option value="">--</option><option value="Nil">Nil</option><option value="Having">Having</option></select> <span>Harboured sense of</span> <div class="inline-checkbox-group" id="senseOfI"><label class="inline-label"><input type="checkbox" value="uselessness"> uselessness</label><label class="inline-label"><input type="checkbox" value="hopelessness"> hopelessness</label><label class="inline-label"><input type="checkbox" value="helplessness"> helplessness</label></div></div>
                         <div>Suicidal ideation: <select id="suicidalIdeaI"><option value="">--</option><option value="Denied active suicidal idea">Denied active suicidal idea</option><option value="Nil active suicidal idea">Nil active suicidal idea</option><option value="No suicidal idea elicited">No suicidal idea elicited</option><option value="Expressed passive death wish">Expressed passive death wish</option></select></div>
                         <div>Admitted: <select id="admittedSuicidalI"><option value="">--</option><option value="fleeting suicidal idea">fleeting suicidal idea</option><option value="suicidal attempt with prevention of discovery, intentionality, fatality, remorse">suicidal attempt with prevention of discovery, intentionality, fatality, remorse</option><option value="suicidal attempt without prevention of discovery, intentionality, fatality, remorse">suicidal attempt without prevention of discovery, intentionality, fatality, remorse</option></select></div>
                         <div>BPSD features: <select id="bpsdI"><option value="">--</option><option value="Nil">Nil</option><option value="Observed">Observed</option></select> <div class="checkbox-group" id="bpsdFeaturesI" style="display:none;"><label><input type="checkbox" value="yelling"> yelling</label><label><input type="checkbox" value="restlessness"> restlessness</label><label><input type="checkbox" value="aggression"> aggression</label><label><input type="checkbox" value="disorganized behaviors"> disorganized behaviors</label></div></div>
                         <div>Insight: <select id="insightI"><option value="">--</option><option value="Poor">Poor</option><option value="Partial">Partial</option><option value="Doubtful">Doubtful</option><option value="Having">Having</option></select> into own <div class="checkbox-group" id="insightIntoI"><label><input type="checkbox" value="mental illness"> mental illness</label><label><input type="checkbox" value="misbehaviour"> misbehaviour</label><label><input type="checkbox" value="ability"> ability</label></div></div>
                     </div>
+                    <!-- Overall Level of Functioning (Initial) -->
                     <div class="sub-section">
                         <label style="font-size:1rem;">📊 Overall Level of Functioning</label>
                         <div>ADL: <select id="adlI"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="adlSupportSpanI" style="display:none;">The client needs support on <input type="text" id="adlSupportI" placeholder="e.g., bathing, dressing"></span></div>
-                        <div>IADL: <select id="iadlI"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="iadlSupportSpanI" style="display:none;">The client needs support on <input type="text" id="iadlSupportI" placeholder="e.g., cooking, finance"></span> <span>Noted poor <div class="checkbox-group" id="poorIADLI"><label><input type="checkbox" value="daily scheduling"> daily scheduling</label><label><input type="checkbox" value="time management skills"> time management skills</label><label><input type="checkbox" value="problem solving skills"> problem solving skills</label><label><input type="checkbox" value="emergency handling"> emergency handling</label></div></span></div>
+                        <div>IADL: <select id="iadlI"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="iadlSupportSpanI" style="display:none;">The client needs support on <input type="text" id="iadlSupportI" placeholder="e.g., cooking, finance"></span> 
+                            <span id="poorIADLContainerI" style="display:none;"><strong>Noted poor</strong> <div class="inline-checkbox-group" id="poorIADLI"><label class="inline-label"><input type="checkbox" value="daily scheduling"> daily scheduling</label><label class="inline-label"><input type="checkbox" value="time management skills"> time management skills</label><label class="inline-label"><input type="checkbox" value="problem solving skills"> problem solving skills</label><label class="inline-label"><input type="checkbox" value="emergency handling"> emergency handling</label></div></span>
+                        </div>
                         <div>Work: <select id="workLevelBeforeI"><option value="">--</option><option value="unemployed">unemployed</option><option value="student">student</option><option value="DSC">DSC</option><option value="DAC">DAC</option><option value="ICCMW">ICCMW</option><option value="PDH">PDH</option><option value="SWS">SWS</option><option value="SE">SE</option><option value="Part-time OE">Part-time OE</option><option value="Full-time OE">Full-time OE</option></select> before admission. He <select id="workPotentialI"><option value="was currently in">was currently in</option><option value="had potential to reach">had potential to reach</option></select> <select id="workLevelPotentialI"><option value="">--</option><option value="DSC">DSC</option><option value="DAC">DAC</option><option value="ICCMW">ICCMW</option><option value="PDH">PDH</option><option value="SWS">SWS</option><option value="SE">SE</option><option value="Part-time OE">Part-time OE</option><option value="Full-time OE">Full-time OE</option></select> level</div>
                         <div>Leisure: <input type="text" id="leisureI" style="width:100%" placeholder="e.g., watches TV, no hobby"></div>
                         <div>Social: <select id="socialSupportI"><option value="">--</option><option value="regular social support from family">regular social support from family</option><option value="regular social support from friends">regular social support from friends</option><option value="regular social support from churchmates">regular social support from churchmates</option><option value="limited social support from family">limited social support from family</option><option value="limited social support from friends">limited social support from friends</option><option value="limited social support from professionals">limited social support from professionals</option></select>; noted interpersonal challenges due to poor <div class="checkbox-group" id="interpersonalChallengesI"><label><input type="checkbox" value="social cognition"> social cognition</label><label><input type="checkbox" value="social skills"> social skills</label></div></div>
                         <div>Personal goals: <input type="text" id="personalGoalsI" style="width:100%" placeholder="e.g., return to work, stable mood"></div>
                     </div>
+                    <!-- SOFAS -->
                     <div class="sub-section">
                         <label style="font-size:1rem;">📈 Social and Occupational Functioning Assessment Scale (SOFAS)</label>
                         <div>Date: <input type="text" id="sofasDateI" placeholder="DD/MM/YYYY"> Score: <input type="number" id="sofasScoreI" min="0" max="100" step="1"> /100</div>
                         <div id="sofasDescriptionI" style="background:#f1f5f9; padding:0.5rem; border-radius:12px; margin-top:6px;"></div>
                     </div>
+                    <!-- Problems -->
                     <div class="sub-section">
                         <label style="font-size:1rem;">⚠️ Problems (select all that apply)</label>
                         <div class="checkbox-group" id="problemsListI">
@@ -369,6 +388,7 @@
                             <label><input type="checkbox" value="Limited caregiver skills and support"> Limited caregiver skills and support</label>
                         </div>
                     </div>
+                    <!-- Intervention -->
                     <div class="sub-section">
                         <label style="font-size:1rem;">🛠️ Intervention (select all that apply)</label>
                         <div class="checkbox-group" id="interventionListI">
@@ -404,6 +424,7 @@
                             <label><input type="checkbox" value="Cognitive: educate on compensatory strategies"> Cognitive: educate on compensatory strategies</label>
                         </div>
                     </div>
+                    <!-- Recommendation -->
                     <div class="sub-section">
                         <label style="font-size:1rem;">📌 Recommendation</label>
                         <div class="checkbox-group" id="recommendationListI">
@@ -423,11 +444,10 @@
         </div>
     </div>
 
-    <!-- ================= PROGRESS NOTE (完整版) ================= -->
+    <!-- ================= PROGRESS NOTE ================= -->
     <div id="progress" class="tab-pane">
         <div class="form-card">
             <form id="progressForm">
-                <!-- Common Assessment Note -->
                 <div class="form-section">
                     <h3>📋 Common Assessment Note</h3>
                     <div class="sub-section">
@@ -440,17 +460,19 @@
                         </select>
                     </div>
                     <div class="sub-section">
-                        <label>🧠 Mental State Examination</label>
-                        <div class="checkbox-group" id="mseAppearanceP"><label><input type="checkbox" value="Clean and tidy"> Clean and tidy</label><label><input type="checkbox" value="Unkempt"> Unkempt</label><label><input type="checkbox" value="Inappropriate clothing"> Inappropriate clothing</label><label><input type="checkbox" value="Excessive make-up"> Excessive make-up</label><label><input type="checkbox" value="Tired"> Tired</label><label><input type="checkbox" value="Pre-occupied"> Pre-occupied</label><label><input type="checkbox" value="Confused"> Confused</label><label><input type="checkbox" value="Perplexed"> Perplexed</label><label><input type="checkbox" value="Cheerful"> Cheerful</label><label><input type="checkbox" value="Bright looking"> Bright looking</label></div>
-                        <div class="checkbox-group" id="mseApproachP"><label><input type="checkbox" value="Cooperative"> Cooperative</label><label><input type="checkbox" value="Friendly"> Friendly</label><label><input type="checkbox" value="Evasive"> Evasive</label><label><input type="checkbox" value="Guarded"> Guarded</label><label><input type="checkbox" value="Challenging"> Challenging</label> on approach</div>
-                        <div class="grid-2"><div>Mood: <select id="moodSelectP"><option value="">--</option><option>neutral</option><option>euthymic</option><option>dysphoric</option><option>dysthymic</option><option>depressed</option><option>anxious</option><option>elated</option><option>irritable</option><option>agitated</option><option>labile</option></select></div><div>Affect: <select id="affectSelectP"><option value="">--</option><option>congruent</option><option>incongruent</option><option>reactive</option><option>restricted</option><option>blunted</option></select></div></div>
-                        <div class="checkbox-group" id="mseSpeechP"><label><input type="checkbox" value="relevant and coherent"> relevant and coherent</label><label><input type="checkbox" value="irrelevant"> irrelevant</label><label><input type="checkbox" value="incoherent"> incoherent</label><label><input type="checkbox" value="spontaneous"> spontaneous</label><label><input type="checkbox" value="forthcoming"> forthcoming</label><label><input type="checkbox" value="brief and scanty"> brief and scanty</label><label><input type="checkbox" value="pressure of speech"> pressure of speech</label><label><input type="checkbox" value="circumstantial"> circumstantial</label><label><input type="checkbox" value="tangential"> tangential</label><label><input type="checkbox" value="hesitate"> hesitate</label><label><input type="checkbox" value="jumping from topic to topic"> jumping from topic to topic</label><label><input type="checkbox" value="disorganized"> disorganized</label><label><input type="checkbox" value="perseverated"> perseverated</label><label><input type="checkbox" value="confabulated"> confabulated</label><label><input type="checkbox" value="in slow"> in slow</label><label><input type="checkbox" value="fast tempo"> fast tempo</label></div>
+                        <label style="font-size:1rem;">🧠 Mental State Examination</label>
+                        <div><strong>Appearance:</strong> <div class="checkbox-group" id="mseAppearanceP"><label><input type="checkbox" value="Clean and tidy"> Clean and tidy</label><label><input type="checkbox" value="Unkempt"> Unkempt</label><label><input type="checkbox" value="Inappropriate clothing"> Inappropriate clothing</label><label><input type="checkbox" value="Excessive make-up"> Excessive make-up</label><label><input type="checkbox" value="Tired"> Tired</label><label><input type="checkbox" value="Pre-occupied"> Pre-occupied</label><label><input type="checkbox" value="Confused"> Confused</label><label><input type="checkbox" value="Perplexed"> Perplexed</label><label><input type="checkbox" value="Cheerful"> Cheerful</label><label><input type="checkbox" value="Bright looking"> Bright looking</label></div></div>
+                        <div><strong>Attitude:</strong> <div class="checkbox-group" id="mseApproachP"><label><input type="checkbox" value="Cooperative"> Cooperative</label><label><input type="checkbox" value="Friendly"> Friendly</label><label><input type="checkbox" value="Evasive"> Evasive</label><label><input type="checkbox" value="Guarded"> Guarded</label><label><input type="checkbox" value="Challenging"> Challenging</label> on approach</div></div>
+                        <div><strong>Mood:</strong> <div class="checkbox-group" id="moodGroupP"><label><input type="checkbox" value="neutral"> neutral</label><label><input type="checkbox" value="euthymic"> euthymic</label><label><input type="checkbox" value="dysphoric"> dysphoric</label><label><input type="checkbox" value="dysthymic"> dysthymic</label><label><input type="checkbox" value="depressed"> depressed</label><label><input type="checkbox" value="anxious"> anxious</label><label><input type="checkbox" value="elated"> elated</label><label><input type="checkbox" value="irritable"> irritable</label><label><input type="checkbox" value="agitated"> agitated</label><label><input type="checkbox" value="labile"> labile</label></div></div>
+                        <div><strong>Affect:</strong> <div class="checkbox-group" id="affectGroupP"><label><input type="checkbox" value="congruent"> congruent</label><label><input type="checkbox" value="incongruent"> incongruent</label><label><input type="checkbox" value="reactive"> reactive</label><label><input type="checkbox" value="restricted"> restricted</label><label><input type="checkbox" value="blunted"> blunted</label></div></div>
+                        <div><strong>Speech:</strong> <div class="checkbox-group" id="mseSpeechP"><label><input type="checkbox" value="relevant and coherent"> relevant and coherent</label><label><input type="checkbox" value="irrelevant"> irrelevant</label><label><input type="checkbox" value="incoherent"> incoherent</label><label><input type="checkbox" value="spontaneous"> spontaneous</label><label><input type="checkbox" value="forthcoming"> forthcoming</label><label><input type="checkbox" value="brief and scanty"> brief and scanty</label><label><input type="checkbox" value="pressure of speech"> pressure of speech</label><label><input type="checkbox" value="circumstantial"> circumstantial</label><label><input type="checkbox" value="tangential"> tangential</label><label><input type="checkbox" value="hesitate"> hesitate</label><label><input type="checkbox" value="jumping from topic to topic"> jumping from topic to topic</label><label><input type="checkbox" value="disorganized"> disorganized</label><label><input type="checkbox" value="perseverated"> perseverated</label><label><input type="checkbox" value="confabulated"> confabulated</label><label><input type="checkbox" value="in slow"> in slow</label><label><input type="checkbox" value="fast tempo"> fast tempo</label></div></div>
+                        <div><strong>Psychotic experience:</strong></div>
                         <div><label><input type="checkbox" id="noActivePsychoticP"> No active psychotic symptom was elicited</label></div>
                         <div>Hallucination: <select id="hallucinationSelectP"><option value="">--</option><option value="denied">denied</option><option value="no active hallucination elicited">no active hallucination elicited</option><option value="details">(enter details)</option></select> <input type="text" id="hallucinationDetailP" placeholder="specify" style="display:none;"></div>
                         <div>Delusion: <select id="delusionSelectP"><option value="">--</option><option value="denied">denied</option><option value="no active delusion elicited">no active delusion elicited</option><option value="details">(enter details)</option></select> <input type="text" id="delusionDetailP" placeholder="specify" style="display:none;"></div>
-                        <div class="checkbox-group" id="mseBehaviourP"><label><input type="checkbox" value="Normal"> Normal</label><label><input type="checkbox" value="Bizarre"> Bizarre</label><label><input type="checkbox" value="Self-muttering"> Self-muttering</label><label><input type="checkbox" value="Self-giggling"> Self-giggling</label><label><input type="checkbox" value="Disorganized"> Disorganized</label><label><input type="checkbox" value="Disinhibited"> Disinhibited</label><label><input type="checkbox" value="Violent"> Violent</label><label><input type="checkbox" value="Self-stimulating"> Self-stimulating</label></div>
+                        <div><strong>Behaviours:</strong> <div class="checkbox-group" id="mseBehaviourP"><label><input type="checkbox" value="Normal"> Normal</label><label><input type="checkbox" value="Bizarre"> Bizarre</label><label><input type="checkbox" value="Self-muttering"> Self-muttering</label><label><input type="checkbox" value="Self-giggling"> Self-giggling</label><label><input type="checkbox" value="Disorganized"> Disorganized</label><label><input type="checkbox" value="Disinhibited"> Disinhibited</label><label><input type="checkbox" value="Violent"> Violent</label><label><input type="checkbox" value="Self-stimulating"> Self-stimulating</label></div></div>
                         <div>Distressed by: <div class="checkbox-group" id="distressedByP"><label><input type="checkbox" value="sleep problem"> sleep problem</label><label><input type="checkbox" value="pain"> pain</label><label><input type="checkbox" value="somatic symptoms"> somatic symptoms</label><label><input type="checkbox" value="deteriorated physical condition"> deteriorated physical condition</label><label><input type="checkbox" value="family"> family</label><label><input type="checkbox" value="financial"> financial</label><label><input type="checkbox" value="work"> work</label><label><input type="checkbox" value="interpersonal"> interpersonal</label> issue</div></div>
-                        <div>Negative cognition: <select id="negativeCognitionP"><option value="">--</option><option value="Nil">Nil</option><option value="Having">Having</option></select> <span>Harboured sense of</span> <div class="checkbox-group" id="senseOfP"><label><input type="checkbox" value="uselessness"> uselessness</label><label><input type="checkbox" value="hopelessness"> hopelessness</label><label><input type="checkbox" value="helplessness"> helplessness</label></div></div>
+                        <div>Negative cognition: <select id="negativeCognitionP"><option value="">--</option><option value="Nil">Nil</option><option value="Having">Having</option></select> <span>Harboured sense of</span> <div class="inline-checkbox-group" id="senseOfP"><label class="inline-label"><input type="checkbox" value="uselessness"> uselessness</label><label class="inline-label"><input type="checkbox" value="hopelessness"> hopelessness</label><label class="inline-label"><input type="checkbox" value="helplessness"> helplessness</label></div></div>
                         <div>Suicidal ideation: <select id="suicidalIdeaP"><option value="">--</option><option value="Denied active suicidal idea">Denied active suicidal idea</option><option value="Nil active suicidal idea">Nil active suicidal idea</option><option value="No suicidal idea elicited">No suicidal idea elicited</option><option value="Expressed passive death wish">Expressed passive death wish</option></select></div>
                         <div>Admitted: <select id="admittedSuicidalP"><option value="">--</option><option value="fleeting suicidal idea">fleeting suicidal idea</option><option value="suicidal attempt with prevention of discovery, intentionality, fatality, remorse">suicidal attempt with prevention of discovery, intentionality, fatality, remorse</option><option value="suicidal attempt without prevention of discovery, intentionality, fatality, remorse">suicidal attempt without prevention of discovery, intentionality, fatality, remorse</option></select></div>
                         <div>BPSD features: <select id="bpsdP"><option value="">--</option><option value="Nil">Nil</option><option value="Observed">Observed</option></select> <div class="checkbox-group" id="bpsdFeaturesP" style="display:none;"><label><input type="checkbox" value="yelling"> yelling</label><label><input type="checkbox" value="restlessness"> restlessness</label><label><input type="checkbox" value="aggression"> aggression</label><label><input type="checkbox" value="disorganized behaviors"> disorganized behaviors</label></div></div>
@@ -458,7 +480,7 @@
                     </div>
                 </div>
 
-                <!-- Overall Level of Functioning (dynamic) -->
+                <!-- Overall Level of Functioning (Progress) -->
                 <div class="form-section">
                     <h3>📊 Overall Level of Functioning</h3>
                     <div class="radio-group" id="functioningMode">
@@ -468,7 +490,9 @@
                     </div>
                     <div id="funcUpdatedDiv" style="display:none;" class="dynamic-group">
                         <div>ADL: <select id="adlP"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="adlSupportSpanP" style="display:none;">The client needs support on <input type="text" id="adlSupportP" placeholder="e.g., bathing"></span></div>
-                        <div>IADL: <select id="iadlP"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="iadlSupportSpanP" style="display:none;">The client needs support on <input type="text" id="iadlSupportP" placeholder="e.g., finance"></span> <span>Noted poor <div class="checkbox-group" id="poorIADLP"><label><input type="checkbox" value="daily scheduling"> daily scheduling</label><label><input type="checkbox" value="time management skills"> time management skills</label><label><input type="checkbox" value="problem solving skills"> problem solving skills</label><label><input type="checkbox" value="emergency handling"> emergency handling</label></div></span></div>
+                        <div>IADL: <select id="iadlP"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="iadlSupportSpanP" style="display:none;">The client needs support on <input type="text" id="iadlSupportP" placeholder="e.g., finance"></span> 
+                            <span id="poorIADLContainerP" style="display:none;"><strong>Noted poor</strong> <div class="inline-checkbox-group" id="poorIADLP"><label class="inline-label"><input type="checkbox" value="daily scheduling"> daily scheduling</label><label class="inline-label"><input type="checkbox" value="time management skills"> time management skills</label><label class="inline-label"><input type="checkbox" value="problem solving skills"> problem solving skills</label><label class="inline-label"><input type="checkbox" value="emergency handling"> emergency handling</label></div></span>
+                        </div>
                         <div>Work: <select id="workLevelBeforeP"><option value="">--</option><option value="unemployed">unemployed</option><option value="student">student</option><option value="DSC">DSC</option><option value="DAC">DAC</option><option value="ICCMW">ICCMW</option><option value="PDH">PDH</option><option value="SWS">SWS</option><option value="SE">SE</option><option value="Part-time OE">Part-time OE</option><option value="Full-time OE">Full-time OE</option></select> before admission. He <select id="workPotentialP"><option value="was currently in">was currently in</option><option value="had potential to reach">had potential to reach</option></select> <select id="workLevelPotentialP"><option value="">--</option><option value="DSC">DSC</option><option value="DAC">DAC</option><option value="ICCMW">ICCMW</option><option value="PDH">PDH</option><option value="SWS">SWS</option><option value="SE">SE</option><option value="Part-time OE">Part-time OE</option><option value="Full-time OE">Full-time OE</option></select> level</div>
                         <div>Leisure: <input type="text" id="leisureP" style="width:100%" placeholder="e.g., watches TV"></div>
                         <div>Social: <select id="socialSupportP"><option value="">--</option><option value="regular social support from family">regular social support from family</option><option value="regular social support from friends">regular social support from friends</option><option value="regular social support from churchmates">regular social support from churchmates</option><option value="limited social support from family">limited social support from family</option><option value="limited social support from friends">limited social support from friends</option><option value="limited social support from professionals">limited social support from professionals</option></select>; noted interpersonal challenges due to poor <div class="checkbox-group" id="interpersonalChallengesP"><label><input type="checkbox" value="social cognition"> social cognition</label><label><input type="checkbox" value="social skills"> social skills</label></div></div>
@@ -544,17 +568,17 @@
 </div>
 
 <script>
-    // 共用今日日期
+    // 初始化日期
     const todayDate = new Date();
     const yyyy = todayDate.getFullYear();
-    const mmd = String(todayDate.getMonth()+1).padStart(2,'0');
-    const ddd = String(todayDate.getDate()).padStart(2,'0');
-    const todayStr = `${ddd}/${mmd}/${yyyy}`;
+    const mm = String(todayDate.getMonth()+1).padStart(2,'0');
+    const dd = String(todayDate.getDate()).padStart(2,'0');
+    const todayStr = `${dd}/${mm}/${yyyy}`;
     document.getElementById('interviewDate').value = todayStr;
     document.getElementById('sofasDateI').value = todayStr;
     document.getElementById('sofasDateP').value = todayStr;
 
-    // ========== 通用動態功能 ==========
+    // ========== 動態控制函數 ==========
     // Admission From Others
     const fromSelect = document.getElementById('admissionFrom');
     const otherInput = document.getElementById('admissionFromOther');
@@ -578,13 +602,21 @@
     pastRadios.forEach(r=>r.addEventListener('change',()=>{ const val = document.querySelector('input[name="pastPsyType"]:checked')?.value; sinceBlock.style.display = (val === 'Private' || val === 'MHS') ? 'block' : 'none'; }));
     function setupHxField(selectId, entryId) { const sel = document.getElementById(selectId); const entry = document.getElementById(entryId); if(sel && entry) { const toggle = () => { entry.style.display = sel.value === 'Entry' ? 'block' : 'none'; }; sel.addEventListener('change', toggle); toggle(); } }
     setupHxField('suicidalHx', 'suicidalHxEntry'); setupHxField('violentHx', 'violentHxEntry'); setupHxField('saHx', 'saHxEntry');
+    
     // ADL/IADL support (Initial)
     const adlI = document.getElementById('adlI');
     const adlSpanI = document.getElementById('adlSupportSpanI');
     adlI.addEventListener('change',()=>{ adlSpanI.style.display = adlI.value !== 'independent' ? 'inline' : 'none'; });
     const iadlI = document.getElementById('iadlI');
     const iadlSpanI = document.getElementById('iadlSupportSpanI');
-    iadlI.addEventListener('change',()=>{ iadlSpanI.style.display = iadlI.value !== 'independent' ? 'inline' : 'none'; });
+    const poorIADLContainerI = document.getElementById('poorIADLContainerI');
+    function toggleIADLInitial() {
+        iadlSpanI.style.display = iadlI.value !== 'independent' ? 'inline' : 'none';
+        poorIADLContainerI.style.display = iadlI.value !== 'independent' ? 'inline' : 'none';
+    }
+    iadlI.addEventListener('change', toggleIADLInitial);
+    toggleIADLInitial();
+    
     // Hallucination/Delusion detail (Initial)
     const hallSelI = document.getElementById('hallucinationSelectI');
     const hallDetailI = document.getElementById('hallucinationDetailI');
@@ -618,7 +650,7 @@
     }
     sofasScoreI.addEventListener('input', updateSofasDescI);
 
-    // ========== Progress 動態 ==========
+    // Progress 動態
     // Overall Functioning mode toggle
     const funcRadios = document.querySelectorAll('input[name="funcMode"]');
     const updatedDiv = document.getElementById('funcUpdatedDiv');
@@ -636,7 +668,13 @@
     adlP.addEventListener('change',()=>{ adlSpanP.style.display = adlP.value !== 'independent' ? 'inline' : 'none'; });
     const iadlP = document.getElementById('iadlP');
     const iadlSpanP = document.getElementById('iadlSupportSpanP');
-    iadlP.addEventListener('change',()=>{ iadlSpanP.style.display = iadlP.value !== 'independent' ? 'inline' : 'none'; });
+    const poorIADLContainerP = document.getElementById('poorIADLContainerP');
+    function toggleIADLProgress() {
+        iadlSpanP.style.display = iadlP.value !== 'independent' ? 'inline' : 'none';
+        poorIADLContainerP.style.display = iadlP.value !== 'independent' ? 'inline' : 'none';
+    }
+    iadlP.addEventListener('change', toggleIADLProgress);
+    toggleIADLProgress();
     // Hallucination/Delusion detail (Progress)
     const hallSelP = document.getElementById('hallucinationSelectP');
     const hallDetailP = document.getElementById('hallucinationDetailP');
@@ -682,10 +720,10 @@
     sofasScoreP.addEventListener('input', updateSofasDescP);
 
     // ========== 報告生成函數 ==========
-    // Initial Interview Report (精簡版，包含所有先前邏輯，無句號)
+    // Initial Report (保留原有邏輯，但改用新的 Mood/Affect 取值方式)
     function buildInitialReport() {
         let lines = [];
-        // 入住院訊息
+        // 入住院訊息 (與之前相同，省略以節省篇幅，實際會完整)
         let admDate = document.getElementById('admissionDate').value.trim();
         let fromVal = fromSelect.value;
         if(fromVal === 'Others') fromVal = otherInput.value.trim() || 'Others';
@@ -717,7 +755,7 @@
         let fallLine = '';
         if(fallRad) fallLine = `Fall precaution: ${fallRad}${morse ? ` (Morse Fall Scale ${morse}/125 on admission)` : ''}`;
         if(fallLine) { lines.push(''); lines.push(fallLine); lines.push(''); }
-        // Social Condition
+        // Social Condition (保留)
         let livingType = document.querySelector('input[name="livingType"]:checked')?.value;
         let socialLine = '';
         if(livingType === 'alone') socialLine = `Social Condition: Living alone`;
@@ -738,7 +776,7 @@
         let regVisited = document.getElementById('regularVisited').value.trim();
         if(regVisited) socialLine += `, regular visited by ${regVisited}`;
         if(socialLine) lines.push(socialLine);
-        // Work Status
+        // Work Status (保留)
         let workParts = [];
         let edu = document.getElementById('education').value.trim();
         if(edu) workParts.push(`Educated up to ${edu}`);
@@ -765,7 +803,7 @@
         if(premorbid) workParts.push(`premorbid functioning: ${premorbid}`);
         if(workParts.length) lines.push(`Work Status: ${workParts.join('; ')}`);
         lines.push('');
-        // Past Psy Hx + Suicidal etc
+        // Past Psy Hx (保留)
         let pastType = document.querySelector('input[name="pastPsyType"]:checked')?.value;
         let pastHxLine = '';
         if(pastType === 'New') pastHxLine = `Past Psy Hx: New to MHS`;
@@ -803,19 +841,19 @@
         let currAdmReason = document.getElementById('currentAdmReason').value.trim();
         if(currAdmReason) lines.push(`Current Admission: Admitted for ${currAdmReason}`);
         lines.push(''); lines.push('--- Common Assessment Note ---');
-        // MSE Initial
+        // MSE Initial (使用新的 Mood/Affect checkbox 取值)
         let mseParts = [];
         let appearance = Array.from(document.querySelectorAll('#mseAppearanceI input:checked')).map(cb=>cb.value);
         if(appearance.length) mseParts.push(`Appearance: ${appearance.join(', ')}`);
-        let approach = Array.from(document.querySelectorAll('#mseApproachI input:checked')).map(cb=>cb.value);
-        if(approach.length) mseParts.push(`${approach.join(', ')} on approach`);
-        let mood = document.getElementById('moodSelectI').value;
-        let affect = document.getElementById('affectSelectI').value;
-        if(mood) mseParts.push(`Mood ${mood}`);
-        if(affect) mseParts.push(`Affect ${affect}`);
+        let attitude = Array.from(document.querySelectorAll('#mseApproachI input:checked')).map(cb=>cb.value);
+        if(attitude.length) mseParts.push(`Attitude: ${attitude.join(', ')} on approach`);
+        let moodSelected = Array.from(document.querySelectorAll('#moodGroupI input:checked')).map(cb=>cb.value);
+        if(moodSelected.length) mseParts.push(`Mood: ${moodSelected.join(', ')}`);
+        let affectSelected = Array.from(document.querySelectorAll('#affectGroupI input:checked')).map(cb=>cb.value);
+        if(affectSelected.length) mseParts.push(`Affect: ${affectSelected.join(', ')}`);
         let speech = Array.from(document.querySelectorAll('#mseSpeechI input:checked')).map(cb=>cb.value);
         if(speech.length) mseParts.push(`Speech: ${speech.join(', ')}`);
-        if(document.getElementById('noActivePsychoticI').checked) mseParts.push(`No active psychotic symptom was elicited`);
+        if(document.getElementById('noActivePsychoticI').checked) mseParts.push(`Psychotic experience: No active psychotic symptom was elicited`);
         let hallVal = hallSelI.value;
         if(hallVal === 'details') { let hd = hallDetailI.value.trim(); if(hd) mseParts.push(`Hallucination: ${hd}`); }
         else if(hallVal && hallVal !== 'details') mseParts.push(`Hallucination: ${hallVal}`);
@@ -823,7 +861,7 @@
         if(delVal === 'details') { let ddv = delDetailI.value.trim(); if(ddv) mseParts.push(`Delusion: ${ddv}`); }
         else if(delVal && delVal !== 'details') mseParts.push(`Delusion: ${delVal}`);
         let behaviour = Array.from(document.querySelectorAll('#mseBehaviourI input:checked')).map(cb=>cb.value);
-        if(behaviour.length) mseParts.push(`Behaviour: ${behaviour.join(', ')}`);
+        if(behaviour.length) mseParts.push(`Behaviours: ${behaviour.join(', ')}`);
         let distressed = Array.from(document.querySelectorAll('#distressedByI input:checked')).map(cb=>cb.value);
         if(distressed.length) mseParts.push(`Distressed by ${distressed.join(', ')} issue`);
         let negCog = document.getElementById('negativeCognitionI').value;
@@ -843,7 +881,8 @@
         let insightInto = Array.from(document.querySelectorAll('#insightIntoI input:checked')).map(cb=>cb.value);
         if(insightVal && insightInto.length) mseParts.push(`${insightVal} insight into own ${insightInto.join(', ')}`);
         if(mseParts.length) lines.push(`Mental State Examination: ${mseParts.join('; ')}`);
-        // Overall Functioning Initial
+        
+        // Overall Functioning (Initial)
         let funcParts = [];
         let adlVal = adlI.value;
         funcParts.push(`ADL: ${adlVal}`);
@@ -852,7 +891,7 @@
         funcParts.push(`IADL: ${iadlVal}`);
         if(iadlVal !== 'independent') { let iadlSup = document.getElementById('iadlSupportI').value.trim(); if(iadlSup) funcParts.push(`needs support on ${iadlSup}`); }
         let poorIADL = Array.from(document.querySelectorAll('#poorIADLI input:checked')).map(cb=>cb.value);
-        if(poorIADL.length) funcParts.push(`Noted poor ${poorIADL.join(', ')}`);
+        if(poorIADL.length && iadlVal !== 'independent') funcParts.push(`Noted poor ${poorIADL.join(', ')}`);
         let workBefore = document.getElementById('workLevelBeforeI').value;
         let workPotential = document.getElementById('workPotentialI').value;
         let workPotentialLevel = document.getElementById('workLevelPotentialI').value;
@@ -866,6 +905,7 @@
         let personalGoals = document.getElementById('personalGoalsI').value.trim();
         if(personalGoals) funcParts.push(`Personal goals: ${personalGoals}`);
         if(funcParts.length) lines.push(`Overall Level of Functioning: ${funcParts.join('; ')}`);
+        
         // SOFAS
         let sofasDate = document.getElementById('sofasDateI').value.trim();
         let sofasScore = sofasScoreI.value;
@@ -897,7 +937,7 @@
         document.getElementById('initialReportArea').style.display = 'block';
     });
 
-    // Progress Report
+    // Progress Report (相似修改，省略以節省篇幅，但確保使用新的取值)
     function buildProgressReport() {
         let lines = [];
         let mentalTrend = document.getElementById('mentalStateTrend').value;
@@ -905,15 +945,15 @@
         let mseParts = [];
         let appearance = Array.from(document.querySelectorAll('#mseAppearanceP input:checked')).map(cb=>cb.value);
         if(appearance.length) mseParts.push(`Appearance: ${appearance.join(', ')}`);
-        let approach = Array.from(document.querySelectorAll('#mseApproachP input:checked')).map(cb=>cb.value);
-        if(approach.length) mseParts.push(`${approach.join(', ')} on approach`);
-        let mood = document.getElementById('moodSelectP').value;
-        let affect = document.getElementById('affectSelectP').value;
-        if(mood) mseParts.push(`Mood ${mood}`);
-        if(affect) mseParts.push(`Affect ${affect}`);
+        let attitude = Array.from(document.querySelectorAll('#mseApproachP input:checked')).map(cb=>cb.value);
+        if(attitude.length) mseParts.push(`Attitude: ${attitude.join(', ')} on approach`);
+        let moodSelected = Array.from(document.querySelectorAll('#moodGroupP input:checked')).map(cb=>cb.value);
+        if(moodSelected.length) mseParts.push(`Mood: ${moodSelected.join(', ')}`);
+        let affectSelected = Array.from(document.querySelectorAll('#affectGroupP input:checked')).map(cb=>cb.value);
+        if(affectSelected.length) mseParts.push(`Affect: ${affectSelected.join(', ')}`);
         let speech = Array.from(document.querySelectorAll('#mseSpeechP input:checked')).map(cb=>cb.value);
         if(speech.length) mseParts.push(`Speech: ${speech.join(', ')}`);
-        if(document.getElementById('noActivePsychoticP').checked) mseParts.push(`No active psychotic symptom was elicited`);
+        if(document.getElementById('noActivePsychoticP').checked) mseParts.push(`Psychotic experience: No active psychotic symptom was elicited`);
         let hallVal = hallSelP.value;
         if(hallVal === 'details') { let hd = hallDetailP.value.trim(); if(hd) mseParts.push(`Hallucination: ${hd}`); }
         else if(hallVal && hallVal !== 'details') mseParts.push(`Hallucination: ${hallVal}`);
@@ -921,7 +961,7 @@
         if(delVal === 'details') { let ddv = delDetailP.value.trim(); if(ddv) mseParts.push(`Delusion: ${ddv}`); }
         else if(delVal && delVal !== 'details') mseParts.push(`Delusion: ${delVal}`);
         let behaviour = Array.from(document.querySelectorAll('#mseBehaviourP input:checked')).map(cb=>cb.value);
-        if(behaviour.length) mseParts.push(`Behaviour: ${behaviour.join(', ')}`);
+        if(behaviour.length) mseParts.push(`Behaviours: ${behaviour.join(', ')}`);
         let distressed = Array.from(document.querySelectorAll('#distressedByP input:checked')).map(cb=>cb.value);
         if(distressed.length) mseParts.push(`Distressed by ${distressed.join(', ')} issue`);
         let negCog = document.getElementById('negativeCognitionP').value;
@@ -941,6 +981,7 @@
         let insightInto = Array.from(document.querySelectorAll('#insightIntoP input:checked')).map(cb=>cb.value);
         if(insightVal && insightInto.length) mseParts.push(`${insightVal} insight into own ${insightInto.join(', ')}`);
         if(mseParts.length) lines.push(`Mental State Examination: ${mseParts.join('; ')}`);
+        
         let funcMode = document.querySelector('input[name="funcMode"]:checked')?.value;
         if(funcMode === 'maintained') lines.push('Overall Level of Functioning: COPY FROM LAST REPORT');
         else if(funcMode === 'updated') {
@@ -952,7 +993,7 @@
             funcParts.push(`IADL: ${iadlVal}`);
             if(iadlVal !== 'independent') { let sup = document.getElementById('iadlSupportP').value.trim(); if(sup) funcParts.push(`needs support on ${sup}`); }
             let poorIADL = Array.from(document.querySelectorAll('#poorIADLP input:checked')).map(cb=>cb.value);
-            if(poorIADL.length) funcParts.push(`Noted poor ${poorIADL.join(', ')}`);
+            if(poorIADL.length && iadlVal !== 'independent') funcParts.push(`Noted poor ${poorIADL.join(', ')}`);
             let workBefore = document.getElementById('workLevelBeforeP').value;
             let workPot = document.getElementById('workPotentialP').value;
             let workPotLevel = document.getElementById('workLevelPotentialP').value;
