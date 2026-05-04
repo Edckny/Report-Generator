@@ -3,1189 +3,630 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PsyDoc Suite | Clinical Documentation Tool</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <title>PsyDoc Generator - Admission & DC Summary</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * {
+            box-sizing: border-box;
+        }
         body {
-            background: #eef2f7;
-            font-family: 'Inter', sans-serif;
-            padding: 2rem 1.5rem;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 20px;
             color: #1e2a3e;
         }
-        .app-container { max-width: 1400px; margin: 0 auto; }
-        h1 {
-            font-size: 1.9rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #1e4b6e, #2c7da0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 0.25rem;
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
         }
-        .sub {
-            color: #2c5f7a;
-            margin-bottom: 2rem;
-            border-left: 4px solid #2c7da0;
-            padding-left: 1rem;
-            font-weight: 500;
-        }
+        /* Tabs */
         .tabs {
             display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
+            background: #e9edf2;
             border-bottom: 1px solid #cbd5e1;
-            padding-bottom: 0.75rem;
+            padding: 0 24px;
+            gap: 8px;
         }
         .tab-btn {
             background: transparent;
             border: none;
-            font-size: 1rem;
+            padding: 14px 28px;
+            font-size: 1.05rem;
             font-weight: 600;
-            padding: 0.6rem 1.5rem;
-            border-radius: 40px;
             cursor: pointer;
-            transition: 0.2s;
-            color: #2c5f7a;
-            background: #f1f5f9;
-        }
-        .tab-btn.active {
-            background: #1e4b6e;
-            color: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-        .tab-pane { display: none; animation: fade 0.2s ease; }
-        .tab-pane.active-pane { display: block; }
-        @keyframes fade { from { opacity:0; transform:translateY(5px);} to { opacity:1; transform:translateY(0);} }
-        .form-card {
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.05);
-            padding: 1.8rem 2rem;
-            margin-bottom: 2rem;
-        }
-        .form-section {
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 1.5rem;
-        }
-        .form-section h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #0f3b4f;
-            margin-bottom: 1rem;
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.2rem;
-        }
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        label {
-            font-weight: 600;
-            font-size: 0.85rem;
+            border-radius: 20px 20px 0 0;
+            transition: all 0.2s;
             color: #2c3e50;
         }
+        .tab-btn.active {
+            background: white;
+            color: #0f3b5c;
+            border-bottom: 2px solid #0f5c7a;
+        }
+        .tab-content {
+            display: none;
+            padding: 30px 28px;
+            background: white;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* form styling */
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+        .field-group {
+            background: #f9fafc;
+            padding: 14px 18px;
+            border-radius: 20px;
+            border-left: 5px solid #2c7da0;
+        }
+        .field-group label {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 8px;
+            color: #0f3b5c;
+        }
+        .inline-select {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin-top: 6px;
+        }
         input, select, textarea {
-            padding: 10px 12px;
-            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
             border-radius: 14px;
-            font-family: 'Inter', monospace;
+            border: 1px solid #cbd5e6;
+            background: white;
             font-size: 0.9rem;
-            transition: 0.2s;
-            background: #fefefe;
+            font-family: inherit;
         }
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #2c7da0;
-            box-shadow: 0 0 0 3px rgba(44,125,160,0.2);
+            box-shadow: 0 0 0 2px rgba(44,125,160,0.2);
+        }
+        .multi-option {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: baseline;
         }
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
+            gap: 16px;
             margin-top: 6px;
         }
         .checkbox-group label {
             font-weight: normal;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
-        .radio-group {
+        hr {
+            margin: 12px 0;
+        }
+        .button-bar {
             display: flex;
-            gap: 1rem;
+            gap: 20px;
+            margin-top: 35px;
+            justify-content: center;
             flex-wrap: wrap;
         }
         button {
-            background: #1e4b6e;
+            background: #2c7da0;
             border: none;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-weight: 600;
             color: white;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 40px;
             cursor: pointer;
+            font-size: 1rem;
             transition: 0.2s;
+            border: 1px solid #1f5e7a;
+        }
+        button:hover {
+            background: #1f5e7a;
+            transform: scale(0.98);
+        }
+        .reset-btn {
+            background: #6c757d;
+            border-color: #495057;
+        }
+        .reset-btn:hover {
+            background: #495057;
+        }
+        textarea {
+            width: 100%;
+            font-family: monospace;
             font-size: 0.85rem;
+            background: #fefcf3;
         }
         .report-area {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 1.2rem;
-            margin-top: 1.5rem;
-            border: 1px solid #cbd5e1;
+            margin-top: 35px;
+            background: #f1f5f9;
+            border-radius: 24px;
+            padding: 15px 20px;
         }
-        .report-text {
-            background: #0f172a;
-            color: #e2e8f0;
-            padding: 1.2rem;
-            border-radius: 16px;
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+        .copy-btn {
+            background: #2b6e4e;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+        }
+        pre {
+            background: #ffffff;
+            padding: 18px;
+            border-radius: 18px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
             font-family: 'Courier New', monospace;
             font-size: 0.85rem;
-            white-space: pre-wrap;
-            max-height: 500px;
-            overflow: auto;
+            border: 1px solid #ddd;
+            margin: 0;
         }
-        .flex-btns {
+        h2 {
+            margin-top: 0;
+            color: #0f3b5c;
+            font-size: 1.6rem;
+        }
+        small {
+            color: #4b6f88;
+        }
+        .flex-row {
             display: flex;
-            gap: 12px;
-            margin-top: 12px;
-            justify-content: flex-end;
-        }
-        .family-details {
-            background: #f9f9ff;
-            padding: 1rem;
-            border-radius: 20px;
-            margin-top: 10px;
-        }
-        .sub-section {
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            padding-left: 0.5rem;
-            border-left: 3px solid #cbd5e1;
-        }
-        .dynamic-group {
-            margin-top: 12px;
-            padding: 12px;
-            background: #f8fafc;
-            border-radius: 16px;
-        }
-        .inline-checkbox-group {
-            display: inline-flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
         }
-        .inline-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-right: 8px;
+        .living-sub {
+            padding-left: 20px;
+            margin-top: 8px;
         }
-        .stage-intervention-item {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .stage-intervention-item select {
-            width: 120px;
-        }
-        .stage-intervention-item span {
-            font-weight: 500;
-        }
-        @media (max-width: 700px) {
-            .form-card { padding: 1.2rem; }
-        }
-        hr { margin: 12px 0; }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <h1>📋 PsyDoc Clinical Suite</h1>
-    <div class="sub">Structured documentation · Initial interview · Progress notes · Work rehab report</div>
-
+<div class="container">
     <div class="tabs">
-        <button class="tab-btn active" data-tab="initial">📝 Initial Interview</button>
-        <button class="tab-btn" data-tab="progress">📈 Progress Note</button>
-        <button class="tab-btn" data-tab="workrehab">💼 Work Rehab Report</button>
+        <button class="tab-btn active" data-tab="tab1">📋 Demographic</button>
+        <button class="tab-btn" data-tab="tab2">🧠 MSE, Functioning & Intervention</button>
     </div>
 
-    <!-- ================= INITIAL INTERVIEW (完整版) ================= -->
-    <div id="initial" class="tab-pane active-pane">
-        <div class="form-card">
-            <form id="initialForm">
-                <!-- Clinical Information -->
-                <div class="form-section">
-                    <h3>📌 Clinical Information</h3>
-                    <div class="grid-2">
-                        <div><label>Informal admission to SH/3C on (DD/MM/YYYY)</label><input type="text" id="admissionDate"></div>
-                        <div><label>From</label><select id="admissionFrom"><option value="">-- Select --</option><option value="PWH AED">PWH AED</option><option value="PWH SOPD">PWH SOPD</option><option value="SH PDH">SH PDH</option><option value="NDH AED">NDH AED</option><option value="Others">Others:</option></select><input type="text" id="admissionFromOther" placeholder="specify" style="margin-top:5px; display:none;"></div>
-                        <div><label>Admission reason</label><input type="text" id="admissionReason"></div>
-                    </div>
-                    <div><label>Initial interview was conducted on (Today)</label><input type="text" id="interviewDate"></div>
+    <!-- TAB 1: DEMOGRAPHIC -->
+    <div id="tab1" class="tab-content active">
+        <h2>📌 Demographic & Clinical Information</h2>
+        <div class="form-grid">
+            <!-- Clinical info block -->
+            <div class="field-group">
+                <label>🏥 Clinical Info & Admission</label>
+                <div class="inline-select">
+                    <span>Informal admission to SH/</span>
+                    <select id="wardType">
+                        <option value="3C" selected>3C (default)</option>
+                        <option value="5D">5D</option>
+                    </select>
+                    <span>on</span>
+                    <input type="date" id="admissionDate" placeholder="DD/MM/YYYY">
+                    <span>from</span>
+                    <select id="admissionFrom">
+                        <option value="PWH AED">PWH AED</option>
+                        <option value="PWH Med">PWH Med</option>
+                        <option value="PWH SOPD">PWH SOPD</option>
+                        <option value="SH PDH">SH PDH</option>
+                        <option value="NDH AED">NDH AED</option>
+                        <option value="Others: ">Others: (specify)</option>
+                    </select>
+                    <input type="text" id="otherFrom" placeholder="If Others, specify" style="width:150px">
                 </div>
+                <div style="margin-top: 10px;">
+                    <label>Admission reason:</label>
+                    <input type="text" id="admissionReason" style="width:100%" placeholder="e.g., acute psychotic symptoms">
+                </div>
+                <div style="margin-top: 12px;">
+                    <label>Initial interview conducted on: </label>
+                    <input type="date" id="interviewDate">
+                </div>
+            </div>
 
-                <!-- Diagnosis & SCS -->
-                <div class="form-section">
-                    <h3>🧠 Diagnosis & SCS</h3>
-                    <div><label>Imp (select ≥1)</label><div class="checkbox-group" id="impGroup"><label><input type="checkbox" value="Schizophrenia"> Schizophrenia</label><label><input type="checkbox" value="Schizoaffective Disorder"> Schizoaffective Disorder</label><label><input type="checkbox" value="Depression"> Depression</label><label><input type="checkbox" value="BAD"> BAD</label><label><input type="checkbox" value="Anxiety"> Anxiety</label><label><input type="checkbox" value="OCD"> OCD</label><label><input type="checkbox" value="Adjustment Disorder"> Adjustment Disorder</label><label><input type="checkbox" value="MR"> MR</label><label><input type="checkbox" value="ASD"> ASD</label><label><input type="checkbox" value="Substance Abuse"> Substance Abuse</label><label><input type="checkbox" value="Alcoholism"> Alcoholism</label><label><input type="checkbox" value="Others"> Others: <input type="text" id="impOthers" style="width:140px;"></label></div></div>
-                    <div class="grid-2"><div><label>SCS</label><select id="scsSelect"><option value="CC">CC</option><option value="SC">SC</option><option value="SC(ex-IC)">SC(ex-IC)</option><option value="IC">IC</option></select></div><div id="scsReasonYearBox" style="display:none;"><label>Reason & Year</label><input type="text" id="scsReason" placeholder="reason"><input type="text" id="scsYear" placeholder="year"></div></div>
+            <!-- Imp / SCS -->
+            <div class="field-group">
+                <label>🧾 Imp (multiple allowed)</label>
+                <div class="checkbox-group" id="impGroup">
+                    <label><input type="checkbox" value="Schizophrenia"> Schizophrenia</label>
+                    <label><input type="checkbox" value="Schizoaffective Disorder"> Schizoaffective Disorder</label>
+                    <label><input type="checkbox" value="Depression"> Depression</label>
+                    <label><input type="checkbox" value="BAD"> BAD</label>
+                    <label><input type="checkbox" value="Anxiety"> Anxiety</label>
+                    <label><input type="checkbox" value="OCD"> OCD</label>
+                    <label><input type="checkbox" value="Adjustment Disorder"> Adjustment Disorder</label>
+                    <label><input type="checkbox" value="MR"> MR</label>
+                    <label><input type="checkbox" value="ASD"> ASD</label>
+                    <label><input type="checkbox" value="Substance Abuse"> Substance Abuse</label>
+                    <label><input type="checkbox" value="Alcoholism"> Alcoholism</label>
+                    <label><input type="checkbox" value="Others"> Others: <input type="text" id="otherImp" placeholder="specify"></label>
                 </div>
+                <hr>
+                <label>📌 SCS (only one)</label>
+                <div class="inline-select">
+                    <select id="scsType">
+                        <option value="CC">CC</option>
+                        <option value="SC">SC</option>
+                        <option value="SC(ex-IC)">SC(ex-IC)</option>
+                        <option value="IC">IC</option>
+                    </select>
+                    <span id="scsReasonYearBlock" style="display: none;">
+                        <input type="text" id="scsReason" placeholder="Reason" style="width:180px">
+                        <input type="text" id="scsYear" placeholder="Year" style="width:90px">
+                    </span>
+                </div>
+            </div>
 
-                <!-- Fall precaution -->
-                <div class="form-section">
-                    <h3>⚠️ Fall precaution</h3>
-                    <div class="radio-group"><label><input type="radio" name="fallPrecaution" value="Yes"> Yes</label><label><input type="radio" name="fallPrecaution" value="No" checked> No</label></div>
-                    <div><label>Morse Fall Scale ( /125 on admission)</label><input type="text" id="morseScale"></div>
+            <!-- Fall precaution -->
+            <div class="field-group">
+                <label>⚠️ Fall precaution: 
+                    <select id="fallPrecaution">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </label>
+                <div class="inline-select">
+                    <span>Morse Fall Scale:</span>
+                    <input type="text" id="morseScore" placeholder="score"> /125 on admission
                 </div>
+            </div>
 
-                <!-- Social Background -->
-                <div class="form-section">
-                    <h3>🏠 Social Background</h3>
-                    <div><label>Living situation</label><div class="radio-group"><label><input type="radio" name="livingType" value="alone" checked> Alone</label><label><input type="radio" name="livingType" value="family"> With family</label></div></div>
-                    <div id="familyDetails" style="display:none;" class="family-details">
-                        <div class="grid-2">
-                            <label><input type="checkbox" id="familyFather"> Father</label>
-                            <label><input type="checkbox" id="familyMother"> Mother</label>
-                            <div>Elder brother(s) #<input type="number" id="elderBro" min="0" value="0" style="width:70px;"></div>
-                            <div>Elder sister(s) #<input type="number" id="elderSis" min="0" value="0" style="width:70px;"></div>
-                            <div>Younger brother(s) #<input type="number" id="youngerBro" min="0" value="0" style="width:70px;"></div>
-                            <div>Younger sister(s) #<input type="number" id="youngerSis" min="0" value="0" style="width:70px;"></div>
-                            <div>Son(s) #<input type="number" id="sons" min="0" value="0" style="width:70px;"></div>
-                            <div>Daughter(s) #<input type="number" id="daughters" min="0" value="0" style="width:70px;"></div>
-                            <div>Others (family)<input type="text" id="familyOthers"></div>
-                        </div>
-                    </div>
-                    <div><label>Regular visited by</label><input type="text" id="regularVisited"></div>
+            <!-- Social Background + Living -->
+            <div class="field-group">
+                <label>🏠 Social Background</label>
+                <div><strong>Living:</strong> 
+                    <select id="livingSituation">
+                        <option value="alone">alone</option>
+                        <option value="with family">with family</option>
+                    </select>
                 </div>
+                <div id="familyDetails" style="margin-top: 8px; display: none;">
+                    <div class="multi-option">
+                        <label><input type="checkbox" value="spouse"> Spouse</label>
+                        <label><input type="checkbox" value="father"> Father</label>
+                        <label><input type="checkbox" value="mother"> Mother</label>
+                        <span>Elder brother(s): <input type="number" id="elderBro" style="width:60px" value="0"></span>
+                        <span>Elder sister(s): <input type="number" id="elderSis" style="width:60px" value="0"></span>
+                        <span>Younger brother(s): <input type="number" id="youngerBro" style="width:60px" value="0"></span>
+                        <span>Younger sister(s): <input type="number" id="youngerSis" style="width:60px" value="0"></span>
+                        <span>Sons (age): <input type="text" id="sonsAge" placeholder="e.g., 8,12"></span>
+                        <span>Daughters (age): <input type="text" id="daughtersAge" placeholder="e.g., 5"></span>
+                        <span>Others: <input type="text" id="livingOthers" placeholder="specify"></span>
+                    </div>
+                </div>
+                <div style="margin-top: 8px;">Regular visited by: <input type="text" id="regularVisited" style="width:70%"></div>
+            </div>
 
-                <!-- Work Status -->
-                <div class="form-section">
-                    <h3>💼 Work Status</h3>
-                    <div><label>Educated up to</label><input type="text" id="education"></div>
-                    <div><label>Employment pattern</label><select id="employmentPattern"><option value="never">Never gainfully employed</option><option value="previously">Previously working as ...</option></select></div>
-                    <div id="prevWorkFields" style="display:none;">
-                        <div class="grid-2">
-                            <div>Previously working as <input type="text" id="prevJobRole"></div>
-                            <div>Longest job as <input type="text" id="longestJob"></div>
-                            <div>Lasted for <input type="text" id="longestDuration"></div>
-                            <div>Latest job as <input type="text" id="latestJob"></div>
-                            <div>Lasted for <input type="text" id="latestDuration"></div>
-                            <div>Usually quitted job for reasons <input type="text" id="quitReasons"></div>
-                        </div>
-                    </div>
-                    <div><label>Current status</label><select id="currentStatus"><option value="">-- select --</option><option value="unemployed">Unemployed for (duration)</option><option value="sickleave">On sick leave</option><option value="resigned">Just resigned before admission</option></select><input type="text" id="currentStatusDetail" placeholder="duration or details" style="margin-top:6px;"></div>
-                    <div><label>Premorbid functioning</label><textarea rows="2" id="premorbid"></textarea></div>
+            <!-- Work status -->
+            <div class="field-group">
+                <label>💼 Work Status</label>
+                <div>Educated up to: <input type="text" id="education" style="width:60%"></div>
+                <div><select id="employmentHistory">
+                    <option value="Never gainfully employed">Never gainfully employed</option>
+                    <option value="Previously working">Previously working as</option>
+                </select>
+                <input type="text" id="prevWorkAs" placeholder="job role"></div>
+                <div>Longest job as: <input type="text" id="longestJob"> lasted for <input type="text" id="longestDuration" style="width:100px"></div>
+                <div>Latest job as: <input type="text" id="latestJob"> lasted for <input type="text" id="latestDuration" style="width:100px"></div>
+                <div>Usually quitted job for reasons: <input type="text" id="quitReason" style="width:80%"></div>
+                <div>Currently: 
+                    <select id="currentStatus">
+                        <option value="unemployed">unemployed for</option>
+                        <option value="sick leave">on sick leave</option>
+                        <option value="resigned">just resigned before admission</option>
+                    </select>
+                    <input type="text" id="unemployedDuration" placeholder="duration if unemployed">
                 </div>
+                <div>Premorbid functioning: <input type="text" id="premorbid" style="width:80%"></div>
+            </div>
 
-                <!-- Past Psychiatric History -->
-                <div class="form-section">
-                    <h3>📜 Past Psychiatric History</h3>
-                    <div class="radio-group"><label><input type="radio" name="pastPsyType" value="New"> New to MHS</label><label><input type="radio" name="pastPsyType" value="Private"> Known to private psy</label><label><input type="radio" name="pastPsyType" value="MHS"> Known to MHS</label></div>
-                    <div id="sinceYearBlock" style="display:none;"><label>Since year (YYYY)</label><input type="text" id="sinceYear"></div>
-                    <div class="grid-2"><div>Presented with <input type="text" id="presentedWith"></div><div>Precipitated by <input type="text" id="precipitatedBy"></div></div>
-                    <div>Others (past hx) <input type="text" id="pastOthers" style="width:100%"></div>
-                    <div><label>Community course</label><select id="communityCourse"><option value="">-- select --</option><option value="well_support">Maintained well in the community with ... support</option><option value="freq_admissions">with frequent admissions due to ...</option></select><input type="text" id="courseDetail" placeholder="specify support or reason" style="margin-top:6px;"></div>
-                    <div class="grid-2" style="margin-top: 12px;">
-                        <div><label>Suicidal Hx</label><select id="suicidalHx"><option value="Nil">Nil</option><option value="Entry">(enter details)</option></select><input type="text" id="suicidalHxEntry" placeholder="details" style="margin-top:4px; display:none;"></div>
-                        <div><label>Violent Hx</label><select id="violentHx"><option value="Nil">Nil</option><option value="Entry">(enter details)</option></select><input type="text" id="violentHxEntry" placeholder="details" style="margin-top:4px; display:none;"></div>
-                        <div><label>SA Hx (Substance Abuse)</label><select id="saHx"><option value="Nil">Nil</option><option value="Entry">(enter details)</option></select><input type="text" id="saHxEntry" placeholder="details" style="margin-top:4px; display:none;"></div>
-                    </div>
+            <!-- Past Psy Hx -->
+            <div class="field-group">
+                <label>📜 Past Psychiatric History</label>
+                <div class="inline-select">
+                    <select id="mhsKnown">
+                        <option value="New to MHS">New to MHS</option>
+                        <option value="Known to private psy">Known to private psy</option>
+                        <option value="Known to MHS">Known to MHS</option>
+                    </select>
+                    <span id="sinceYearSpan" style="display: none;">since (year): <input type="text" id="sinceYear" placeholder="YYYY"></span>
                 </div>
+                <div>Presented with: <input type="text" id="presentedWith" style="width:100%"></div>
+                <div>Precipitated by: <input type="text" id="precipitatedBy" style="width:100%"></div>
+                <div>Others: <input type="text" id="pastOthers" style="width:100%"></div>
+                <div>Maintained well in community with <input type="text" id="communitySupport" placeholder="type of support"> / with frequent admissions due to <input type="text" id="freqAdmissionsDue"></div>
+            </div>
 
-                <!-- Admission History -->
-                <div class="form-section">
-                    <h3>🏥 Admission History</h3>
-                    <div class="grid-2"><div>Last Admission to <select id="lastHospital"><option value="">-- select --</option><option>SH</option><option>TPH</option><option>NDH</option></select></div><div>Date range (DD/MM/YYYY - DD/MM/YYYY) <input type="text" id="lastAdmRange"></div></div>
-                    <div>Last admission Admitted for <input type="text" id="lastAdmReason" style="width:100%"></div>
-                    <div>Current Admission Admitted for <textarea rows="2" id="currentAdmReason" style="width:100%"></textarea></div>
-                </div>
-
-                <!-- Common Assessment Note (Initial) -->
-                <div class="form-section">
-                    <h3>📋 Common Assessment Note</h3>
-                    <div class="sub-section">
-                        <label style="font-size:1rem;">🧠 Mental State Examination</label>
-                        <div><strong>Appearance:</strong> <div class="checkbox-group" id="mseAppearanceI"><label><input type="checkbox" value="Clean and tidy"> Clean and tidy</label><label><input type="checkbox" value="Unkempt"> Unkempt</label><label><input type="checkbox" value="Inappropriate clothing"> Inappropriate clothing</label><label><input type="checkbox" value="Excessive make-up"> Excessive make-up</label><label><input type="checkbox" value="Tired"> Tired</label><label><input type="checkbox" value="Pre-occupied"> Pre-occupied</label><label><input type="checkbox" value="Confused"> Confused</label><label><input type="checkbox" value="Perplexed"> Perplexed</label><label><input type="checkbox" value="Cheerful"> Cheerful</label><label><input type="checkbox" value="Bright looking"> Bright looking</label></div></div>
-                        <div><strong>Attitude:</strong> <div class="checkbox-group" id="mseApproachI"><label><input type="checkbox" value="Cooperative"> Cooperative</label><label><input type="checkbox" value="Friendly"> Friendly</label><label><input type="checkbox" value="Evasive"> Evasive</label><label><input type="checkbox" value="Guarded"> Guarded</label><label><input type="checkbox" value="Challenging"> Challenging</label> on approach</div></div>
-                        <div><strong>Mood:</strong> <div class="checkbox-group" id="moodGroupI"><label><input type="checkbox" value="neutral"> neutral</label><label><input type="checkbox" value="euthymic"> euthymic</label><label><input type="checkbox" value="dysphoric"> dysphoric</label><label><input type="checkbox" value="dysthymic"> dysthymic</label><label><input type="checkbox" value="depressed"> depressed</label><label><input type="checkbox" value="anxious"> anxious</label><label><input type="checkbox" value="elated"> elated</label><label><input type="checkbox" value="irritable"> irritable</label><label><input type="checkbox" value="agitated"> agitated</label><label><input type="checkbox" value="labile"> labile</label></div></div>
-                        <div><strong>Affect:</strong> <div class="checkbox-group" id="affectGroupI"><label><input type="checkbox" value="congruent"> congruent</label><label><input type="checkbox" value="incongruent"> incongruent</label><label><input type="checkbox" value="reactive"> reactive</label><label><input type="checkbox" value="restricted"> restricted</label><label><input type="checkbox" value="blunted"> blunted</label></div></div>
-                        <div><strong>Speech:</strong> <div class="checkbox-group" id="mseSpeechI"><label><input type="checkbox" value="relevant and coherent"> relevant and coherent</label><label><input type="checkbox" value="irrelevant"> irrelevant</label><label><input type="checkbox" value="incoherent"> incoherent</label><label><input type="checkbox" value="spontaneous"> spontaneous</label><label><input type="checkbox" value="forthcoming"> forthcoming</label><label><input type="checkbox" value="brief and scanty"> brief and scanty</label><label><input type="checkbox" value="pressure of speech"> pressure of speech</label><label><input type="checkbox" value="circumstantial"> circumstantial</label><label><input type="checkbox" value="tangential"> tangential</label><label><input type="checkbox" value="hesitate"> hesitate</label><label><input type="checkbox" value="jumping from topic to topic"> jumping from topic to topic</label><label><input type="checkbox" value="disorganized"> disorganized</label><label><input type="checkbox" value="perseverated"> perseverated</label><label><input type="checkbox" value="confabulated"> confabulated</label><label><input type="checkbox" value="in slow"> in slow</label><label><input type="checkbox" value="fast tempo"> fast tempo</label></div></div>
-                        <div><strong>Psychotic experience:</strong></div>
-                        <div><label><input type="checkbox" id="noActivePsychoticI"> No active psychotic symptom was elicited</label></div>
-                        <div>Hallucination: <select id="hallucinationSelectI"><option value="">--</option><option value="denied">denied</option><option value="no active hallucination elicited">no active hallucination elicited</option><option value="details">(enter details)</option></select> <input type="text" id="hallucinationDetailI" placeholder="specify" style="display:none;"></div>
-                        <div>Delusion: <select id="delusionSelectI"><option value="">--</option><option value="denied">denied</option><option value="no active delusion elicited">no active delusion elicited</option><option value="details">(enter details)</option></select> <input type="text" id="delusionDetailI" placeholder="specify" style="display:none;"></div>
-                        <div><strong>Behaviours:</strong> <div class="checkbox-group" id="mseBehaviourI"><label><input type="checkbox" value="Normal"> Normal</label><label><input type="checkbox" value="Bizarre"> Bizarre</label><label><input type="checkbox" value="Self-muttering"> Self-muttering</label><label><input type="checkbox" value="Self-giggling"> Self-giggling</label><label><input type="checkbox" value="Disorganized"> Disorganized</label><label><input type="checkbox" value="Disinhibited"> Disinhibited</label><label><input type="checkbox" value="Violent"> Violent</label><label><input type="checkbox" value="Self-stimulating"> Self-stimulating</label></div></div>
-                        <div>Distressed by: <div class="checkbox-group" id="distressedByI"><label><input type="checkbox" value="sleep problem"> sleep problem</label><label><input type="checkbox" value="pain"> pain</label><label><input type="checkbox" value="somatic symptoms"> somatic symptoms</label><label><input type="checkbox" value="deteriorated physical condition"> deteriorated physical condition</label><label><input type="checkbox" value="family"> family</label><label><input type="checkbox" value="financial"> financial</label><label><input type="checkbox" value="work"> work</label><label><input type="checkbox" value="interpersonal"> interpersonal</label> issue</div></div>
-                        <div>Negative cognition: <select id="negativeCognitionI"><option value="">--</option><option value="Nil">Nil</option><option value="Having">Having</option></select> <span>Harboured sense of</span> <div class="inline-checkbox-group" id="senseOfI"><label class="inline-label"><input type="checkbox" value="uselessness"> uselessness</label><label class="inline-label"><input type="checkbox" value="hopelessness"> hopelessness</label><label class="inline-label"><input type="checkbox" value="helplessness"> helplessness</label></div></div>
-                        <div>Suicidal ideation: <select id="suicidalIdeaI"><option value="">--</option><option value="Denied active suicidal idea">Denied active suicidal idea</option><option value="Nil active suicidal idea">Nil active suicidal idea</option><option value="No suicidal idea elicited">No suicidal idea elicited</option><option value="Expressed passive death wish">Expressed passive death wish</option></select></div>
-                        <div>Admitted: <select id="admittedSuicidalI"><option value="">--</option><option value="fleeting suicidal idea">fleeting suicidal idea</option><option value="suicidal attempt with prevention of discovery, intentionality, fatality, remorse">suicidal attempt with prevention of discovery, intentionality, fatality, remorse</option><option value="suicidal attempt without prevention of discovery, intentionality, fatality, remorse">suicidal attempt without prevention of discovery, intentionality, fatality, remorse</option></select></div>
-                        <div>BPSD features: <select id="bpsdI"><option value="">--</option><option value="Nil">Nil</option><option value="Observed">Observed</option></select> <div class="checkbox-group" id="bpsdFeaturesI" style="display:none;"><label><input type="checkbox" value="yelling"> yelling</label><label><input type="checkbox" value="restlessness"> restlessness</label><label><input type="checkbox" value="aggression"> aggression</label><label><input type="checkbox" value="disorganized behaviors"> disorganized behaviors</label></div></div>
-                        <div>Insight: <select id="insightI"><option value="">--</option><option value="Poor">Poor</option><option value="Partial">Partial</option><option value="Doubtful">Doubtful</option><option value="Having">Having</option></select> into own <div class="checkbox-group" id="insightIntoI"><label><input type="checkbox" value="mental illness"> mental illness</label><label><input type="checkbox" value="misbehaviour"> misbehaviour</label><label><input type="checkbox" value="ability"> ability</label></div></div>
-                    </div>
-                    <!-- Overall Level of Functioning (Initial) -->
-                    <div class="sub-section">
-                        <label style="font-size:1rem;">📊 Overall Level of Functioning</label>
-                        <div>ADL: <select id="adlI"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="adlSupportSpanI" style="display:none;">The client needs support on <input type="text" id="adlSupportI" placeholder="e.g., bathing, dressing"></span></div>
-                        <div>IADL: <select id="iadlI"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="iadlSupportSpanI" style="display:none;">The client needs support on <input type="text" id="iadlSupportI" placeholder="e.g., cooking, finance"></span> 
-                            <span id="poorIADLContainerI" style="display:none;"><strong>Noted poor</strong> <div class="inline-checkbox-group" id="poorIADLI"><label class="inline-label"><input type="checkbox" value="daily scheduling"> daily scheduling</label><label class="inline-label"><input type="checkbox" value="time management skills"> time management skills</label><label class="inline-label"><input type="checkbox" value="problem solving skills"> problem solving skills</label><label class="inline-label"><input type="checkbox" value="emergency handling"> emergency handling</label></div></span>
-                        </div>
-                        <div>Work: <select id="workLevelBeforeI"><option value="">--</option><option value="unemployed">unemployed</option><option value="student">student</option><option value="DSC">DSC</option><option value="DAC">DAC</option><option value="ICCMW">ICCMW</option><option value="PDH">PDH</option><option value="SWS">SWS</option><option value="SE">SE</option><option value="Part-time OE">Part-time OE</option><option value="Full-time OE">Full-time OE</option></select> before admission. He <select id="workPotentialI"><option value="was currently in">was currently in</option><option value="had potential to reach">had potential to reach</option></select> <select id="workLevelPotentialI"><option value="">--</option><option value="DSC">DSC</option><option value="DAC">DAC</option><option value="ICCMW">ICCMW</option><option value="PDH">PDH</option><option value="SWS">SWS</option><option value="SE">SE</option><option value="Part-time OE">Part-time OE</option><option value="Full-time OE">Full-time OE</option></select> level</div>
-                        <div>Leisure: <input type="text" id="leisureI" style="width:100%" placeholder="e.g., watches TV, no hobby"></div>
-                        <div>Social: <select id="socialSupportI"><option value="">--</option><option value="regular social support from family">regular social support from family</option><option value="regular social support from friends">regular social support from friends</option><option value="regular social support from churchmates">regular social support from churchmates</option><option value="limited social support from family">limited social support from family</option><option value="limited social support from friends">limited social support from friends</option><option value="limited social support from professionals">limited social support from professionals</option></select>; noted interpersonal challenges due to poor <div class="checkbox-group" id="interpersonalChallengesI"><label><input type="checkbox" value="social cognition"> social cognition</label><label><input type="checkbox" value="social skills"> social skills</label></div></div>
-                        <div>Personal goals: <input type="text" id="personalGoalsI" style="width:100%" placeholder="e.g., return to work, stable mood"></div>
-                    </div>
-                    <!-- SOFAS -->
-                    <div class="sub-section">
-                        <label style="font-size:1rem;">📈 Social and Occupational Functioning Assessment Scale (SOFAS)</label>
-                        <div>Date: <input type="text" id="sofasDateI" placeholder="DD/MM/YYYY"> Score: <input type="number" id="sofasScoreI" min="0" max="100" step="1"> /100</div>
-                        <div id="sofasDescriptionI" style="background:#f1f5f9; padding:0.5rem; border-radius:12px; margin-top:6px;"></div>
-                    </div>
-                    <!-- Problems -->
-                    <div class="sub-section">
-                        <label style="font-size:1rem;">⚠️ Problems (select all that apply)</label>
-                        <div class="checkbox-group" id="problemsListI">
-                            <label><input type="checkbox" value="Deteriorated mental state"> Deteriorated mental state</label>
-                            <label><input type="checkbox" value="Challenging behaviour"> Challenging behaviour</label>
-                            <label><input type="checkbox" value="Unstable mood with violent act"> Unstable mood with violent act</label>
-                            <label><input type="checkbox" value="Unstable mood with self-harm behaviour"> Unstable mood with self-harm behaviour</label>
-                            <label><input type="checkbox" value="Limited insight and inadequate illness management skill"> Limited insight and inadequate illness management skill</label>
-                            <label><input type="checkbox" value="Doubtful functional performance in ADL"> Doubtful functional performance in ADL</label>
-                            <label><input type="checkbox" value="Impaired functional performance in ADL"> Impaired functional performance in ADL</label>
-                            <label><input type="checkbox" value="Doubtful functional performance in IADL"> Doubtful functional performance in IADL</label>
-                            <label><input type="checkbox" value="Impaired functional performance in IADL"> Impaired functional performance in IADL</label>
-                            <label><input type="checkbox" value="Doubtful functional performance in work"> Doubtful functional performance in work</label>
-                            <label><input type="checkbox" value="Impaired functional performance in work"> Impaired functional performance in work</label>
-                            <label><input type="checkbox" value="Doubtful functional performance in childcare"> Doubtful functional performance in childcare</label>
-                            <label><input type="checkbox" value="Impaired functional performance in childcare"> Impaired functional performance in childcare</label>
-                            <label><input type="checkbox" value="Loss of interest"> Loss of interest</label>
-                            <label><input type="checkbox" value="Lack of motivation"> Lack of motivation</label>
-                            <label><input type="checkbox" value="Lack of daytime engagement"> Lack of daytime engagement</label>
-                            <label><input type="checkbox" value="Lifestyle imbalance"> Lifestyle imbalance</label>
-                            <label><input type="checkbox" value="Lack of psychosocial community support"> Lack of psychosocial community support</label>
-                            <label><input type="checkbox" value="Subjective memory complain"> Subjective memory complain</label>
-                            <label><input type="checkbox" value="Lack of insight on cognitive deficit"> Lack of insight on cognitive deficit</label>
-                            <label><input type="checkbox" value="Doubtful cognitive function in (enter)"> Doubtful cognitive function in <input type="text" id="cognitiveDoubtfulI" placeholder="specify" style="width:120px;"></label>
-                            <label><input type="checkbox" value="Impaired cognitive function in (enter)"> Impaired cognitive function in <input type="text" id="cognitiveImpairedI" placeholder="specify" style="width:120px;"></label>
-                            <label><input type="checkbox" value="Ineffective stress coping skill"> Ineffective stress coping skill</label>
-                            <label><input type="checkbox" value="Poor workshop behaviour"> Poor workshop behaviour</label>
-                            <label><input type="checkbox" value="Poor work-related social skills"> Poor work-related social skills</label>
-                            <label><input type="checkbox" value="Ineffective emotional regulation"> Ineffective emotional regulation</label>
-                            <label><input type="checkbox" value="Poor temper control"> Poor temper control</label>
-                            <label><input type="checkbox" value="Poor interpersonal skills with limited social circle"> Poor interpersonal skills with limited social circle</label>
-                            <label><input type="checkbox" value="Poor social skills with limited social circle"> Poor social skills with limited social circle</label>
-                            <label><input type="checkbox" value="Home environment barriers"> Home environment barriers</label>
-                            <label><input type="checkbox" value="Heavy carer stress"> Heavy carer stress</label>
-                            <label><input type="checkbox" value="Limited caregiver skills and support"> Limited caregiver skills and support</label>
-                        </div>
-                    </div>
-                    <!-- Intervention -->
-                    <div class="sub-section">
-                        <label style="font-size:1rem;">🛠️ Intervention (select all that apply)</label>
-                        <div class="checkbox-group" id="interventionListI">
-                            <label><input type="checkbox" value="Self-mx: illness management and recovery"> Self-mx: illness management and recovery</label>
-                            <label><input type="checkbox" value="Self-mx: stress management"> Self-mx: stress management</label>
-                            <label><input type="checkbox" value="Self-mx: sleep hygiene"> Self-mx: sleep hygiene</label>
-                            <label><input type="checkbox" value="Self-mx: balanced lifestyle"> Self-mx: balanced lifestyle</label>
-                            <label><input type="checkbox" value="Self-mx: relaxation exercise"> Self-mx: relaxation exercise</label>
-                            <label><input type="checkbox" value="Self-mx: explore and cultivate leisure, formulate activity scheduling"> Self-mx: explore and cultivate leisure, formulate activity scheduling</label>
-                            <label><input type="checkbox" value="Self-mx: lifestyle re-design program"> Self-mx: lifestyle re-design program</label>
-                            <label><input type="checkbox" value="Life coaching: wellness program"> Life coaching: wellness program</label>
-                            <label><input type="checkbox" value="Life coaching: counseling"> Life coaching: counseling</label>
-                            <label><input type="checkbox" value="Life coaching: cognitive behavioral therapy"> Life coaching: cognitive behavioral therapy</label>
-                            <label><input type="checkbox" value="Life coaching: life coaching"> Life coaching: life coaching</label>
-                            <label><input type="checkbox" value="Life coaching: motivational interviewing"> Life coaching: motivational interviewing</label>
-                            <label><input type="checkbox" value="Work: simulated work training"> Work: simulated work training</label>
-                            <label><input type="checkbox" value="Work: vocational counseling"> Work: vocational counseling</label>
-                            <label><input type="checkbox" value="Work: explore vocational interest"> Work: explore vocational interest</label>
-                            <label><input type="checkbox" value="Work: job-post training of shop assistant"> Work: job-post training of shop assistant</label>
-                            <label><input type="checkbox" value="Work: job-post training of cleansing worker"> Work: job-post training of cleansing worker</label>
-                            <label><input type="checkbox" value="Work: job-post training of office assistant"> Work: job-post training of office assistant</label>
-                            <label><input type="checkbox" value="Work: job-post training of clerical worker"> Work: job-post training of clerical worker</label>
-                            <label><input type="checkbox" value="Work: job-post training of waiter/waitress"> Work: job-post training of waiter/waitress</label>
-                            <label><input type="checkbox" value="Work: job-post training of bartender"> Work: job-post training of bartender</label>
-                            <label><input type="checkbox" value="Work: job-post training of coffee barista"> Work: job-post training of coffee barista</label>
-                            <label><input type="checkbox" value="Work: motivational enhancement program"> Work: motivational enhancement program</label>
-                            <label><input type="checkbox" value="Work: work-related social skill training"> Work: work-related social skill training</label>
-                            <label><input type="checkbox" value="Work: introduce community vocational support services (SE/IVRSC/SWS/DAC)"> Work: introduce community vocational support services (SE/IVRSC/SWS/DAC)</label>
-                            <label><input type="checkbox" value="Cognitive: further conduct cognitive assessment"> Cognitive: further conduct cognitive assessment</label>
-                            <label><input type="checkbox" value="Cognitive: computer-assisted cognitive training"> Cognitive: computer-assisted cognitive training</label>
-                            <label><input type="checkbox" value="Cognitive: paper-and-pencil cognitive training"> Cognitive: paper-and-pencil cognitive training</label>
-                            <label><input type="checkbox" value="Cognitive: cognitive stimulation activities"> Cognitive: cognitive stimulation activities</label>
-                            <label><input type="checkbox" value="Cognitive: educate on compensatory strategies"> Cognitive: educate on compensatory strategies</label>
-                        </div>
-                    </div>
-                    <!-- Recommendation -->
-                    <div class="sub-section">
-                        <label style="font-size:1rem;">📌 Recommendation</label>
-                        <div class="checkbox-group" id="recommendationListI">
-                            <label><input type="checkbox" value="Observe mental state and behaviour"> Observe mental state and behaviour</label>
-                            <label><input type="checkbox" value="Start ward OT for structured daytime engagement"> Start ward OT for structured daytime engagement</label>
-                            <label><input type="checkbox" value="Start Main OT for structured daytime engagement"> Start Main OT for structured daytime engagement</label>
-                            <label><input type="checkbox" value="Pending ADL assessment"> Pending ADL assessment</label>
-                            <label><input type="checkbox" value="Pending IADL assessment"> Pending IADL assessment</label>
-                            <label><input type="checkbox" value="Pending abovementioned training"> Pending abovementioned training</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-section"><h3>📝 Remarks</h3><textarea rows="2" id="remarksInitial" style="width:100%"></textarea></div>
-            </form>
-            <div class="flex-btns"><button type="button" id="genInitialReport">📄 Generate Report</button></div>
-            <div id="initialReportArea" class="report-area" style="display:none;"><div class="report-text" id="initialReportText"></div><div class="flex-btns"><button class="copy-btn" data-copy="initialReportText">📋 Copy to Clipboard</button></div></div>
+            <!-- Last Admission & Current Admission -->
+            <div class="field-group">
+                <label>🏨 Last Admission</label>
+                <div>Admitted to: <select id="lastHospital">
+                    <option value="SH">SH</option><option value="TPH">TPH</option><option value="NDH">NDH</option>
+                </select> from <input type="text" id="lastFromDate" placeholder="DD/MM/YYYY"> to <input type="text" id="lastToDate" placeholder="DD/MM/YYYY"> for reason: <input type="text" id="lastReason"></div>
+                <label style="margin-top:12px">🟢 Current Admission Reason:</label>
+                <input type="text" id="currentReason" style="width:100%">
+            </div>
         </div>
     </div>
 
-    <!-- ================= PROGRESS NOTE (完整版) ================= -->
-    <div id="progress" class="tab-pane">
-        <div class="form-card">
-            <form id="progressForm">
-                <div class="form-section">
-                    <h3>📋 Common Assessment Note</h3>
-                    <div class="sub-section">
-                        <label>Mental state this week</label>
-                        <select id="mentalStateTrend"><option value="">-- select --</option><option value="similar">similar</option><option value="improved">improved</option><option value="worsen">worsen</option></select>
-                    </div>
-                    <div class="sub-section">
-                        <label style="font-size:1rem;">🧠 Mental State Examination</label>
-                        <div><strong>Appearance:</strong> <div class="checkbox-group" id="mseAppearanceP"><label><input type="checkbox" value="Clean and tidy"> Clean and tidy</label><label><input type="checkbox" value="Unkempt"> Unkempt</label><label><input type="checkbox" value="Inappropriate clothing"> Inappropriate clothing</label><label><input type="checkbox" value="Excessive make-up"> Excessive make-up</label><label><input type="checkbox" value="Tired"> Tired</label><label><input type="checkbox" value="Pre-occupied"> Pre-occupied</label><label><input type="checkbox" value="Confused"> Confused</label><label><input type="checkbox" value="Perplexed"> Perplexed</label><label><input type="checkbox" value="Cheerful"> Cheerful</label><label><input type="checkbox" value="Bright looking"> Bright looking</label></div></div>
-                        <div><strong>Attitude:</strong> <div class="checkbox-group" id="mseApproachP"><label><input type="checkbox" value="Cooperative"> Cooperative</label><label><input type="checkbox" value="Friendly"> Friendly</label><label><input type="checkbox" value="Evasive"> Evasive</label><label><input type="checkbox" value="Guarded"> Guarded</label><label><input type="checkbox" value="Challenging"> Challenging</label> on approach</div></div>
-                        <div><strong>Mood:</strong> <div class="checkbox-group" id="moodGroupP"><label><input type="checkbox" value="neutral"> neutral</label><label><input type="checkbox" value="euthymic"> euthymic</label><label><input type="checkbox" value="dysphoric"> dysphoric</label><label><input type="checkbox" value="dysthymic"> dysthymic</label><label><input type="checkbox" value="depressed"> depressed</label><label><input type="checkbox" value="anxious"> anxious</label><label><input type="checkbox" value="elated"> elated</label><label><input type="checkbox" value="irritable"> irritable</label><label><input type="checkbox" value="agitated"> agitated</label><label><input type="checkbox" value="labile"> labile</label></div></div>
-                        <div><strong>Affect:</strong> <div class="checkbox-group" id="affectGroupP"><label><input type="checkbox" value="congruent"> congruent</label><label><input type="checkbox" value="incongruent"> incongruent</label><label><input type="checkbox" value="reactive"> reactive</label><label><input type="checkbox" value="restricted"> restricted</label><label><input type="checkbox" value="blunted"> blunted</label></div></div>
-                        <div><strong>Speech:</strong> <div class="checkbox-group" id="mseSpeechP"><label><input type="checkbox" value="relevant and coherent"> relevant and coherent</label><label><input type="checkbox" value="irrelevant"> irrelevant</label><label><input type="checkbox" value="incoherent"> incoherent</label><label><input type="checkbox" value="spontaneous"> spontaneous</label><label><input type="checkbox" value="forthcoming"> forthcoming</label><label><input type="checkbox" value="brief and scanty"> brief and scanty</label><label><input type="checkbox" value="pressure of speech"> pressure of speech</label><label><input type="checkbox" value="circumstantial"> circumstantial</label><label><input type="checkbox" value="tangential"> tangential</label><label><input type="checkbox" value="hesitate"> hesitate</label><label><input type="checkbox" value="jumping from topic to topic"> jumping from topic to topic</label><label><input type="checkbox" value="disorganized"> disorganized</label><label><input type="checkbox" value="perseverated"> perseverated</label><label><input type="checkbox" value="confabulated"> confabulated</label><label><input type="checkbox" value="in slow"> in slow</label><label><input type="checkbox" value="fast tempo"> fast tempo</label></div></div>
-                        <div><strong>Psychotic experience:</strong></div>
-                        <div><label><input type="checkbox" id="noActivePsychoticP"> No active psychotic symptom was elicited</label></div>
-                        <div>Hallucination: <select id="hallucinationSelectP"><option value="">--</option><option value="denied">denied</option><option value="no active hallucination elicited">no active hallucination elicited</option><option value="details">(enter details)</option></select> <input type="text" id="hallucinationDetailP" placeholder="specify" style="display:none;"></div>
-                        <div>Delusion: <select id="delusionSelectP"><option value="">--</option><option value="denied">denied</option><option value="no active delusion elicited">no active delusion elicited</option><option value="details">(enter details)</option></select> <input type="text" id="delusionDetailP" placeholder="specify" style="display:none;"></div>
-                        <div><strong>Behaviours:</strong> <div class="checkbox-group" id="mseBehaviourP"><label><input type="checkbox" value="Normal"> Normal</label><label><input type="checkbox" value="Bizarre"> Bizarre</label><label><input type="checkbox" value="Self-muttering"> Self-muttering</label><label><input type="checkbox" value="Self-giggling"> Self-giggling</label><label><input type="checkbox" value="Disorganized"> Disorganized</label><label><input type="checkbox" value="Disinhibited"> Disinhibited</label><label><input type="checkbox" value="Violent"> Violent</label><label><input type="checkbox" value="Self-stimulating"> Self-stimulating</label></div></div>
-                        <div>Distressed by: <div class="checkbox-group" id="distressedByP"><label><input type="checkbox" value="sleep problem"> sleep problem</label><label><input type="checkbox" value="pain"> pain</label><label><input type="checkbox" value="somatic symptoms"> somatic symptoms</label><label><input type="checkbox" value="deteriorated physical condition"> deteriorated physical condition</label><label><input type="checkbox" value="family"> family</label><label><input type="checkbox" value="financial"> financial</label><label><input type="checkbox" value="work"> work</label><label><input type="checkbox" value="interpersonal"> interpersonal</label> issue</div></div>
-                        <div>Negative cognition: <select id="negativeCognitionP"><option value="">--</option><option value="Nil">Nil</option><option value="Having">Having</option></select> <span>Harboured sense of</span> <div class="inline-checkbox-group" id="senseOfP"><label class="inline-label"><input type="checkbox" value="uselessness"> uselessness</label><label class="inline-label"><input type="checkbox" value="hopelessness"> hopelessness</label><label class="inline-label"><input type="checkbox" value="helplessness"> helplessness</label></div></div>
-                        <div>Suicidal ideation: <select id="suicidalIdeaP"><option value="">--</option><option value="Denied active suicidal idea">Denied active suicidal idea</option><option value="Nil active suicidal idea">Nil active suicidal idea</option><option value="No suicidal idea elicited">No suicidal idea elicited</option><option value="Expressed passive death wish">Expressed passive death wish</option></select></div>
-                        <div>Admitted: <select id="admittedSuicidalP"><option value="">--</option><option value="fleeting suicidal idea">fleeting suicidal idea</option><option value="suicidal attempt with prevention of discovery, intentionality, fatality, remorse">suicidal attempt with prevention of discovery, intentionality, fatality, remorse</option><option value="suicidal attempt without prevention of discovery, intentionality, fatality, remorse">suicidal attempt without prevention of discovery, intentionality, fatality, remorse</option></select></div>
-                        <div>BPSD features: <select id="bpsdP"><option value="">--</option><option value="Nil">Nil</option><option value="Observed">Observed</option></select> <div class="checkbox-group" id="bpsdFeaturesP" style="display:none;"><label><input type="checkbox" value="yelling"> yelling</label><label><input type="checkbox" value="restlessness"> restlessness</label><label><input type="checkbox" value="aggression"> aggression</label><label><input type="checkbox" value="disorganized behaviors"> disorganized behaviors</label></div></div>
-                        <div>Insight: <select id="insightP"><option value="">--</option><option value="Poor">Poor</option><option value="Partial">Partial</option><option value="Doubtful">Doubtful</option><option value="Having">Having</option></select> into own <div class="checkbox-group" id="insightIntoP"><label><input type="checkbox" value="mental illness"> mental illness</label><label><input type="checkbox" value="misbehaviour"> misbehaviour</label><label><input type="checkbox" value="ability"> ability</label></div></div>
-                    </div>
-                </div>
-
-                <!-- Overall Level of Functioning (Progress) -->
-                <div class="form-section">
-                    <h3>📊 Overall Level of Functioning</h3>
-                    <div class="radio-group" id="functioningMode">
-                        <label><input type="radio" name="funcMode" value="maintained"> Maintained similar functioning as last week</label>
-                        <label><input type="radio" name="funcMode" value="updated"> Functional level was updated</label>
-                        <label><input type="radio" name="funcMode" value="goal"> Personal goal was updated</label>
-                    </div>
-                    <div id="funcUpdatedDiv" style="display:none;" class="dynamic-group">
-                        <div>ADL: <select id="adlP"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="adlSupportSpanP" style="display:none;">The client needs support on <input type="text" id="adlSupportP" placeholder="e.g., bathing"></span></div>
-                        <div>IADL: <select id="iadlP"><option value="independent">independent</option><option value="partially independent">partially independent</option><option value="dependent">dependent</option></select> <span id="iadlSupportSpanP" style="display:none;">The client needs support on <input type="text" id="iadlSupportP" placeholder="e.g., finance"></span> 
-                            <span id="poorIADLContainerP" style="display:none;"><strong>Noted poor</strong> <div class="inline-checkbox-group" id="poorIADLP"><label class="inline-label"><input type="checkbox" value="daily scheduling"> daily scheduling</label><label class="inline-label"><input type="checkbox" value="time management skills"> time management skills</label><label class="inline-label"><input type="checkbox" value="problem solving skills"> problem solving skills</label><label class="inline-label"><input type="checkbox" value="emergency handling"> emergency handling</label></div></span>
-                        </div>
-                        <div>Work: <select id="workLevelBeforeP"><option value="">--</option><option value="unemployed">unemployed</option><option value="student">student</option><option value="DSC">DSC</option><option value="DAC">DAC</option><option value="ICCMW">ICCMW</option><option value="PDH">PDH</option><option value="SWS">SWS</option><option value="SE">SE</option><option value="Part-time OE">Part-time OE</option><option value="Full-time OE">Full-time OE</option></select> before admission. He <select id="workPotentialP"><option value="was currently in">was currently in</option><option value="had potential to reach">had potential to reach</option></select> <select id="workLevelPotentialP"><option value="">--</option><option value="DSC">DSC</option><option value="DAC">DAC</option><option value="ICCMW">ICCMW</option><option value="PDH">PDH</option><option value="SWS">SWS</option><option value="SE">SE</option><option value="Part-time OE">Part-time OE</option><option value="Full-time OE">Full-time OE</option></select> level</div>
-                        <div>Leisure: <input type="text" id="leisureP" style="width:100%" placeholder="e.g., watches TV"></div>
-                        <div>Social: <select id="socialSupportP"><option value="">--</option><option value="regular social support from family">regular social support from family</option><option value="regular social support from friends">regular social support from friends</option><option value="regular social support from churchmates">regular social support from churchmates</option><option value="limited social support from family">limited social support from family</option><option value="limited social support from friends">limited social support from friends</option><option value="limited social support from professionals">limited social support from professionals</option></select>; noted interpersonal challenges due to poor <div class="checkbox-group" id="interpersonalChallengesP"><label><input type="checkbox" value="social cognition"> social cognition</label><label><input type="checkbox" value="social skills"> social skills</label></div></div>
-                    </div>
-                    <div id="funcGoalDiv" style="display:none;" class="dynamic-group">
-                        <div>Personal goals: <input type="text" id="personalGoalsP" style="width:100%" placeholder="e.g., return to work"></div>
-                    </div>
-                </div>
-
-                <!-- SOFAS -->
-                <div class="form-section">
-                    <h3>📈 Social and Occupational Functioning Assessment Scale (SOFAS)</h3>
-                    <div>Date: <input type="text" id="sofasDateP" placeholder="DD/MM/YYYY"> Score: <input type="number" id="sofasScoreP" min="0" max="100" step="1"> /100</div>
-                    <div id="sofasDescriptionP" style="background:#f1f5f9; padding:0.5rem; border-radius:12px; margin-top:6px;"></div>
-                </div>
-
-                <!-- Progress: OT Performance -->
-                <div class="form-section">
-                    <h3>🏋️ Progress: Performance in OT</h3>
-                    <div class="radio-group" id="otType">
-                        <label><input type="radio" name="otMode" value="ward"> Ward OT</label>
-                        <label><input type="radio" name="otMode" value="main"> Main OT</label>
-                    </div>
-                    <div id="wardOtDiv" style="display:none;" class="dynamic-group">
-                        <div>He participated in Ward OT <select id="wardParticipation"><option value="">--</option><option value="regularly">regularly</option><option value="irregularly">irregularly</option><option value="under close supervision">under close supervision</option><option value="under frequent prompting">under frequent prompting</option></select></div>
-                        <div>He joined: <div class="checkbox-group" id="wardActivities"><label><input type="checkbox" value="mindful writing"> mindful writing</label><label><input type="checkbox" value="psychoeducation series"> psychoeducation series</label><label><input type="checkbox" value="relaxation exercise"> relaxation exercise</label><label><input type="checkbox" value="pen-and-paper cognitive training"> pen-and-paper cognitive training</label><label><input type="checkbox" value="computer-assisted cognitive training"> computer-assisted cognitive training</label><label><input type="checkbox" value="ADL training"> ADL training</label><label><input type="checkbox" value="leisure cultivation"> leisure cultivation</label></div></div>
-                        <div>Behaviours: <div class="checkbox-group" id="wardBehaviours"><label><input type="checkbox" value="Able to follow instructions"> Able to follow instructions</label><label><input type="checkbox" value="no abnormal behaviours detected"> no abnormal behaviours detected</label><label><input type="checkbox" value="Bizarre"> Bizarre</label><label><input type="checkbox" value="Self-muttering"> Self-muttering</label><label><input type="checkbox" value="Self-giggling"> Self-giggling</label><label><input type="checkbox" value="Disturbing"> Disturbing</label><label><input type="checkbox" value="Disorganized"> Disorganized</label><label><input type="checkbox" value="Disinhibited"> Disinhibited</label><label><input type="checkbox" value="Violent"> Violent</label><label><input type="checkbox" value="Self-stimulating"> Self-stimulating</label> was observed</div></div>
-                    </div>
-                    <div id="mainOtDiv" style="display:none;" class="dynamic-group">
-                        <div>He participated in Main OT <select id="mainParticipation"><option value="">--</option><option value="regularly">regularly</option><option value="irregularly">irregularly</option><option value="under close supervision">under close supervision</option><option value="under frequent prompting">under frequent prompting</option></select> (~ <input type="text" id="mainPercent" placeholder="%"> %)</div>
-                        <div>He joined: <div class="checkbox-group" id="mainActivities"><label><input type="checkbox" value="mindful writing"> mindful writing</label><label><input type="checkbox" value="psychoeducation series"> psychoeducation series</label><label><input type="checkbox" value="relaxation exercise"> relaxation exercise</label><label><input type="checkbox" value="pen-and-paper cognitive training"> pen-and-paper cognitive training</label><label><input type="checkbox" value="computer-assisted cognitive training"> computer-assisted cognitive training</label><label><input type="checkbox" value="ADL training"> ADL training</label><label><input type="checkbox" value="leisure cultivation"> leisure cultivation</label><label><input type="checkbox" value="work rehabilitation"> work rehabilitation</label><label><input type="checkbox" value="work-related social skills training"> work-related social skills training</label><label><input type="checkbox" value="motivational enhancement program"> motivational enhancement program</label><label><input type="checkbox" value="job post training"> job post training</label><label><input type="checkbox" value="social and leisure group"> social and leisure group</label></div></div>
-                        <div>Behaviours: <div class="checkbox-group" id="mainBehaviours"><label><input type="checkbox" value="Able to follow instructions"> Able to follow instructions</label><label><input type="checkbox" value="no abnormal behaviours detected"> no abnormal behaviours detected</label><label><input type="checkbox" value="Bizarre"> Bizarre</label><label><input type="checkbox" value="Self-muttering"> Self-muttering</label><label><input type="checkbox" value="Self-giggling"> Self-giggling</label><label><input type="checkbox" value="Disturbing"> Disturbing</label><label><input type="checkbox" value="Disorganized"> Disorganized</label><label><input type="checkbox" value="Disinhibited"> Disinhibited</label><label><input type="checkbox" value="Violent"> Violent</label><label><input type="checkbox" value="Self-stimulating"> Self-stimulating</label> was observed</div></div>
-                        <div>Social: <select id="mainSocial"><option value="">--</option><option value="mixed well with co-patients">mixed well with co-patients</option><option value="limited social interaction">limited social interaction</option><option value="joined social group upon invitation">joined social group upon invitation</option><option value="limited social participation">limited social participation</option><option value="prone to conflicts with others">prone to conflicts with others</option></select></div>
-                    </div>
-                </div>
-
-                <!-- Recommendation -->
-                <div class="form-section">
-                    <h3>📌 Recommendation</h3>
-                    <div class="checkbox-group" id="recList">
-                        <label><input type="checkbox" value="Observe mental state and behaviour"> Observe mental state and behaviour</label>
-                        <label><input type="checkbox" value="Continue ward OT for structured daytime engagement"> Continue ward OT for structured daytime engagement</label>
-                        <label><input type="checkbox" value="Continue Main OT for structured daytime engagement"> Continue Main OT for structured daytime engagement</label>
-                        <label><input type="checkbox" value="Pending ADL assessment"> Pending ADL assessment</label>
-                        <label><input type="checkbox" value="Pending IADL assessment"> Pending IADL assessment</label>
-                        <label><input type="checkbox" value="Pending cognitive assessment"> Pending cognitive assessment</label>
-                        <label><input type="checkbox" value="Pending work assessment"> Pending work assessment</label>
-                        <label><input type="checkbox" value="Continue abovementioned training"> Continue abovementioned training</label>
-                    </div>
-                    <div class="field-group" style="margin-top:8px;"><label>Other recommendations</label><input type="text" id="recOther" placeholder="additional recommendations"></div>
-                </div>
-            </form>
-            <div class="flex-btns"><button id="genProgressReport">📄 Generate Report</button></div>
-            <div id="progressReportArea" class="report-area" style="display:none;"><div class="report-text" id="progressReportText"></div><div class="flex-btns"><button class="copy-btn" data-copy="progressReportText">📋 Copy to Clipboard</button></div></div>
+    <!-- TAB 2: MSE, Functioning & Intervention (exact DC summary style from given link) -->
+    <div id="tab2" class="tab-content">
+        <h2>📝 MSE, Functioning & Intervention</h2>
+        <div class="form-grid" id="dcSummaryFields">
+            <!-- dynamically built like the referenced DC summary content -->
+            <!-- I recreate the essential fields from standard DC summary (MSE, functioning, intervention) -->
+            <div class="field-group"><label>🧠 Mental State Examination (MSE)</label>
+                <textarea rows="3" id="mseContent" placeholder="Appearance, behaviour, speech, mood, affect, thought form, thought content, perception, cognition, insight"></textarea>
+            </div>
+            <div class="field-group"><label>📊 Functioning (ADL / IADL / Work / Social)</label>
+                <textarea rows="3" id="functioningContent" placeholder="Daily living skills, instrumental ADL, social interaction, work readiness..."></textarea>
+            </div>
+            <div class="field-group"><label>⚙️ Intervention provided (OT perspective)</label>
+                <textarea rows="3" id="interventionContent" placeholder="Individual sessions, group therapy, skills training, discharge planning, environmental modification, etc."></textarea>
+            </div>
+            <div class="field-group"><label>📌 Progress & Recommendations</label>
+                <textarea rows="2" id="progressRec" placeholder="Response to intervention, further recommendations, follow-up plan"></textarea>
+            </div>
         </div>
     </div>
 
-    <!-- ================= WORK REHAB REPORT (完整版) ================= -->
-    <div id="workrehab" class="tab-pane">
-        <div class="form-card">
-            <form id="workRehabForm">
-                <div class="form-section">
-                    <h3>📋 Patient was interviewed and assessed for the work rehabilitation</h3>
-                </div>
-                <!-- EDUCATION AND WORK HISTORY -->
-                <div class="form-section">
-                    <h3>🎓 EDUCATION AND WORK HISTORY</h3>
-                    <div class="field-group"><label>Educated up to (single choice)</label><select id="eduLevel"><option value="">-- select --</option><option value="Primary level">Primary level</option><option value="Secondary level">Secondary level</option><option value="Tertiary Level">Tertiary Level</option><option value="Special School">Special School</option></select></div>
-                    <div class="field-group"><label>Current work status</label><select id="workStatus"><option value="">-- select --</option><option value="currently_working">Currently working as ...</option><option value="unemployed">Currently unemployed (for xx years / months)</option><option value="recently_resigned">Recently resigned from work as (JOB)</option><option value="prev_voc_training">Previously received vocational training in Day Activity Center / Psychiatric Day Hospital / Sunny-way program / On-the-job training / ERB course / VTC program</option><option value="never_employed">Never gainfully employed</option><option value="unstable_record">Unstable job record</option></select><div id="workStatusDetail" style="display:none; margin-top:8px;"><input type="text" id="workStatusText" placeholder="e.g., Full-time Open Employment / Supported Employment / job title / duration"></div></div>
-                    <div class="grid-2">
-                        <div class="field-group"><label>Longest job</label><input type="text" id="longestJobTitle" placeholder="Job title"><div class="radio-group" style="margin-top:4px;"><label><input type="radio" name="longestDurationType" value="duration"> for <input type="text" id="longestDurationNum" placeholder="number" style="width:70px;"> <select id="longestDurationUnit"><option value="years">years</option><option value="months">months</option></select></label><label><input type="radio" name="longestDurationType" value="range"> from <input type="text" id="longestFromMM" placeholder="MM" style="width:50px;"> / <input type="text" id="longestFromYY" placeholder="YY" style="width:50px;"> to <input type="text" id="longestToMM" placeholder="MM" style="width:50px;"> / <input type="text" id="longestToYY" placeholder="YY" style="width:50px;"></label></div></div>
-                        <div class="field-group"><label>Latest job</label><input type="text" id="latestJobTitle" placeholder="Job title"><div class="radio-group" style="margin-top:4px;"><label><input type="radio" name="latestDurationType" value="duration"> for <input type="text" id="latestDurationNum" placeholder="number" style="width:70px;"> <select id="latestDurationUnit"><option value="years">years</option><option value="months">months</option></select></label><label><input type="radio" name="latestDurationType" value="range"> from <input type="text" id="latestFromMM" placeholder="MM" style="width:50px;"> / <input type="text" id="latestFromYY" placeholder="YY" style="width:50px;"> to <input type="text" id="latestToMM" placeholder="MM" style="width:50px;"> / <input type="text" id="latestToYY" placeholder="YY" style="width:50px;"></label></div></div>
-                    </div>
-                    <div class="field-group"><label>Reason for quitting the job</label><div class="checkbox-group" id="quitReasonsGroup"><label><input type="checkbox" value="overwhelmed by workload"> overwhelmed by workload</label><label><input type="checkbox" value="interpersonal difficulty"> interpersonal difficulty</label><label><input type="checkbox" value="has another job offer"> has another job offer</label><label><input type="checkbox" value="dislikes the job nature"> dislikes the job nature</label><label><input type="checkbox" value="being dismissed due to"> being dismissed due to <input type="text" id="dismissReason" placeholder="specify"></label><label><input type="checkbox" value="others"> others: <input type="text" id="quitOthers" placeholder="specify"></label></div></div>
-                </div>
-                <!-- CURRENT WORK FUNCTIONING -->
-                <div class="form-section">
-                    <h3>⚙️ CURRENT WORK FUNCTIONING</h3>
-                    <div class="sub-section"><label>🧠 Cognitive Screening</label><div><label><input type="radio" name="cognitiveIndicated" value="Indicated"> Indicated</label> <label><input type="radio" name="cognitiveIndicated" value="not indicated"> not indicated</label></div><div>HK-MoCA was conducted on <input type="text" id="mocaDate" placeholder="DD/MM/YYYY">. Result indicated <input type="text" id="mocaResult" placeholder="score / findings">. Details please refer to previous progress note</div></div>
-                    <div class="sub-section"><label>📋 Work Readiness and Preference</label><div>Chinese Lam Assessment of Employment Readiness (C.L.A.S.E.R.) was conducted on <input type="text" id="claserDate" placeholder="DD/MM/YYYY"></div><div>Chinese Work Interest Inventory (CWII) were done on <input type="text" id="cwiiDate" placeholder="DD/MM/YYYY"></div></div>
-                    <div class="sub-section"><label>📊 C.L.A.S.E.R.</label><div>Based on the assessment, patient was in <select id="claserStage"><option value="">--</option><option value="Pre-contemplation">Pre-contemplation</option><option value="Contemplation">Contemplation</option><option value="Action">Action</option></select> (<input type="text" id="claserScore" placeholder="score" style="width:60px;">/30 for Pre-contemplation, /20 for others)</div><div>Self-efficacy in return-to-work: <input type="text" id="selfEfficacyRTW" placeholder="/10">/10</div><div>Self-efficacy in seeking job successfully: <input type="text" id="selfEfficacySeek" placeholder="/10">/10</div><div>Patient-perceived obstacles(s) in employability including</div><div class="checkbox-group" id="obstaclesGroup"><label><input type="checkbox" value="taking care of children or elderly"> taking care of children or elderly</label><label><input type="checkbox" value="unfamiliar with public transportation"> unfamiliar with public transportation</label><label><input type="checkbox" value="inadequate work skills"> inadequate work skills</label><label><input type="checkbox" value="inadequate work experience"> inadequate work experience</label><label><input type="checkbox" value="no work direction"> no work direction</label><label><input type="checkbox" value="difficulty in learning"> difficulty in learning</label><label><input type="checkbox" value="inadequate social skill"> inadequate social skill</label><label><input type="checkbox" value="limited qualification"> limited qualification</label><label><input type="checkbox" value="limited physical stamina"> limited physical stamina</label><label><input type="checkbox" value="problem in drug abuse"> problem in drug abuse</label><label><input type="checkbox" value="unstable mental state"> unstable mental state</label><label><input type="checkbox" value="limited volition"> limited volition</label><label><input type="checkbox" value="physical disability"> physical disability</label><label><input type="checkbox" value="no obstacle perceived"> no obstacle perceived</label><label><input type="checkbox" value="others"> others: <input type="text" id="obstaclesOthers" placeholder="specify"></label></div></div>
-                    <div class="sub-section"><label>📈 CWII</label><div>Patient shown job preference in <div class="checkbox-group" id="jobPreference"><label><input type="checkbox" value="clerical"> clerical</label><label><input type="checkbox" value="sales"> sales</label><label><input type="checkbox" value="service"> service</label><label><input type="checkbox" value="physical work"> physical work</label><label><input type="checkbox" value="driving and operating"> driving and operating</label><label><input type="checkbox" value="mechanical and repairing"> mechanical and repairing</label><label><input type="checkbox" value="caring and helping"> caring and helping</label><label><input type="checkbox" value="creative"> creative</label></div></div><div>Patient showed interest in <div class="checkbox-group" id="interestTraining"><label><input type="checkbox" value="shop assistant"> shop assistant</label><label><input type="checkbox" value="cleansing worker"> cleansing worker</label><label><input type="checkbox" value="office assistant"> office assistant</label><label><input type="checkbox" value="clerical worker"> clerical worker</label><label><input type="checkbox" value="waiter"> waiter</label><label><input type="checkbox" value="waitress"> waitress</label><label><input type="checkbox" value="bartender"> bartender</label><label><input type="checkbox" value="coffee barista"> coffee barista</label></div></div></div>
-                </div>
-                <!-- Standardized Work Assessment -->
-                <div class="form-section">
-                    <h3>📏 Standardized Work Assessment</h3>
-                    <div class="sub-section"><label>Valpar 4 (Upper extremity range of motion)</label><div>Rate of work: <input type="text" id="valpar4Rate" placeholder="%">%; with comparison to Worker Qualification Profile (WQP):</div><div class="radio-group"><label><input type="radio" name="valpar4WQP" value="met may exceed speed requirement"> met may exceed speed requirement</label><label><input type="radio" name="valpar4WQP" value="met speed requirement"> met speed requirement</label><label><input type="radio" name="valpar4WQP" value="did not meet (A) speed requirement & needed to redo same assessment"> did not meet (A) speed requirement & needed to redo same assessment</label><label><input type="radio" name="valpar4WQP" value="did not meet (B) speed requirement & needed to redo assessment with lower demand"> did not meet (B) speed requirement & needed to redo assessment with lower demand</label></div></div>
-                    <div class="sub-section"><label>Valpar 7 (Multi-level sorting)</label><div>Rate of work: <input type="text" id="valpar7Rate" placeholder="%">%; with comparison to Worker Qualification Profile (WQP):</div><div class="radio-group"><label><input type="radio" name="valpar7WQP" value="met may exceed speed requirement"> met may exceed speed requirement</label><label><input type="radio" name="valpar7WQP" value="met speed requirement"> met speed requirement</label><label><input type="radio" name="valpar7WQP" value="did not meet (A) speed requirement & needed to redo same assessment"> did not meet (A) speed requirement & needed to redo same assessment</label><label><input type="radio" name="valpar7WQP" value="did not meet (B) speed requirement & needed to redo assessment with lower demand"> did not meet (B) speed requirement & needed to redo assessment with lower demand</label></div><div>Error: <input type="text" id="valpar7Error" placeholder="error count">; <select id="valpar7Accuracy"><option value="">--</option><option value="Met">Met</option><option value="Did not meet">Did not meet</option></select> accuracy requirement</div></div>
-                    <div class="sub-section"><label>Valpar 8 (Simulated work assembly)</label><div>Rate of work: <input type="text" id="valpar8Rate" placeholder="%">%; with comparison to Worker Qualification Profile (WQP):</div><div class="radio-group"><label><input type="radio" name="valpar8WQP" value="met may exceed speed requirement"> met may exceed speed requirement</label><label><input type="radio" name="valpar8WQP" value="met speed requirement"> met speed requirement</label><label><input type="radio" name="valpar8WQP" value="did not meet (A) speed requirement & needed to redo same assessment"> did not meet (A) speed requirement & needed to redo same assessment</label><label><input type="radio" name="valpar8WQP" value="did not meet (B) speed requirement & needed to redo assessment with lower demand"> did not meet (B) speed requirement & needed to redo assessment with lower demand</label></div></div>
-                    <div class="sub-section"><label>Valpar 9 (Whole body range of motion)</label><div>Rate of work: <input type="text" id="valpar9Rate" placeholder="%">%; with comparison to Worker Qualification Profile (WQP):</div><div class="radio-group"><label><input type="radio" name="valpar9WQP" value="met may exceed speed requirement"> met may exceed speed requirement</label><label><input type="radio" name="valpar9WQP" value="met speed requirement"> met speed requirement</label><label><input type="radio" name="valpar9WQP" value="did not meet (A) speed requirement & needed to redo same assessment"> did not meet (A) speed requirement & needed to redo same assessment</label><label><input type="radio" name="valpar9WQP" value="did not meet (B) speed requirement & needed to redo assessment with lower demand"> did not meet (B) speed requirement & needed to redo assessment with lower demand</label></div></div>
-                    <div class="sub-section"><label>Overall Performance</label><div>Patient demonstrated <select id="workBehavRating"><option value="">--</option><option value="good">good</option><option value="satisfactory">satisfactory</option></select> work behaviors such as <div class="checkbox-group" id="goodBehaviors"><label><input type="checkbox" value="concentration"> concentration</label><label><input type="checkbox" value="tolerance"> tolerance</label><label><input type="checkbox" value="compliance"> compliance</label><label><input type="checkbox" value="consistency"> consistency</label><label><input type="checkbox" value="social interaction"> social interaction</label><label><input type="checkbox" value="problem solving"> problem solving</label><label><input type="checkbox" value="voice out needs"> voice out needs</label><label><input type="checkbox" value="request for assistance"> request for assistance</label><label><input type="checkbox" value="following rules and cautious on safety"> following rules and cautious on safety</label><label><input type="checkbox" value="other"> other: <input type="text" id="goodBehaviorOther"></label></div></div><div>However, patient was relatively <select id="weakInadequate"><option value="">--</option><option value="weak in">weak in</option><option value="inadequate in">inadequate in</option></select> <div class="checkbox-group" id="weakBehaviors"></div>; and poor in <div class="checkbox-group" id="poorBehaviors"></div>.</div><div>Odd behavior such as <input type="text" id="oddBehavior" placeholder="describe"> was noted during the assessment.</div><div>The overall result of standardized work assessment indicated patient’s vocational capacity was predicted <select id="vocCapacity"><option value="">--</option><option value="up to">up to</option><option value="borderline to">borderline to</option><option value="not up to">not up to</option></select> <select id="vocLevel"><option value="">--</option><option value="OE">OE</option><option value="SE">SE</option><option value="SWS">SWS</option></select> level.</div></div>
-                </div>
-                <!-- CURRENT STAGE OF CHANGE IN WORK & TREATMENT PLANS -->
-                <div class="form-section">
-                    <h3>🔄 CURRENT STAGE OF CHANGE IN WORK & TREATMENT PLANS</h3>
-                    <div>According to C-LASER / Staging Algorithm, client was in <select id="changeStage"><option value="">-- select --</option><option value="Pre-contemplation Stage">Pre-contemplation Stage</option><option value="Contemplation Stage">Contemplation Stage</option><option value="Preparation Stage">Preparation Stage</option><option value="Action Stage">Action Stage</option><option value="Maintenance Stage">Maintenance Stage</option></select></div>
-                    <div id="stageDetails" style="margin-top:12px;"></div>
-                </div>
-            </form>
-            <div class="flex-btns"><button id="genWorkRehabReport">📄 Generate Report</button></div>
-            <div id="workRehabReportArea" class="report-area" style="display:none;"><div class="report-text" id="workRehabReportText"></div><div class="flex-btns"><button class="copy-btn" data-copy="workRehabReportText">📋 Copy to Clipboard</button></div></div>
+    <div class="button-bar">
+        <button id="generateReportBtn">📄 Generate Report (Plain Text)</button>
+        <button id="resetFormBtn" class="reset-btn">⟳ Reset Form</button>
+    </div>
+
+    <div class="report-area" id="reportContainer">
+        <div class="report-header">
+            <strong>📋 Generated Report (select all + copy using button below)</strong>
+            <button id="copyReportBtn" class="copy-btn">📑 Copy All & Select</button>
         </div>
+        <pre id="reportOutput">Click "Generate Report" to create a clean, line-based document.</pre>
     </div>
 </div>
 
 <script>
-    // 初始化日期
-    const todayDate = new Date();
-    const yyyy = todayDate.getFullYear();
-    const mm = String(todayDate.getMonth()+1).padStart(2,'0');
-    const dd = String(todayDate.getDate()).padStart(2,'0');
-    const todayStr = `${dd}/${mm}/${yyyy}`;
-    document.getElementById('interviewDate').value = todayStr;
-    document.getElementById('sofasDateI').value = todayStr;
-    document.getElementById('sofasDateP').value = todayStr;
-
-    // 動態控制 (保留所有必要功能)
-    const fromSelect = document.getElementById('admissionFrom');
-    const otherInput = document.getElementById('admissionFromOther');
-    fromSelect.addEventListener('change',()=>{ otherInput.style.display = fromSelect.value === 'Others' ? 'block' : 'none'; });
-    const scsSelect = document.getElementById('scsSelect');
-    const scsBox = document.getElementById('scsReasonYearBox');
-    function toggleScsFields(){ scsBox.style.display = (scsSelect.value === 'SC' || scsSelect.value === 'SC(ex-IC)' || scsSelect.value === 'IC') ? 'flex' : 'none'; }
-    scsSelect.addEventListener('change', toggleScsFields); toggleScsFields();
-    const livingRadios = document.querySelectorAll('input[name="livingType"]');
-    const familyDiv = document.getElementById('familyDetails');
-    livingRadios.forEach(r => r.addEventListener('change',()=>{ familyDiv.style.display = document.querySelector('input[name="livingType"]:checked').value === 'family' ? 'block' : 'none'; }));
-    const empPattern = document.getElementById('employmentPattern');
-    const prevWorkDiv = document.getElementById('prevWorkFields');
-    empPattern.addEventListener('change',()=>{ prevWorkDiv.style.display = empPattern.value === 'previously' ? 'block' : 'none'; });
-    const pastRadios = document.querySelectorAll('input[name="pastPsyType"]');
-    const sinceBlock = document.getElementById('sinceYearBlock');
-    pastRadios.forEach(r=>r.addEventListener('change',()=>{ const val = document.querySelector('input[name="pastPsyType"]:checked')?.value; sinceBlock.style.display = (val === 'Private' || val === 'MHS') ? 'block' : 'none'; }));
-    function setupHxField(selectId, entryId) { const sel = document.getElementById(selectId); const entry = document.getElementById(entryId); if(sel && entry) { const toggle = () => { entry.style.display = sel.value === 'Entry' ? 'block' : 'none'; }; sel.addEventListener('change', toggle); toggle(); } }
-    setupHxField('suicidalHx', 'suicidalHxEntry'); setupHxField('violentHx', 'violentHxEntry'); setupHxField('saHx', 'saHxEntry');
-    const adlI = document.getElementById('adlI');
-    const adlSpanI = document.getElementById('adlSupportSpanI');
-    adlI.addEventListener('change',()=>{ adlSpanI.style.display = adlI.value !== 'independent' ? 'inline' : 'none'; });
-    const iadlI = document.getElementById('iadlI');
-    const iadlSpanI = document.getElementById('iadlSupportSpanI');
-    const poorIADLContainerI = document.getElementById('poorIADLContainerI');
-    function toggleIADLInitial() { iadlSpanI.style.display = iadlI.value !== 'independent' ? 'inline' : 'none'; poorIADLContainerI.style.display = iadlI.value !== 'independent' ? 'inline' : 'none'; }
-    iadlI.addEventListener('change', toggleIADLInitial); toggleIADLInitial();
-    const hallSelI = document.getElementById('hallucinationSelectI');
-    const hallDetailI = document.getElementById('hallucinationDetailI');
-    hallSelI.addEventListener('change',()=>{ hallDetailI.style.display = hallSelI.value === 'details' ? 'inline-block' : 'none'; });
-    const delSelI = document.getElementById('delusionSelectI');
-    const delDetailI = document.getElementById('delusionDetailI');
-    delSelI.addEventListener('change',()=>{ delDetailI.style.display = delSelI.value === 'details' ? 'inline-block' : 'none'; });
-    const bpsdSelI = document.getElementById('bpsdI');
-    const bpsdFeatI = document.getElementById('bpsdFeaturesI');
-    bpsdSelI.addEventListener('change',()=>{ bpsdFeatI.style.display = bpsdSelI.value === 'Observed' ? 'flex' : 'none'; });
-    const sofasScoreI = document.getElementById('sofasScoreI');
-    const sofasDescI = document.getElementById('sofasDescriptionI');
-    function updateSofasDescI() { let score = parseInt(sofasScoreI.value); if (isNaN(score)) { sofasDescI.innerHTML = ''; return; } let desc = ''; if (score >= 91) desc = '91 – 100: Superior functioning in a wide range of activities'; else if (score >= 81) desc = '81 – 90: Good functioning in all areas, occupationally and socially effective'; else if (score >= 71) desc = '71 – 80: No more than a slight impairment in social, occupational, or school functioning (e.g., infrequent interpersonal conflict, temporarily falling behind in school work)'; else if (score >= 61) desc = '61 – 70: Some difficulty in social, occupational, or school functioning, but generally functioning well, has some meaningful interpersonal relationships'; else if (score >= 51) desc = '51 – 60: Moderate difficulty in social, occupational, or school functioning (e.g., few friends, conflicts with peers or co-workers)'; else if (score >= 41) desc = '41 – 50: Serious impairment in social, occupational, or school functioning (e.g., no friends, unable to keep a job)'; else if (score >= 31) desc = '31 – 40: Major impairment in several areas, such as work or school, family relations (e.g., depressed man avoids friends, neglects family, and is unable to work; child frequently beats younger children, is defiant at home, and is failing at school)'; else if (score >= 21) desc = '21 – 30: Inability to function in almost all areas (e.g., stays in bed all day; no job, home, or friends)'; else if (score >= 11) desc = '11 – 20: Occasionally fails to maintain minimal personal hygiene; unable to function independently'; else if (score >= 1) desc = '1 – 10: Persistent inability to maintain minimal personal hygiene. Unable to function without harming self or others or without considerable external support (e.g., nursing care and supervision)'; else if (score === 0) desc = '0: Inadequate information'; sofasDescI.innerHTML = desc; }
-    sofasScoreI.addEventListener('input', updateSofasDescI);
-    // Progress 動態
-    const funcRadios = document.querySelectorAll('input[name="funcMode"]');
-    const updatedDiv = document.getElementById('funcUpdatedDiv');
-    const goalDiv = document.getElementById('funcGoalDiv');
-    function toggleFuncDivs() { const selected = document.querySelector('input[name="funcMode"]:checked')?.value; updatedDiv.style.display = (selected === 'updated') ? 'block' : 'none'; goalDiv.style.display = (selected === 'goal') ? 'block' : 'none'; }
-    funcRadios.forEach(r => r.addEventListener('change', toggleFuncDivs)); toggleFuncDivs();
-    const adlP = document.getElementById('adlP');
-    const adlSpanP = document.getElementById('adlSupportSpanP');
-    adlP.addEventListener('change',()=>{ adlSpanP.style.display = adlP.value !== 'independent' ? 'inline' : 'none'; });
-    const iadlP = document.getElementById('iadlP');
-    const iadlSpanP = document.getElementById('iadlSupportSpanP');
-    const poorIADLContainerP = document.getElementById('poorIADLContainerP');
-    function toggleIADLProgress() { iadlSpanP.style.display = iadlP.value !== 'independent' ? 'inline' : 'none'; poorIADLContainerP.style.display = iadlP.value !== 'independent' ? 'inline' : 'none'; }
-    iadlP.addEventListener('change', toggleIADLProgress); toggleIADLProgress();
-    const hallSelP = document.getElementById('hallucinationSelectP');
-    const hallDetailP = document.getElementById('hallucinationDetailP');
-    hallSelP.addEventListener('change',()=>{ hallDetailP.style.display = hallSelP.value === 'details' ? 'inline-block' : 'none'; });
-    const delSelP = document.getElementById('delusionSelectP');
-    const delDetailP = document.getElementById('delusionDetailP');
-    delSelP.addEventListener('change',()=>{ delDetailP.style.display = delSelP.value === 'details' ? 'inline-block' : 'none'; });
-    const bpsdSelP = document.getElementById('bpsdP');
-    const bpsdFeatP = document.getElementById('bpsdFeaturesP');
-    bpsdSelP.addEventListener('change',()=>{ bpsdFeatP.style.display = bpsdSelP.value === 'Observed' ? 'flex' : 'none'; });
-    const otWard = document.getElementById('wardOtDiv');
-    const otMain = document.getElementById('mainOtDiv');
-    const otRadios = document.querySelectorAll('input[name="otMode"]');
-    function toggleOtDivs() { const val = document.querySelector('input[name="otMode"]:checked')?.value; otWard.style.display = (val === 'ward') ? 'block' : 'none'; otMain.style.display = (val === 'main') ? 'block' : 'none'; }
-    otRadios.forEach(r => r.addEventListener('change', toggleOtDivs)); toggleOtDivs();
-    const sofasScoreP = document.getElementById('sofasScoreP');
-    const sofasDescP = document.getElementById('sofasDescriptionP');
-    function updateSofasDescP() { let score = parseInt(sofasScoreP.value); if (isNaN(score)) { sofasDescP.innerHTML = ''; return; } let desc = ''; if (score >= 91) desc = '91 – 100: Superior functioning in a wide range of activities'; else if (score >= 81) desc = '81 – 90: Good functioning in all areas, occupationally and socially effective'; else if (score >= 71) desc = '71 – 80: No more than a slight impairment in social, occupational, or school functioning (e.g., infrequent interpersonal conflict, temporarily falling behind in school work)'; else if (score >= 61) desc = '61 – 70: Some difficulty in social, occupational, or school functioning, but generally functioning well, has some meaningful interpersonal relationships'; else if (score >= 51) desc = '51 – 60: Moderate difficulty in social, occupational, or school functioning (e.g., few friends, conflicts with peers or co-workers)'; else if (score >= 41) desc = '41 – 50: Serious impairment in social, occupational, or school functioning (e.g., no friends, unable to keep a job)'; else if (score >= 31) desc = '31 – 40: Major impairment in several areas, such as work or school, family relations (e.g., depressed man avoids friends, neglects family, and is unable to work; child frequently beats younger children, is defiant at home, and is failing at school)'; else if (score >= 21) desc = '21 – 30: Inability to function in almost all areas (e.g., stays in bed all day; no job, home, or friends)'; else if (score >= 11) desc = '11 – 20: Occasionally fails to maintain minimal personal hygiene; unable to function independently'; else if (score >= 1) desc = '1 – 10: Persistent inability to maintain minimal personal hygiene. Unable to function without harming self or others or without considerable external support (e.g., nursing care and supervision)'; else if (score === 0) desc = '0: Inadequate information'; sofasDescP.innerHTML = desc; }
-    sofasScoreP.addEventListener('input', updateSofasDescP);
-    // Work Rehab 動態
-    const workStatusSelect = document.getElementById('workStatus');
-    const workStatusDetailDiv = document.getElementById('workStatusDetail');
-    workStatusSelect.addEventListener('change', () => { workStatusDetailDiv.style.display = (workStatusSelect.value !== '') ? 'block' : 'none'; });
-    const changeStageSelect = document.getElementById('changeStage');
-    const stageDetailsDiv = document.getElementById('stageDetails');
-    const actionInterventions = [
-        "job-post training (JPT)", "job acquisition skills training", "work-related stress coping skill training",
-        "work-related social skill training (WRSS)", "computerized cognitive training (CCTP)", "work-related problem solving",
-        "compensatory cognitive training", "prospective memory training (PM)", "executive function training (EF)",
-        "social cognitive interactive training (SCIT)", "refer SET", "enrol ERB"
-    ];
-    const maintenanceInterventions = [
-        "cognitive strategies training", "work-related social skill training", "work-related stress coping skill training",
-        "work-related problem solving skill training", "cognitive-behavioural coping strategies training",
-        "liaise with agency staff or employers", "job visit", "Job-post training (JPT)",
-        "Application to rehab agency (e.g., Salvation Army Heng On)"
-    ];
-    function updateStageInterventions() {
-        const stage = changeStageSelect.value;
-        let html = '';
-        if (stage === 'Pre-contemplation Stage') {
-            html = `<div class="checkbox-group"><label><input type="checkbox" value="Rehab Focus: Amplify motivation for work"> Rehab Focus: Amplify motivation for work</label>
-            <label><input type="checkbox" value="OT intervention: Motivational enhancement for return-to-work: (1) Engaging clients to promote awareness on worker role, (2) Uncovering discrepancy between present & desired future, (3) Promoting hope and intention for employment, and (4) Promoting change talk on value and importance of work"> OT: Motivational enhancement</label>
-            <label><input type="checkbox" value="Rehab Focus: explore adaptive structural daytime engagement"> Rehab Focus: explore adaptive structural daytime engagement</label>
-            <label><input type="checkbox" value="OT intervention: explore adaptive structural daytime engagement: (1) Refer ICCMW for daytime engagement (2) Refer PDH for daytime engagement & continuous rehab (3) Interests exploration & facilitate structured routine"> OT: explore adaptive daytime engagement</label></div>`;
-        } else if (stage === 'Contemplation Stage') {
-            html = `<div class="checkbox-group"><label><input type="checkbox" value="Rehab Focus: Amplify motivation for work"> Rehab Focus: Amplify motivation for work</label>
-            <label><input type="checkbox" value="OT intervention: Motivational enhancement for return-to-work: (1) Engaging clients to promote awareness on worker role, (2) Uncovering discrepancy between present & desired future, (3) Promoting hope and intention for employment, and (4) Promoting change talk on value and importance of work"> OT: Motivational enhancement</label>
-            <label><input type="checkbox" value="Rehab Focus: Begin vocational exploration"> Rehab Focus: Begin vocational exploration</label>
-            <label><input type="checkbox" value="OT intervention: Vocational exploration: (1) Identifying vocational interest, (2) Orienting to job market, (3) Evaluating work capacity and potential"> OT: Vocational exploration</label></div>`;
-        } else if (stage === 'Preparation Stage') {
-            html = `<div class="checkbox-group"><label><input type="checkbox" value="Rehab Focus: Facilitate vocational choice and decision making via Vocational exploration"> Rehab Focus: Facilitate vocational choice and decision making</label>
-            <label><input type="checkbox" value="OT intervention: (1) Identifying vocational interest, (2) Orienting to job market, (3) Evaluating work capacity and potential, and (4) Reviewing expectation and anticipated challenge to promote job-person match"> OT: Vocational exploration & job-person match</label>
-            <label><input type="checkbox" value="Rehab Focus: Facilitate vocational goal-setting and action plan"> Rehab Focus: Facilitate vocational goal-setting and action plan</label>
-            <label><input type="checkbox" value="OT intervention: (1) Educating SMART goal principles, and (2) Formulating vocational goal and action plan"> OT: SMART goal & action plan</label></div>`;
-        } else if (stage === 'Action Stage') {
-            html = `<div><strong>Rehab Focus: Enhance vocational skills and promote employability</strong></div>`;
-            actionInterventions.forEach(item => {
-                html += `<div class="stage-intervention-item">
-                            <select class="action-select" data-intervention="${item}">
-                                <option value="">-- select status --</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Started">Started</option>
-                                <option value="Continued">Continued</option>
-                            </select>
-                            <span>${item}</span>
-                         </div>`;
-            });
-        } else if (stage === 'Maintenance Stage') {
-            html = `<div><strong>Rehab Focus: Promote work adaptation</strong></div>`;
-            maintenanceInterventions.forEach(item => {
-                html += `<div class="stage-intervention-item">
-                            <select class="maintenance-select" data-intervention="${item}">
-                                <option value="">-- select status --</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Started">Started</option>
-                                <option value="Continued">Continued</option>
-                            </select>
-                            <span>${item}</span>
-                         </div>`;
-            });
+    // helper: show SCS extra fields
+    const scsSelect = document.getElementById('scsType');
+    const scsExtra = document.getElementById('scsReasonYearBlock');
+    function toggleScsExtra() {
+        const val = scsSelect.value;
+        if (val === 'SC' || val === 'SC(ex-IC)' || val === 'IC') {
+            scsExtra.style.display = 'inline-flex';
+        } else {
+            scsExtra.style.display = 'none';
         }
-        stageDetailsDiv.innerHTML = html;
-        const goodCheckboxes = document.querySelectorAll('#goodBehaviors input[type="checkbox"]');
-        const weakDiv = document.getElementById('weakBehaviors');
-        const poorDiv = document.getElementById('poorBehaviors');
-        weakDiv.innerHTML = ''; poorDiv.innerHTML = '';
-        goodCheckboxes.forEach(cb => {
-            const val = cb.value;
-            if (val !== 'other') {
-                const weakClone = document.createElement('label'); weakClone.innerHTML = `<input type="checkbox" value="${val}"> ${val}`;
-                const poorClone = document.createElement('label'); poorClone.innerHTML = `<input type="checkbox" value="${val}"> ${val}`;
-                weakDiv.appendChild(weakClone); poorDiv.appendChild(poorClone);
-            }
-        });
     }
-    changeStageSelect.addEventListener('change', updateStageInterventions);
-    updateStageInterventions();
+    scsSelect.addEventListener('change', toggleScsExtra);
+    toggleScsExtra();
 
-    // ========== 完整報告生成函數 (Initial) ==========
-    function buildInitialReport() {
+    // living family details toggling
+    const livingSelect = document.getElementById('livingSituation');
+    const familyDiv = document.getElementById('familyDetails');
+    livingSelect.addEventListener('change', () => {
+        familyDiv.style.display = livingSelect.value === 'with family' ? 'block' : 'none';
+    });
+    livingSelect.dispatchEvent(new Event('change'));
+
+    // Also show "since year" for known to MHS/private psy
+    const mhsSelect = document.getElementById('mhsKnown');
+    const sinceSpan = document.getElementById('sinceYearSpan');
+    mhsSelect.addEventListener('change', () => {
+        const val = mhsSelect.value;
+        sinceSpan.style.display = (val === 'Known to private psy' || val === 'Known to MHS') ? 'inline-flex' : 'none';
+    });
+    mhsSelect.dispatchEvent(new Event('change'));
+
+    // Helper functions for building report lines (TAB1)
+    function formatDate(dateInput) {
+        if (!dateInput) return '';
+        let d = new Date(dateInput);
+        if(!isNaN(d)) return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
+        return dateInput;
+    }
+
+    function getImpressions() {
+        let imps = [];
+        document.querySelectorAll('#impGroup input[type="checkbox"]:checked').forEach(cb => {
+            if(cb.value === 'Others') {
+                let otherVal = document.getElementById('otherImp').value.trim();
+                if(otherVal) imps.push(otherVal);
+            } else imps.push(cb.value);
+        });
+        return imps.join(', ');
+    }
+
+    function getFamilyLivingStr() {
+        if (livingSelect.value !== 'with family') return '';
+        let members = [];
+        if(document.querySelector('input[value="spouse"]').checked) members.push('spouse');
+        if(document.querySelector('input[value="father"]').checked) members.push('father');
+        if(document.querySelector('input[value="mother"]').checked) members.push('mother');
+        let eb = document.getElementById('elderBro').value; if(eb>0) members.push(`${eb} elder brother(s)`);
+        let es = document.getElementById('elderSis').value; if(es>0) members.push(`${es} elder sister(s)`);
+        let yb = document.getElementById('youngerBro').value; if(yb>0) members.push(`${yb} younger brother(s)`);
+        let ys = document.getElementById('youngerSis').value; if(ys>0) members.push(`${ys} younger sister(s)`);
+        let sons = document.getElementById('sonsAge').value; if(sons) members.push(`son(s) age ${sons}`);
+        let daughters = document.getElementById('daughtersAge').value; if(daughters) members.push(`daughter(s) age ${daughters}`);
+        let otherLiving = document.getElementById('livingOthers').value; if(otherLiving) members.push(otherLiving);
+        return members.length ? ` with family (${members.join(', ')})` : ' with family';
+    }
+
+    function generateReport() {
         let lines = [];
-        // Admission
-        let admDate = document.getElementById('admissionDate').value.trim();
-        let fromVal = fromSelect.value;
-        if(fromVal === 'Others') fromVal = otherInput.value.trim() || 'Others';
-        let admReason = document.getElementById('admissionReason').value.trim();
-        let admLine = '';
-        if(admDate && fromVal && admReason) admLine = `Informal admission to SH/3C on ${admDate} from ${fromVal} for ${admReason}`;
-        else if(admDate && fromVal) admLine = `Informal admission to SH/3C on ${admDate} from ${fromVal}`;
-        if(admLine) lines.push(admLine);
-        let interviewDateVal = document.getElementById('interviewDate').value.trim();
-        if(interviewDateVal) lines.push(`Initial interview was conducted on ${interviewDateVal}`);
-        if(lines.length) lines.push('');
-        // Imp
-        let impSelected = Array.from(document.querySelectorAll('#impGroup input[type="checkbox"]:checked')).map(cb=>{ if(cb.value==='Others') return `Others: ${document.getElementById('impOthers').value.trim()}`; else return cb.value; }).filter(v=>v);
-        if(impSelected.length) lines.push(`Imp: ${impSelected.join(', ')}`);
-        // SCS
+        // ---- Demographic section ------
+        lines.push("===== DEMOGRAPHIC & CLINICAL SUMMARY =====");
+        let ward = document.getElementById('wardType').value;
+        let admDateRaw = document.getElementById('admissionDate').value;
+        let admDate = admDateRaw ? formatDate(admDateRaw) : '';
+        let admFromSelect = document.getElementById('admissionFrom').value;
+        let otherFrom = document.getElementById('otherFrom').value;
+        let admFrom = (admFromSelect === 'Others: ' && otherFrom) ? otherFrom : admFromSelect;
+        let reason = document.getElementById('admissionReason').value;
+        let clinicalLine = `Clinical information: Informal admission to SH/${ward} on ${admDate} from ${admFrom}`;
+        if(reason) clinicalLine += ` for ${reason}`;
+        lines.push(clinicalLine);
+        let interviewRaw = document.getElementById('interviewDate').value;
+        if(interviewRaw) lines.push(`Initial interview was conducted on ${formatDate(interviewRaw)}.`);
+        let impVal = getImpressions();
+        if(impVal) lines.push(`Imp: ${impVal}`);
         let scsVal = scsSelect.value;
-        if(scsVal){
-            let scsFormatted = `SCS (${scsVal})`;
-            if((scsVal==='SC'||scsVal==='SC(ex-IC)'||scsVal==='IC')){
-                let reason = document.getElementById('scsReason').value.trim();
-                let year = document.getElementById('scsYear').value.trim();
-                let detail = [];
-                if(reason) detail.push(reason);
-                if(year) detail.push(`since ${year}`);
-                if(detail.length) scsFormatted += `: ${detail.join(' ')}`;
-            }
-            lines.push(scsFormatted);
+        let scsLine = `SCS: ${scsVal}`;
+        if ((scsVal === 'SC' || scsVal === 'SC(ex-IC)' || scsVal === 'IC') && (document.getElementById('scsReason').value || document.getElementById('scsYear').value)) {
+            let reasonScs = document.getElementById('scsReason').value;
+            let yearScs = document.getElementById('scsYear').value;
+            scsLine += ` (Reason: ${reasonScs || '?'}, Year: ${yearScs || '?'})`;
         }
-        // Fall precaution
-        let fallRad = document.querySelector('input[name="fallPrecaution"]:checked')?.value;
-        let morse = document.getElementById('morseScale').value.trim();
-        let fallLine = '';
-        if(fallRad) fallLine = `Fall precaution: ${fallRad}${morse ? ` (Morse Fall Scale ${morse}/125 on admission)` : ''}`;
-        if(fallLine) { lines.push(''); lines.push(fallLine); lines.push(''); }
-        // Social Condition
-        let livingType = document.querySelector('input[name="livingType"]:checked')?.value;
-        let socialLine = '';
-        if(livingType === 'alone') socialLine = `Social Condition: Living alone`;
-        else {
-            let members = [];
-            if(document.getElementById('familyFather').checked) members.push('father');
-            if(document.getElementById('familyMother').checked) members.push('mother');
-            let eb = parseInt(document.getElementById('elderBro').value)||0; if(eb>0) members.push(`${eb} elder brother${eb>1?'s':''}`);
-            let es = parseInt(document.getElementById('elderSis').value)||0; if(es>0) members.push(`${es} elder sister${es>1?'s':''}`);
-            let yb = parseInt(document.getElementById('youngerBro').value)||0; if(yb>0) members.push(`${yb} younger brother${yb>1?'s':''}`);
-            let ys = parseInt(document.getElementById('youngerSis').value)||0; if(ys>0) members.push(`${ys} younger sister${ys>1?'s':''}`);
-            let sons = parseInt(document.getElementById('sons').value)||0; if(sons>0) members.push(`${sons} son${sons>1?'s':''}`);
-            let daughters = parseInt(document.getElementById('daughters').value)||0; if(daughters>0) members.push(`${daughters} daughter${daughters>1?'s':''}`);
-            let famOthers = document.getElementById('familyOthers').value.trim(); if(famOthers) members.push(famOthers);
-            if(members.length) socialLine = `Social Condition: Living with family: ${members.join(', ')}`;
-            else socialLine = `Social Condition: Living with family`;
+        lines.push(scsLine);
+        let fallPre = document.getElementById('fallPrecaution').value;
+        let morse = document.getElementById('morseScore').value;
+        lines.push(`Fall precaution: ${fallPre}${morse ? `, Morse Fall Scale ${morse}/125 on admission` : ''}`);
+        let livingBase = livingSelect.value;
+        let livingStr = `Social Background: Living ${livingBase}`;
+        if(livingBase === 'with family') livingStr += getFamilyLivingStr();
+        let visitedBy = document.getElementById('regularVisited').value;
+        if(visitedBy) livingStr += ` / Regular visited by ${visitedBy}`;
+        lines.push(livingStr);
+        // work status
+        let edu = document.getElementById('education').value;
+        if(edu) lines.push(`Work Status: - Educated up to ${edu}`);
+        let empHist = document.getElementById('employmentHistory').value;
+        let prevWork = document.getElementById('prevWorkAs').value;
+        if(empHist === 'Previously working' && prevWork) lines.push(`- Previously working as ${prevWork}`);
+        else if(empHist === 'Never gainfully employed') lines.push(`- Never gainfully employed`);
+        let longestJob = document.getElementById('longestJob').value;
+        let longestDur = document.getElementById('longestDuration').value;
+        if(longestJob) lines.push(`- Longest job as ${longestJob}${longestDur ? `, lasted for ${longestDur}` : ''}`);
+        let latestJob = document.getElementById('latestJob').value;
+        let latestDur = document.getElementById('latestDuration').value;
+        if(latestJob) lines.push(`- Latest job as ${latestJob}${latestDur ? `, lasted for ${latestDur}` : ''}`);
+        let quitReasonTxt = document.getElementById('quitReason').value;
+        if(quitReasonTxt) lines.push(`- Usually quitted job for the reasons of ${quitReasonTxt}`);
+        let currStatus = document.getElementById('currentStatus').value;
+        let unemployedDur = document.getElementById('unemployedDuration').value;
+        let statusText = '';
+        if(currStatus === 'unemployed') statusText = `- Currently unemployed for ${unemployedDur || ''}`;
+        else if(currStatus === 'sick leave') statusText = `- Currently on sick leave`;
+        else statusText = `- Currently just resigned before admission`;
+        if(statusText) lines.push(statusText);
+        let premorbid = document.getElementById('premorbid').value;
+        if(premorbid) lines.push(`Premorbid functioning: ${premorbid}`);
+        // past Hx
+        let mhsStat = mhsSelect.value;
+        let sinceY = document.getElementById('sinceYear').value;
+        let pastLine = `Past Psy Hx: - ${mhsStat}`;
+        if ((mhsStat === 'Known to private psy' || mhsStat === 'Known to MHS') && sinceY) pastLine += ` since ${sinceY}`;
+        lines.push(pastLine);
+        let presented = document.getElementById('presentedWith').value;
+        if(presented) lines.push(`- Presented with ${presented}.`);
+        let precipitated = document.getElementById('precipitatedBy').value;
+        if(precipitated) lines.push(`- Precipitated by ${precipitated}`);
+        let pastOthers = document.getElementById('pastOthers').value;
+        if(pastOthers) lines.push(`- Others: ${pastOthers}`);
+        let commSup = document.getElementById('communitySupport').value;
+        let freqAdm = document.getElementById('freqAdmissionsDue').value;
+        if(commSup || freqAdm) {
+            let maint = `- Maintained well in the community with ${commSup || '?'} support`;
+            if(freqAdm) maint += ` / with frequent admissions due to ${freqAdm}`;
+            lines.push(maint);
         }
-        let regVisited = document.getElementById('regularVisited').value.trim();
-        if(regVisited) socialLine += `, regular visited by ${regVisited}`;
-        if(socialLine) lines.push(socialLine);
-        // Work Status
-        let workParts = [];
-        let edu = document.getElementById('education').value.trim();
-        if(edu) workParts.push(`Educated up to ${edu}`);
-        let empPatternVal = document.getElementById('employmentPattern').value;
-        if(empPatternVal === 'never') workParts.push(`Never gainfully employed`);
-        else if(empPatternVal === 'previously') {
-            let prevJob = document.getElementById('prevJobRole').value.trim();
-            if(prevJob) workParts.push(`previously working as ${prevJob}`);
-            let longestJob = document.getElementById('longestJob').value.trim();
-            let longestDur = document.getElementById('longestDuration').value.trim();
-            if(longestJob && longestDur) workParts.push(`longest job as ${longestJob} lasted for ${longestDur}`);
-            let latestJob = document.getElementById('latestJob').value.trim();
-            let latestDur = document.getElementById('latestDuration').value.trim();
-            if(latestJob && latestDur) workParts.push(`latest job as ${latestJob} lasted for ${latestDur}`);
-            let quitReasons = document.getElementById('quitReasons').value.trim();
-            if(quitReasons) workParts.push(`usually quitted job for reasons of ${quitReasons}`);
-        }
-        let currStat = document.getElementById('currentStatus').value;
-        let currDetail = document.getElementById('currentStatusDetail').value.trim();
-        if(currStat === 'unemployed' && currDetail) workParts.push(`currently unemployed for ${currDetail}`);
-        else if(currStat === 'sickleave') workParts.push(`currently on sick leave`);
-        else if(currStat === 'resigned') workParts.push(`currently just resigned before admission`);
-        let premorbid = document.getElementById('premorbid').value.trim();
-        if(premorbid) workParts.push(`premorbid functioning: ${premorbid}`);
-        if(workParts.length) lines.push(`Work Status: ${workParts.join('; ')}`);
-        lines.push('');
-        // Past Psy Hx
-        let pastType = document.querySelector('input[name="pastPsyType"]:checked')?.value;
-        let pastHxLine = '';
-        if(pastType === 'New') pastHxLine = `Past Psy Hx: New to MHS`;
-        else if(pastType === 'Private') pastHxLine = `Past Psy Hx: Known to private psy${document.getElementById('sinceYear').value.trim() ? ` since ${document.getElementById('sinceYear').value.trim()}` : ''}`;
-        else if(pastType === 'MHS') pastHxLine = `Past Psy Hx: Known to MHS${document.getElementById('sinceYear').value.trim() ? ` since ${document.getElementById('sinceYear').value.trim()}` : ''}`;
-        let presented = document.getElementById('presentedWith').value.trim();
-        let precipitated = document.getElementById('precipitatedBy').value.trim();
-        let pastOthers = document.getElementById('pastOthers').value.trim();
-        let course = document.getElementById('communityCourse').value;
-        let courseDetail = document.getElementById('courseDetail').value.trim();
-        let details = [];
-        if(presented) details.push(`presented with ${presented}`);
-        if(precipitated) details.push(`precipitated by ${precipitated}`);
-        if(pastOthers) details.push(`others: ${pastOthers}`);
-        if(course === 'well_support' && courseDetail) details.push(`maintained well in the community with ${courseDetail} support`);
-        else if(course === 'freq_admissions' && courseDetail) details.push(`with frequent admissions due to ${courseDetail}`);
-        if(pastHxLine) lines.push(pastHxLine);
-        if(details.length) lines.push(details.join('; '));
-        let suicidalText = (document.getElementById('suicidalHx').value === 'Nil') ? 'Nil' : document.getElementById('suicidalHxEntry').value.trim();
-        if(suicidalText) lines.push(`Suicidal Hx: ${suicidalText}`);
-        let violentText = (document.getElementById('violentHx').value === 'Nil') ? 'Nil' : document.getElementById('violentHxEntry').value.trim();
-        if(violentText) lines.push(`Violent Hx: ${violentText}`);
-        let saText = (document.getElementById('saHx').value === 'Nil') ? 'Nil' : document.getElementById('saHxEntry').value.trim();
-        if(saText) lines.push(`SA Hx: ${saText}`);
-        lines.push('');
         // Last Admission
         let lastHosp = document.getElementById('lastHospital').value;
-        let lastRange = document.getElementById('lastAdmRange').value.trim();
-        let lastReason = document.getElementById('lastAdmReason').value.trim();
-        let lastLine = '';
-        if(lastHosp && lastRange) lastLine = `Last Admission: to ${lastHosp} ${lastRange}`;
-        else if(lastHosp) lastLine = `Last Admission: to ${lastHosp}`;
-        if(lastLine) lines.push(lastLine);
-        if(lastReason) lines.push(`Admitted for ${lastReason}`);
-        lines.push('');
-        // Current Admission
-        let currAdmReason = document.getElementById('currentAdmReason').value.trim();
-        if(currAdmReason) lines.push(`Current Admission: Admitted for ${currAdmReason}`);
-        lines.push(''); lines.push('--- Common Assessment Note ---');
-        // MSE Initial
-        let mseParts = [];
-        let appearance = Array.from(document.querySelectorAll('#mseAppearanceI input:checked')).map(cb=>cb.value);
-        if(appearance.length) mseParts.push(`Appearance: ${appearance.join(', ')}`);
-        let attitude = Array.from(document.querySelectorAll('#mseApproachI input:checked')).map(cb=>cb.value);
-        if(attitude.length) mseParts.push(`Attitude: ${attitude.join(', ')} on approach`);
-        let moodSelected = Array.from(document.querySelectorAll('#moodGroupI input:checked')).map(cb=>cb.value);
-        if(moodSelected.length) mseParts.push(`Mood: ${moodSelected.join(', ')}`);
-        let affectSelected = Array.from(document.querySelectorAll('#affectGroupI input:checked')).map(cb=>cb.value);
-        if(affectSelected.length) mseParts.push(`Affect: ${affectSelected.join(', ')}`);
-        let speech = Array.from(document.querySelectorAll('#mseSpeechI input:checked')).map(cb=>cb.value);
-        if(speech.length) mseParts.push(`Speech: ${speech.join(', ')}`);
-        if(document.getElementById('noActivePsychoticI').checked) mseParts.push(`Psychotic experience: No active psychotic symptom was elicited`);
-        let hallVal = hallSelI.value;
-        if(hallVal === 'details') { let hd = hallDetailI.value.trim(); if(hd) mseParts.push(`Hallucination: ${hd}`); }
-        else if(hallVal && hallVal !== 'details') mseParts.push(`Hallucination: ${hallVal}`);
-        let delVal = delSelI.value;
-        if(delVal === 'details') { let ddv = delDetailI.value.trim(); if(ddv) mseParts.push(`Delusion: ${ddv}`); }
-        else if(delVal && delVal !== 'details') mseParts.push(`Delusion: ${delVal}`);
-        let behaviour = Array.from(document.querySelectorAll('#mseBehaviourI input:checked')).map(cb=>cb.value);
-        if(behaviour.length) mseParts.push(`Behaviours: ${behaviour.join(', ')}`);
-        let distressed = Array.from(document.querySelectorAll('#distressedByI input:checked')).map(cb=>cb.value);
-        if(distressed.length) mseParts.push(`Distressed by ${distressed.join(', ')} issue`);
-        let negCog = document.getElementById('negativeCognitionI').value;
-        let sense = Array.from(document.querySelectorAll('#senseOfI input:checked')).map(cb=>cb.value);
-        if(negCog === 'Having' && sense.length) mseParts.push(`Having negative cognition. Harboured sense of ${sense.join(', ')}`);
-        else if(negCog === 'Nil') mseParts.push(`Nil negative cognition`);
-        let suiIdea = document.getElementById('suicidalIdeaI').value;
-        if(suiIdea) mseParts.push(suiIdea);
-        let admSuicidal = document.getElementById('admittedSuicidalI').value;
-        if(admSuicidal) mseParts.push(`Admitted ${admSuicidal}`);
-        let bpsdVal = bpsdSelI.value;
-        if(bpsdVal === 'Observed') {
-            let bpsdFeat = Array.from(document.querySelectorAll('#bpsdFeaturesI input:checked')).map(cb=>cb.value);
-            if(bpsdFeat.length) mseParts.push(`Observed BPSD features: ${bpsdFeat.join(', ')}`);
-        } else if(bpsdVal === 'Nil') mseParts.push(`Nil BPSD features`);
-        let insightVal = document.getElementById('insightI').value;
-        let insightInto = Array.from(document.querySelectorAll('#insightIntoI input:checked')).map(cb=>cb.value);
-        if(insightVal && insightInto.length) mseParts.push(`${insightVal} insight into own ${insightInto.join(', ')}`);
-        if(mseParts.length) lines.push(`Mental State Examination: ${mseParts.join('; ')}`);
-        // Overall Functioning
-        let funcParts = [];
-        let adlVal = adlI.value;
-        funcParts.push(`ADL: ${adlVal}`);
-        if(adlVal !== 'independent') { let adlSup = document.getElementById('adlSupportI').value.trim(); if(adlSup) funcParts.push(`needs support on ${adlSup}`); }
-        let iadlVal = iadlI.value;
-        funcParts.push(`IADL: ${iadlVal}`);
-        if(iadlVal !== 'independent') { let iadlSup = document.getElementById('iadlSupportI').value.trim(); if(iadlSup) funcParts.push(`needs support on ${iadlSup}`); }
-        let poorIADL = Array.from(document.querySelectorAll('#poorIADLI input:checked')).map(cb=>cb.value);
-        if(poorIADL.length && iadlVal !== 'independent') funcParts.push(`Noted poor ${poorIADL.join(', ')}`);
-        let workBefore = document.getElementById('workLevelBeforeI').value;
-        let workPotential = document.getElementById('workPotentialI').value;
-        let workPotentialLevel = document.getElementById('workLevelPotentialI').value;
-        if(workBefore) funcParts.push(`Work: ${workBefore} before admission. He ${workPotential} ${workPotentialLevel} level`);
-        let leisure = document.getElementById('leisureI').value.trim();
-        if(leisure) funcParts.push(`Leisure: ${leisure}`);
-        let socialSup = document.getElementById('socialSupportI').value;
-        let socialChall = Array.from(document.querySelectorAll('#interpersonalChallengesI input:checked')).map(cb=>cb.value);
-        if(socialSup) funcParts.push(`Social: ${socialSup}`);
-        if(socialChall.length) funcParts.push(`noted interpersonal challenges due to poor ${socialChall.join(', ')}`);
-        let personalGoals = document.getElementById('personalGoalsI').value.trim();
-        if(personalGoals) funcParts.push(`Personal goals: ${personalGoals}`);
-        if(funcParts.length) lines.push(`Overall Level of Functioning: ${funcParts.join('; ')}`);
-        // SOFAS
-        let sofasDate = document.getElementById('sofasDateI').value.trim();
-        let sofasScore = sofasScoreI.value;
-        if(sofasDate || sofasScore) {
-            let sofLine = `SOFAS: Date ${sofasDate || '?'} Score ${sofasScore}/100`;
-            let desc = sofasDescI.innerText;
-            if(desc) sofLine += ` (${desc})`;
-            lines.push(sofLine);
-        }
-        // Problems
-        let selectedProblems = Array.from(document.querySelectorAll('#problemsListI input:checked')).map(cb=>{
-            if(cb.value.includes('Doubtful cognitive function in (enter)')) return `Doubtful cognitive function in ${document.getElementById('cognitiveDoubtfulI').value.trim() || '?'}`;
-            if(cb.value.includes('Impaired cognitive function in (enter)')) return `Impaired cognitive function in ${document.getElementById('cognitiveImpairedI').value.trim() || '?'}`;
-            return cb.value;
+        let lastFrom = document.getElementById('lastFromDate').value;
+        let lastTo = document.getElementById('lastToDate').value;
+        let lastReasonTxt = document.getElementById('lastReason').value;
+        if(lastHosp && (lastFrom || lastTo)) {
+            lines.push(`Last Admission: Admitted to ${lastHosp} ${lastFrom} – ${lastTo} for ${lastReasonTxt || 'reason not specified'}`);
+        } else if(lastReasonTxt) lines.push(`Last Admission: reason: ${lastReasonTxt}`);
+        // Current
+        let currReason = document.getElementById('currentReason').value;
+        if(currReason) lines.push(`Current Admission: Reason: ${currReason}`);
+        lines.push(""); // spacing
+        
+        // ---- TAB 2 sections: MSE, Functioning, Intervention ----
+        lines.push("===== MSE, FUNCTIONING & INTERVENTION =====");
+        let mse = document.getElementById('mseContent').value.trim();
+        if(mse) lines.push(`Mental State Examination (MSE):\n${mse}`);
+        else lines.push(`Mental State Examination (MSE): [not documented]`);
+        let func = document.getElementById('functioningContent').value.trim();
+        if(func) lines.push(`\nFunctioning (ADL/IADL/Social):\n${func}`);
+        else lines.push(`\nFunctioning: [not documented]`);
+        let inter = document.getElementById('interventionContent').value.trim();
+        if(inter) lines.push(`\nIntervention provided:\n${inter}`);
+        else lines.push(`\nIntervention: [not documented]`);
+        let prog = document.getElementById('progressRec').value.trim();
+        if(prog) lines.push(`\nProgress & Recommendations:\n${prog}`);
+        
+        return lines.join('\n');
+    }
+
+    const reportPre = document.getElementById('reportOutput');
+    const generateBtn = document.getElementById('generateReportBtn');
+    generateBtn.addEventListener('click', () => {
+        const reportText = generateReport();
+        reportPre.innerText = reportText;
+    });
+    const copyBtn = document.getElementById('copyReportBtn');
+    copyBtn.addEventListener('click', () => {
+        const txt = reportPre.innerText;
+        if (txt) {
+            const textarea = document.createElement('textarea');
+            textarea.value = txt;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Report copied to clipboard!');
+        } else alert('Nothing to copy');
+    });
+    // Reset form
+    const resetBtn = document.getElementById('resetFormBtn');
+    resetBtn.addEventListener('click', () => {
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            if(el.type === 'checkbox') el.checked = false;
+            else if(el.type === 'text' || el.tagName === 'TEXTAREA') el.value = '';
+            else if(el.tagName === 'SELECT') el.selectedIndex = 0;
         });
-        if(selectedProblems.length) { lines.push('Problems:'); selectedProblems.forEach(p => lines.push(`- ${p}`)); }
-        // Intervention
-        let selectedInterventions = Array.from(document.querySelectorAll('#interventionListI input:checked')).map(cb=>cb.value);
-        if(selectedInterventions.length) lines.push(`Intervention: ${selectedInterventions.join('; ')}`);
-        // Recommendation
-        let selectedRecs = Array.from(document.querySelectorAll('#recommendationListI input:checked')).map(cb=>cb.value);
-        if(selectedRecs.length) lines.push(`Recommendation: ${selectedRecs.join('; ')}`);
-        let remarks = document.getElementById('remarksInitial').value.trim();
-        if(remarks) lines.push(`Remarks: ${remarks}`);
-        return lines.join('\n');
-    }
-
-    // Progress Report
-    function buildProgressReport() {
-        let lines = [];
-        let mentalTrend = document.getElementById('mentalStateTrend').value;
-        if(mentalTrend) lines.push(`Mental state was ${mentalTrend} this week`);
-        let mseParts = [];
-        let appearance = Array.from(document.querySelectorAll('#mseAppearanceP input:checked')).map(cb=>cb.value);
-        if(appearance.length) mseParts.push(`Appearance: ${appearance.join(', ')}`);
-        let attitude = Array.from(document.querySelectorAll('#mseApproachP input:checked')).map(cb=>cb.value);
-        if(attitude.length) mseParts.push(`Attitude: ${attitude.join(', ')} on approach`);
-        let moodSelected = Array.from(document.querySelectorAll('#moodGroupP input:checked')).map(cb=>cb.value);
-        if(moodSelected.length) mseParts.push(`Mood: ${moodSelected.join(', ')}`);
-        let affectSelected = Array.from(document.querySelectorAll('#affectGroupP input:checked')).map(cb=>cb.value);
-        if(affectSelected.length) mseParts.push(`Affect: ${affectSelected.join(', ')}`);
-        let speech = Array.from(document.querySelectorAll('#mseSpeechP input:checked')).map(cb=>cb.value);
-        if(speech.length) mseParts.push(`Speech: ${speech.join(', ')}`);
-        if(document.getElementById('noActivePsychoticP').checked) mseParts.push(`Psychotic experience: No active psychotic symptom was elicited`);
-        let hallVal = hallSelP.value;
-        if(hallVal === 'details') { let hd = hallDetailP.value.trim(); if(hd) mseParts.push(`Hallucination: ${hd}`); }
-        else if(hallVal && hallVal !== 'details') mseParts.push(`Hallucination: ${hallVal}`);
-        let delVal = delSelP.value;
-        if(delVal === 'details') { let ddv = delDetailP.value.trim(); if(ddv) mseParts.push(`Delusion: ${ddv}`); }
-        else if(delVal && delVal !== 'details') mseParts.push(`Delusion: ${delVal}`);
-        let behaviour = Array.from(document.querySelectorAll('#mseBehaviourP input:checked')).map(cb=>cb.value);
-        if(behaviour.length) mseParts.push(`Behaviours: ${behaviour.join(', ')}`);
-        let distressed = Array.from(document.querySelectorAll('#distressedByP input:checked')).map(cb=>cb.value);
-        if(distressed.length) mseParts.push(`Distressed by ${distressed.join(', ')} issue`);
-        let negCog = document.getElementById('negativeCognitionP').value;
-        let sense = Array.from(document.querySelectorAll('#senseOfP input:checked')).map(cb=>cb.value);
-        if(negCog === 'Having' && sense.length) mseParts.push(`Having negative cognition. Harboured sense of ${sense.join(', ')}`);
-        else if(negCog === 'Nil') mseParts.push(`Nil negative cognition`);
-        let suiIdea = document.getElementById('suicidalIdeaP').value;
-        if(suiIdea) mseParts.push(suiIdea);
-        let admSuicidal = document.getElementById('admittedSuicidalP').value;
-        if(admSuicidal) mseParts.push(`Admitted ${admSuicidal}`);
-        let bpsdVal = bpsdSelP.value;
-        if(bpsdVal === 'Observed') {
-            let bpsdFeat = Array.from(document.querySelectorAll('#bpsdFeaturesP input:checked')).map(cb=>cb.value);
-            if(bpsdFeat.length) mseParts.push(`Observed BPSD features: ${bpsdFeat.join(', ')}`);
-        } else if(bpsdVal === 'Nil') mseParts.push(`Nil BPSD features`);
-        let insightVal = document.getElementById('insightP').value;
-        let insightInto = Array.from(document.querySelectorAll('#insightIntoP input:checked')).map(cb=>cb.value);
-        if(insightVal && insightInto.length) mseParts.push(`${insightVal} insight into own ${insightInto.join(', ')}`);
-        if(mseParts.length) lines.push(`Mental State Examination: ${mseParts.join('; ')}`);
-        // Overall Functioning Progress
-        let funcMode = document.querySelector('input[name="funcMode"]:checked')?.value;
-        if(funcMode === 'maintained') lines.push('Overall Level of Functioning: COPY FROM LAST REPORT');
-        else if(funcMode === 'updated') {
-            let funcParts = [];
-            let adlVal = adlP.value;
-            funcParts.push(`ADL: ${adlVal}`);
-            if(adlVal !== 'independent') { let sup = document.getElementById('adlSupportP').value.trim(); if(sup) funcParts.push(`needs support on ${sup}`); }
-            let iadlVal = iadlP.value;
-            funcParts.push(`IADL: ${iadlVal}`);
-            if(iadlVal !== 'independent') { let sup = document.getElementById('iadlSupportP').value.trim(); if(sup) funcParts.push(`needs support on ${sup}`); }
-            let poorIADL = Array.from(document.querySelectorAll('#poorIADLP input:checked')).map(cb=>cb.value);
-            if(poorIADL.length && iadlVal !== 'independent') funcParts.push(`Noted poor ${poorIADL.join(', ')}`);
-            let workBefore = document.getElementById('workLevelBeforeP').value;
-            let workPot = document.getElementById('workPotentialP').value;
-            let workPotLevel = document.getElementById('workLevelPotentialP').value;
-            if(workBefore) funcParts.push(`Work: ${workBefore} before admission. He ${workPot} ${workPotLevel} level`);
-            let leisure = document.getElementById('leisureP').value.trim();
-            if(leisure) funcParts.push(`Leisure: ${leisure}`);
-            let socialSup = document.getElementById('socialSupportP').value;
-            let socialChall = Array.from(document.querySelectorAll('#interpersonalChallengesP input:checked')).map(cb=>cb.value);
-            if(socialSup) funcParts.push(`Social: ${socialSup}`);
-            if(socialChall.length) funcParts.push(`noted interpersonal challenges due to poor ${socialChall.join(', ')}`);
-            if(funcParts.length) lines.push(`Overall Level of Functioning: ${funcParts.join('; ')}`);
-        } else if(funcMode === 'goal') {
-            let goal = document.getElementById('personalGoalsP').value.trim();
-            if(goal) lines.push(`Personal goals: ${goal}`);
-        }
-        // SOFAS Progress
-        let sofasDate = document.getElementById('sofasDateP').value.trim();
-        let sofasScore = sofasScoreP.value;
-        if(sofasDate || sofasScore) {
-            let sofLine = `SOFAS: Date ${sofasDate || '?'} Score ${sofasScore}/100`;
-            let desc = sofasDescP.innerText;
-            if(desc) sofLine += ` (${desc})`;
-            lines.push(sofLine);
-        }
-        // OT Performance
-        let otMode = document.querySelector('input[name="otMode"]:checked')?.value;
-        if(otMode === 'ward') {
-            let wardParts = [];
-            let part = document.getElementById('wardParticipation').value;
-            if(part) wardParts.push(`He participated in Ward OT ${part}`);
-            let acts = Array.from(document.querySelectorAll('#wardActivities input:checked')).map(cb=>cb.value);
-            if(acts.length) wardParts.push(`He joined ${acts.join(', ')}`);
-            let behs = Array.from(document.querySelectorAll('#wardBehaviours input:checked')).map(cb=>cb.value);
-            if(behs.length) wardParts.push(`Behaviours: ${behs.join(', ')} was observed`);
-            if(wardParts.length) lines.push(`Performance in Ward OT: ${wardParts.join('; ')}`);
-        } else if(otMode === 'main') {
-            let mainParts = [];
-            let part = document.getElementById('mainParticipation').value;
-            let percent = document.getElementById('mainPercent').value.trim();
-            if(part) mainParts.push(`He participated in Main OT ${part}${percent ? ` (~${percent}%)` : ''}`);
-            let acts = Array.from(document.querySelectorAll('#mainActivities input:checked')).map(cb=>cb.value);
-            if(acts.length) mainParts.push(`He joined ${acts.join(', ')}`);
-            let behs = Array.from(document.querySelectorAll('#mainBehaviours input:checked')).map(cb=>cb.value);
-            if(behs.length) mainParts.push(`Behaviours: ${behs.join(', ')} was observed`);
-            let social = document.getElementById('mainSocial').value;
-            if(social) mainParts.push(`Social: ${social}`);
-            if(mainParts.length) lines.push(`Performance in Main OT: ${mainParts.join('; ')}`);
-        }
-        // Recommendation
-        let recSelected = Array.from(document.querySelectorAll('#recList input:checked')).map(cb=>cb.value);
-        let recOther = document.getElementById('recOther').value.trim();
-        if(recOther) recSelected.push(recOther);
-        if(recSelected.length) lines.push(`Recommendation: ${recSelected.join('; ')}`);
-        return lines.join('\n');
-    }
-
-    // Work Rehab Report
-    function buildWorkRehabReport() {
-        let lines = [];
-        lines.push(`Patient was interviewed and assessed for the work rehabilitation`);
-        let edu = document.getElementById('eduLevel').value; if(edu) lines.push(`Educated up to ${edu}`);
-        let workStatus = workStatusSelect.value; let wsText = document.getElementById('workStatusText').value.trim();
-        if(workStatus === 'currently_working') lines.push(`Currently working as ${wsText}`);
-        else if(workStatus === 'unemployed') lines.push(`Currently unemployed (${wsText})`);
-        else if(workStatus === 'recently_resigned') lines.push(`Recently resigned from work as ${wsText}`);
-        else if(workStatus === 'prev_voc_training') lines.push(`Previously received vocational training in ${wsText}`);
-        else if(workStatus === 'never_employed') lines.push(`Never gainfully employed`);
-        else if(workStatus === 'unstable_record') lines.push(`Unstable job record`);
-        let longestTitle = document.getElementById('longestJobTitle').value.trim();
-        if(longestTitle) { let dur = ''; if(document.querySelector('input[name="longestDurationType"]:checked')?.value === 'duration') { let num = document.getElementById('longestDurationNum').value.trim(); let unit = document.getElementById('longestDurationUnit').value; if(num) dur = `for ${num} ${unit}`; } else { let fmm = document.getElementById('longestFromMM').value.trim(), fyy = document.getElementById('longestFromYY').value.trim(), tmm = document.getElementById('longestToMM').value.trim(), tyy = document.getElementById('longestToYY').value.trim(); if(fmm && fyy && tmm && tyy) dur = `from ${fmm}/${fyy} to ${tmm}/${tyy}`; } lines.push(`Longest job: ${longestTitle} ${dur}`.trim()); }
-        let latestTitle = document.getElementById('latestJobTitle').value.trim();
-        if(latestTitle) { let dur = ''; if(document.querySelector('input[name="latestDurationType"]:checked')?.value === 'duration') { let num = document.getElementById('latestDurationNum').value.trim(); let unit = document.getElementById('latestDurationUnit').value; if(num) dur = `for ${num} ${unit}`; } else { let fmm = document.getElementById('latestFromMM').value.trim(), fyy = document.getElementById('latestFromYY').value.trim(), tmm = document.getElementById('latestToMM').value.trim(), tyy = document.getElementById('latestToYY').value.trim(); if(fmm && fyy && tmm && tyy) dur = `from ${fmm}/${fyy} to ${tmm}/${tyy}`; } lines.push(`Latest job: ${latestTitle} ${dur}`.trim()); }
-        let quitReasons = Array.from(document.querySelectorAll('#quitReasonsGroup input:checked')).map(cb=>{ if(cb.value === 'being dismissed due to') return `being dismissed due to ${document.getElementById('dismissReason').value.trim()}`; if(cb.value === 'others') return `others: ${document.getElementById('quitOthers').value.trim()}`; return cb.value; }).filter(v=>v);
-        if(quitReasons.length) lines.push(`Reason for quitting the job: ${quitReasons.join(', ')}`);
-        lines.push(``);
-        let cogIndicated = document.querySelector('input[name="cognitiveIndicated"]:checked')?.value; if(cogIndicated) lines.push(`Cognitive Screening: ${cogIndicated}`);
-        let mocaDate = document.getElementById('mocaDate').value.trim(), mocaResult = document.getElementById('mocaResult').value.trim(); if(mocaDate || mocaResult) lines.push(`HK-MoCA was conducted on ${mocaDate}. Result indicated ${mocaResult}. Details please refer to previous progress note`);
-        let claserDate = document.getElementById('claserDate').value.trim(); if(claserDate) lines.push(`Chinese Lam Assessment of Employment Readiness (C.L.A.S.E.R.) was conducted on ${claserDate}`);
-        let cwiiDate = document.getElementById('cwiiDate').value.trim(); if(cwiiDate) lines.push(`Chinese Work Interest Inventory (CWII) were done on ${cwiiDate}`);
-        let claserStage = document.getElementById('claserStage').value; let claserScore = document.getElementById('claserScore').value.trim(); if(claserStage) lines.push(`Based on the assessment, patient was in ${claserStage} (${claserScore}/30 for Pre-contemplation, /20 for others)`);
-        let selfRTW = document.getElementById('selfEfficacyRTW').value.trim(); if(selfRTW) lines.push(`Self-efficacy in return-to-work: ${selfRTW}/10`);
-        let selfSeek = document.getElementById('selfEfficacySeek').value.trim(); if(selfSeek) lines.push(`Self-efficacy in seeking job successfully: ${selfSeek}/10`);
-        let obstacles = Array.from(document.querySelectorAll('#obstaclesGroup input:checked')).map(cb=>{ if(cb.value === 'others') return `others: ${document.getElementById('obstaclesOthers').value.trim()}`; return cb.value; }).filter(v=>v);
-        if(obstacles.length) lines.push(`Patient-perceived obstacles(s) in employability including ${obstacles.join(', ')}`);
-        let prefJobs = Array.from(document.querySelectorAll('#jobPreference input:checked')).map(cb=>cb.value); if(prefJobs.length) lines.push(`Patient shown job preference in ${prefJobs.join(', ')} type of job`);
-        let interestTrain = Array.from(document.querySelectorAll('#interestTraining input:checked')).map(cb=>cb.value); if(interestTrain.length) lines.push(`Patient showed interest in ${interestTrain.join(', ')} training`);
-        lines.push(``);
-        function addValpar(name, rateId, wqpName) { let rate = document.getElementById(rateId).value.trim(); let wqp = document.querySelector(`input[name="${wqpName}"]:checked`)?.value; if(rate || wqp) lines.push(`${name}: ${rate ? `Rate of work: ${rate}%` : ''}${rate && wqp ? '; ' : ''}${wqp ? `with comparison to Worker Qualification Profile (WQP): ${wqp}` : ''}`); }
-        addValpar('Valpar 4 (Upper extremity range of motion)', 'valpar4Rate', 'valpar4WQP');
-        let v7rate = document.getElementById('valpar7Rate').value.trim(); let v7wqp = document.querySelector('input[name="valpar7WQP"]:checked')?.value; let v7err = document.getElementById('valpar7Error').value.trim(); let v7acc = document.getElementById('valpar7Accuracy').value; let v7parts = []; if(v7rate) v7parts.push(`Rate of work: ${v7rate}%`); if(v7wqp) v7parts.push(`with comparison to Worker Qualification Profile (WQP): ${v7wqp}`); if(v7err) v7parts.push(`Error: ${v7err}`); if(v7acc) v7parts.push(`${v7acc} accuracy requirement`); if(v7parts.length) lines.push(`Valpar 7 (Multi-level sorting): ${v7parts.join('; ')}`);
-        addValpar('Valpar 8 (Simulated work assembly)', 'valpar8Rate', 'valpar8WQP');
-        addValpar('Valpar 9 (Whole body range of motion)', 'valpar9Rate', 'valpar9WQP');
-        let workBehavRating = document.getElementById('workBehavRating').value; let goodBehav = Array.from(document.querySelectorAll('#goodBehaviors input:checked')).map(cb=>cb.value === 'other' ? document.getElementById('goodBehaviorOther').value.trim() : cb.value).filter(v=>v); if(workBehavRating && goodBehav.length) lines.push(`Patient demonstrated ${workBehavRating} work behaviors such as ${goodBehav.join(', ')}`);
-        let weakType = document.getElementById('weakInadequate').value; let weakBehav = Array.from(document.querySelectorAll('#weakBehaviors input:checked')).map(cb=>cb.value); let poorBehav = Array.from(document.querySelectorAll('#poorBehaviors input:checked')).map(cb=>cb.value); if(weakType && weakBehav.length) lines.push(`However, patient was relatively ${weakType} ${weakBehav.join(', ')}; and poor in ${poorBehav.join(', ')}`);
-        let oddBehavior = document.getElementById('oddBehavior').value.trim(); if(oddBehavior) lines.push(`Odd behavior such as ${oddBehavior} was noted during the assessment`);
-        let vocCap = document.getElementById('vocCapacity').value; let vocLevel = document.getElementById('vocLevel').value; if(vocCap && vocLevel) lines.push(`The overall result of standardized work assessment indicated patient’s vocational capacity was predicted ${vocCap} ${vocLevel} level`);
-        lines.push(``);
-        let changeStage = changeStageSelect.value; if(changeStage) lines.push(`According to C-LASER / Staging Algorithm, client was in ${changeStage}`);
-        let selectedInterventions = [];
-        if (changeStage === 'Action Stage') {
-            document.querySelectorAll('.action-select').forEach(sel => {
-                let status = sel.value;
-                let intervention = sel.getAttribute('data-intervention');
-                if (status && intervention) selectedInterventions.push(`${status} ${intervention}`);
-            });
-        } else if (changeStage === 'Maintenance Stage') {
-            document.querySelectorAll('.maintenance-select').forEach(sel => {
-                let status = sel.value;
-                let intervention = sel.getAttribute('data-intervention');
-                if (status && intervention) selectedInterventions.push(`${status} ${intervention}`);
-            });
-        } else {
-            let checkboxes = stageDetailsDiv.querySelectorAll('input[type="checkbox"]:checked');
-            checkboxes.forEach(cb => selectedInterventions.push(cb.value));
-        }
-        if (selectedInterventions.length) lines.push(`Interventions: ${selectedInterventions.join('; ')}`);
-        return lines.join('\n');
-    }
-
-    // 綁定按鈕
-    document.getElementById('genInitialReport').addEventListener('click',()=>{
-        document.getElementById('initialReportText').innerText = buildInitialReport() || 'No data entered.';
-        document.getElementById('initialReportArea').style.display = 'block';
+        document.getElementById('wardType').value = '3C';
+        document.getElementById('livingSituation').value = 'alone';
+        document.getElementById('familyDetails').style.display = 'none';
+        document.getElementById('scsReasonYearBlock').style.display = 'none';
+        document.getElementById('sinceYearSpan').style.display = 'none';
+        document.getElementById('reportOutput').innerText = 'Form reset. Click "Generate Report" to create new.';
+        // recheck special toggles
+        toggleScsExtra();
+        if(mhsSelect.value !== 'Known to private psy' && mhsSelect.value !== 'Known to MHS') sinceSpan.style.display='none';
     });
-    document.getElementById('genProgressReport').addEventListener('click',()=>{
-        document.getElementById('progressReportText').innerText = buildProgressReport() || 'No data entered.';
-        document.getElementById('progressReportArea').style.display = 'block';
-    });
-    document.getElementById('genWorkRehabReport').addEventListener('click',()=>{
-        document.getElementById('workRehabReportText').innerText = buildWorkRehabReport() || 'No data entered.';
-        document.getElementById('workRehabReportArea').style.display = 'block';
-    });
-
-    // 複製按鈕
-    document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const targetId = btn.getAttribute('data-copy');
-            const textElem = document.getElementById(targetId);
-            if(textElem){
-                navigator.clipboard.writeText(textElem.innerText).then(()=>{
-                    const original = btn.innerText;
-                    btn.innerText = '✓ Copied!';
-                    setTimeout(()=> btn.innerText = original, 1500);
-                }).catch(()=> alert('Copy failed, please select manually'));
-            }
-        });
-    });
-
-    // 頁籤切換
+    
+    // Tab switching
     const tabs = document.querySelectorAll('.tab-btn');
-    const panes = document.querySelectorAll('.tab-pane');
+    const contents = document.querySelectorAll('.tab-content');
     tabs.forEach(btn => {
-        btn.addEventListener('click',()=>{
-            const target = btn.getAttribute('data-tab');
-            tabs.forEach(b=>b.classList.remove('active'));
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            tabs.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            panes.forEach(pane=>pane.classList.remove('active-pane'));
-            document.getElementById(target).classList.add('active-pane');
+            contents.forEach(c => c.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
         });
     });
 </script>
