@@ -23,7 +23,6 @@
             box-shadow: 0 12px 30px rgba(0,0,0,0.08);
             overflow: hidden;
         }
-        /* Tabs */
         .tabs {
             display: flex;
             background: #e9edf2;
@@ -55,7 +54,6 @@
         .tab-content.active {
             display: block;
         }
-        /* form styling */
         .form-grid {
             display: flex;
             flex-direction: column;
@@ -111,6 +109,17 @@
             align-items: center;
             gap: 5px;
         }
+        .risks-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 8px;
+        }
+        .risk-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
         hr {
             margin: 12px 0;
         }
@@ -120,6 +129,7 @@
             margin-top: 35px;
             justify-content: center;
             flex-wrap: wrap;
+            padding-bottom: 20px;
         }
         button {
             background: #2c7da0;
@@ -151,7 +161,7 @@
             background: #fefcf3;
         }
         .report-area {
-            margin-top: 35px;
+            margin: 0 28px 28px 28px;
             background: #f1f5f9;
             border-radius: 24px;
             padding: 15px 20px;
@@ -186,9 +196,6 @@
             color: #0f3b5c;
             font-size: 1.6rem;
         }
-        small {
-            color: #4b6f88;
-        }
         .flex-row {
             display: flex;
             flex-wrap: wrap;
@@ -198,6 +205,21 @@
         .living-sub {
             padding-left: 20px;
             margin-top: 8px;
+        }
+        .dc-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .dc-category {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 12px;
+        }
+        .dc-category h4 {
+            margin: 0 0 8px 0;
+            color: #2c7da0;
         }
     </style>
 </head>
@@ -218,7 +240,7 @@
                 <div class="inline-select">
                     <span>Informal admission to SH/</span>
                     <select id="wardType">
-                        <option value="3C" selected>3C (default)</option>
+                        <option value="3C" selected>3C</option>
                         <option value="5D">5D</option>
                     </select>
                     <span>on</span>
@@ -291,6 +313,37 @@
                 </div>
             </div>
 
+            <!-- Risks Section NEW -->
+            <div class="field-group">
+                <label>⚠️ Risks</label>
+                <div class="risks-group">
+                    <div class="risk-item">
+                        <span>Suicidal Hx:</span>
+                        <select id="suicidalHx">
+                            <option value="">Nil</option>
+                            <option value="entry">Specify:</option>
+                        </select>
+                        <input type="text" id="suicidalHxEntry" placeholder="details" style="display:none; width:200px">
+                    </div>
+                    <div class="risk-item">
+                        <span>Violent Hx:</span>
+                        <select id="violentHx">
+                            <option value="">Nil</option>
+                            <option value="entry">Specify:</option>
+                        </select>
+                        <input type="text" id="violentHxEntry" placeholder="details" style="display:none; width:200px">
+                    </div>
+                    <div class="risk-item">
+                        <span>SA Hx:</span>
+                        <select id="saHx">
+                            <option value="">Nil</option>
+                            <option value="entry">Specify:</option>
+                        </select>
+                        <input type="text" id="saHxEntry" placeholder="details" style="display:none; width:200px">
+                    </div>
+                </div>
+            </div>
+
             <!-- Social Background + Living -->
             <div class="field-group">
                 <label>🏠 Social Background</label>
@@ -357,31 +410,85 @@
                 <div>Maintained well in community with <input type="text" id="communitySupport" placeholder="type of support"> / with frequent admissions due to <input type="text" id="freqAdmissionsDue"></div>
             </div>
 
-            <!-- Last Admission & Current Admission -->
+            <!-- Last Admission with date selector -->
             <div class="field-group">
                 <label>🏨 Last Admission</label>
                 <div>Admitted to: <select id="lastHospital">
                     <option value="SH">SH</option><option value="TPH">TPH</option><option value="NDH">NDH</option>
-                </select> from <input type="text" id="lastFromDate" placeholder="DD/MM/YYYY"> to <input type="text" id="lastToDate" placeholder="DD/MM/YYYY"> for reason: <input type="text" id="lastReason"></div>
+                </select> from <input type="date" id="lastFromDate"> to <input type="date" id="lastToDate"> for reason: <input type="text" id="lastReason" style="width:60%"></div>
                 <label style="margin-top:12px">🟢 Current Admission Reason:</label>
                 <input type="text" id="currentReason" style="width:100%">
             </div>
         </div>
     </div>
 
-    <!-- TAB 2: MSE, Functioning & Intervention (exact DC summary style from given link) -->
+    <!-- TAB 2: MSE, Functioning & Intervention (exact DC summary with checkboxes) -->
     <div id="tab2" class="tab-content">
         <h2>📝 MSE, Functioning & Intervention</h2>
-        <div class="form-grid" id="dcSummaryFields">
-            <!-- dynamically built like the referenced DC summary content -->
-            <!-- I recreate the essential fields from standard DC summary (MSE, functioning, intervention) -->
+        <div class="form-grid">
+            <!-- MSE text -->
             <div class="field-group"><label>🧠 Mental State Examination (MSE)</label>
                 <textarea rows="3" id="mseContent" placeholder="Appearance, behaviour, speech, mood, affect, thought form, thought content, perception, cognition, insight"></textarea>
             </div>
-            <div class="field-group"><label>📊 Functioning (ADL / IADL / Work / Social)</label>
-                <textarea rows="3" id="functioningContent" placeholder="Daily living skills, instrumental ADL, social interaction, work readiness..."></textarea>
+            
+            <!-- DC Summary Checkboxes exactly like original webpage -->
+            <div class="field-group">
+                <label>📋 DC Summary Assessment (Check all that apply)</label>
+                <div class="dc-checkboxes">
+                    <div class="dc-category"><h4>Coping</h4>
+                        <label><input type="checkbox" class="dc-cb" data-cat="coping" value="Effective coping"> Effective coping</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="coping" value="Ineffective coping"> Ineffective coping</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="coping" value="Limited coping strategies"> Limited coping strategies</label>
+                    </div>
+                    <div class="dc-category"><h4>Self-care</h4>
+                        <label><input type="checkbox" class="dc-cb" data-cat="selfcare" value="Independent in self-care"> Independent in self-care</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="selfcare" value="Requires prompting for self-care"> Requires prompting for self-care</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="selfcare" value="Requires assistance for self-care"> Requires assistance for self-care</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="selfcare" value="Poor self-care"> Poor self-care</label>
+                    </div>
+                    <div class="dc-category"><h4>Daily Living Skills (IADL)</h4>
+                        <label><input type="checkbox" class="dc-cb" data-cat="iadl" value="Adequate IADL skills"> Adequate IADL skills</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="iadl" value="Marginal IADL skills"> Marginal IADL skills</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="iadl" value="Poor IADL skills"> Poor IADL skills</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="iadl" value="Requires supervision for IADL"> Requires supervision for IADL</label>
+                    </div>
+                    <div class="dc-category"><h4>Social Functioning</h4>
+                        <label><input type="checkbox" class="dc-cb" data-cat="social" value="Good social network"> Good social network</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="social" value="Limited social network"> Limited social network</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="social" value="Socially isolated"> Socially isolated</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="social" value="Appropriate social interaction"> Appropriate social interaction</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="social" value="Inappropriate social interaction"> Inappropriate social interaction</label>
+                    </div>
+                    <div class="dc-category"><h4>Insight</h4>
+                        <label><input type="checkbox" class="dc-cb" data-cat="insight" value="Good insight"> Good insight</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="insight" value="Partial insight"> Partial insight</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="insight" value="Poor insight"> Poor insight</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="insight" value="No insight"> No insight</label>
+                    </div>
+                    <div class="dc-category"><h4>Motivation for Treatment</h4>
+                        <label><input type="checkbox" class="dc-cb" data-cat="motivation" value="Highly motivated"> Highly motivated</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="motivation" value="Moderately motivated"> Moderately motivated</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="motivation" value="Poorly motivated"> Poorly motivated</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="motivation" value="Resistant to treatment"> Resistant to treatment</label>
+                    </div>
+                    <div class="dc-category"><h4>Support System</h4>
+                        <label><input type="checkbox" class="dc-cb" data-cat="support" value="Strong family support"> Strong family support</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="support" value="Adequate support"> Adequate support</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="support" value="Limited support"> Limited support</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="support" value="No support"> No support</label>
+                    </div>
+                    <div class="dc-category"><h4>Work/Productivity</h4>
+                        <label><input type="checkbox" class="dc-cb" data-cat="work" value="Currently employed/studying"> Currently employed/studying</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="work" value="Active job seeking"> Active job seeking</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="work" value="Attending vocational training"> Attending vocational training</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="work" value="Unemployed due to illness"> Unemployed due to illness</label><br>
+                        <label><input type="checkbox" class="dc-cb" data-cat="work" value="Long-term unemployed"> Long-term unemployed</label>
+                    </div>
+                </div>
             </div>
-            <div class="field-group"><label>⚙️ Intervention provided (OT perspective)</label>
+
+            <!-- Intervention and Progress -->
+            <div class="field-group"><label>⚙️ Intervention provided</label>
                 <textarea rows="3" id="interventionContent" placeholder="Individual sessions, group therapy, skills training, discharge planning, environmental modification, etc."></textarea>
             </div>
             <div class="field-group"><label>📌 Progress & Recommendations</label>
@@ -405,21 +512,32 @@
 </div>
 
 <script>
-    // helper: show SCS extra fields
+    // Risk select toggles
+    function setupRiskSelect(selectId, inputId) {
+        const sel = document.getElementById(selectId);
+        const inp = document.getElementById(inputId);
+        sel.addEventListener('change', () => {
+            inp.style.display = sel.value === 'entry' ? 'inline-block' : 'none';
+            if(sel.value !== 'entry') inp.value = '';
+        });
+    }
+    setupRiskSelect('suicidalHx', 'suicidalHxEntry');
+    setupRiskSelect('violentHx', 'violentHxEntry');
+    setupRiskSelect('saHx', 'saHxEntry');
+
+    // Set today's date for interview date by default
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('interviewDate').value = today;
+
     const scsSelect = document.getElementById('scsType');
     const scsExtra = document.getElementById('scsReasonYearBlock');
     function toggleScsExtra() {
         const val = scsSelect.value;
-        if (val === 'SC' || val === 'SC(ex-IC)' || val === 'IC') {
-            scsExtra.style.display = 'inline-flex';
-        } else {
-            scsExtra.style.display = 'none';
-        }
+        scsExtra.style.display = (val === 'SC' || val === 'SC(ex-IC)' || val === 'IC') ? 'inline-flex' : 'none';
     }
     scsSelect.addEventListener('change', toggleScsExtra);
     toggleScsExtra();
 
-    // living family details toggling
     const livingSelect = document.getElementById('livingSituation');
     const familyDiv = document.getElementById('familyDetails');
     livingSelect.addEventListener('change', () => {
@@ -427,7 +545,6 @@
     });
     livingSelect.dispatchEvent(new Event('change'));
 
-    // Also show "since year" for known to MHS/private psy
     const mhsSelect = document.getElementById('mhsKnown');
     const sinceSpan = document.getElementById('sinceYearSpan');
     mhsSelect.addEventListener('change', () => {
@@ -436,7 +553,6 @@
     });
     mhsSelect.dispatchEvent(new Event('change'));
 
-    // Helper functions for building report lines (TAB1)
     function formatDate(dateInput) {
         if (!dateInput) return '';
         let d = new Date(dateInput);
@@ -471,10 +587,16 @@
         return members.length ? ` with family (${members.join(', ')})` : ' with family';
     }
 
+    function getDCSelected() {
+        let selected = [];
+        document.querySelectorAll('.dc-cb:checked').forEach(cb => selected.push(cb.value));
+        return selected;
+    }
+
     function generateReport() {
         let lines = [];
-        // ---- Demographic section ------
         lines.push("===== DEMOGRAPHIC & CLINICAL SUMMARY =====");
+        
         let ward = document.getElementById('wardType').value;
         let admDateRaw = document.getElementById('admissionDate').value;
         let admDate = admDateRaw ? formatDate(admDateRaw) : '';
@@ -485,10 +607,13 @@
         let clinicalLine = `Clinical information: Informal admission to SH/${ward} on ${admDate} from ${admFrom}`;
         if(reason) clinicalLine += ` for ${reason}`;
         lines.push(clinicalLine);
+        
         let interviewRaw = document.getElementById('interviewDate').value;
         if(interviewRaw) lines.push(`Initial interview was conducted on ${formatDate(interviewRaw)}.`);
+        
         let impVal = getImpressions();
         if(impVal) lines.push(`Imp: ${impVal}`);
+        
         let scsVal = scsSelect.value;
         let scsLine = `SCS: ${scsVal}`;
         if ((scsVal === 'SC' || scsVal === 'SC(ex-IC)' || scsVal === 'IC') && (document.getElementById('scsReason').value || document.getElementById('scsYear').value)) {
@@ -497,22 +622,36 @@
             scsLine += ` (Reason: ${reasonScs || '?'}, Year: ${yearScs || '?'})`;
         }
         lines.push(scsLine);
+        
         let fallPre = document.getElementById('fallPrecaution').value;
         let morse = document.getElementById('morseScore').value;
         lines.push(`Fall precaution: ${fallPre}${morse ? `, Morse Fall Scale ${morse}/125 on admission` : ''}`);
+        
+        // Risks section
+        let suicidal = document.getElementById('suicidalHx').value;
+        let suicidalTxt = suicidal === 'entry' ? document.getElementById('suicidalHxEntry').value : (suicidal === '' ? 'Nil' : suicidal);
+        let violent = document.getElementById('violentHx').value;
+        let violentTxt = violent === 'entry' ? document.getElementById('violentHxEntry').value : (violent === '' ? 'Nil' : violent);
+        let sa = document.getElementById('saHx').value;
+        let saTxt = sa === 'entry' ? document.getElementById('saHxEntry').value : (sa === '' ? 'Nil' : sa);
+        lines.push(`Risks: Suicidal Hx: ${suicidalTxt}, Violent Hx: ${violentTxt}, SA Hx: ${saTxt}`);
+        
         let livingBase = livingSelect.value;
         let livingStr = `Social Background: Living ${livingBase}`;
         if(livingBase === 'with family') livingStr += getFamilyLivingStr();
         let visitedBy = document.getElementById('regularVisited').value;
         if(visitedBy) livingStr += ` / Regular visited by ${visitedBy}`;
         lines.push(livingStr);
-        // work status
+        
         let edu = document.getElementById('education').value;
         if(edu) lines.push(`Work Status: - Educated up to ${edu}`);
+        else lines.push(`Work Status:`);
+        
         let empHist = document.getElementById('employmentHistory').value;
         let prevWork = document.getElementById('prevWorkAs').value;
         if(empHist === 'Previously working' && prevWork) lines.push(`- Previously working as ${prevWork}`);
         else if(empHist === 'Never gainfully employed') lines.push(`- Never gainfully employed`);
+        
         let longestJob = document.getElementById('longestJob').value;
         let longestDur = document.getElementById('longestDuration').value;
         if(longestJob) lines.push(`- Longest job as ${longestJob}${longestDur ? `, lasted for ${longestDur}` : ''}`);
@@ -528,14 +667,16 @@
         else if(currStatus === 'sick leave') statusText = `- Currently on sick leave`;
         else statusText = `- Currently just resigned before admission`;
         if(statusText) lines.push(statusText);
+        
         let premorbid = document.getElementById('premorbid').value;
         if(premorbid) lines.push(`Premorbid functioning: ${premorbid}`);
-        // past Hx
+        
         let mhsStat = mhsSelect.value;
         let sinceY = document.getElementById('sinceYear').value;
         let pastLine = `Past Psy Hx: - ${mhsStat}`;
         if ((mhsStat === 'Known to private psy' || mhsStat === 'Known to MHS') && sinceY) pastLine += ` since ${sinceY}`;
         lines.push(pastLine);
+        
         let presented = document.getElementById('presentedWith').value;
         if(presented) lines.push(`- Presented with ${presented}.`);
         let precipitated = document.getElementById('precipitatedBy').value;
@@ -549,27 +690,29 @@
             if(freqAdm) maint += ` / with frequent admissions due to ${freqAdm}`;
             lines.push(maint);
         }
-        // Last Admission
+        
         let lastHosp = document.getElementById('lastHospital').value;
-        let lastFrom = document.getElementById('lastFromDate').value;
-        let lastTo = document.getElementById('lastToDate').value;
+        let lastFrom = document.getElementById('lastFromDate').value ? formatDate(document.getElementById('lastFromDate').value) : '';
+        let lastTo = document.getElementById('lastToDate').value ? formatDate(document.getElementById('lastToDate').value) : '';
         let lastReasonTxt = document.getElementById('lastReason').value;
         if(lastHosp && (lastFrom || lastTo)) {
-            lines.push(`Last Admission: Admitted to ${lastHosp} ${lastFrom} – ${lastTo} for ${lastReasonTxt || 'reason not specified'}`);
+            lines.push(`Last Admission: Admitted to ${lastHosp} from ${lastFrom} to ${lastTo} for ${lastReasonTxt || 'reason not specified'}`);
         } else if(lastReasonTxt) lines.push(`Last Admission: reason: ${lastReasonTxt}`);
-        // Current
+        
         let currReason = document.getElementById('currentReason').value;
         if(currReason) lines.push(`Current Admission: Reason: ${currReason}`);
-        lines.push(""); // spacing
+        lines.push("");
         
-        // ---- TAB 2 sections: MSE, Functioning, Intervention ----
         lines.push("===== MSE, FUNCTIONING & INTERVENTION =====");
         let mse = document.getElementById('mseContent').value.trim();
         if(mse) lines.push(`Mental State Examination (MSE):\n${mse}`);
         else lines.push(`Mental State Examination (MSE): [not documented]`);
-        let func = document.getElementById('functioningContent').value.trim();
-        if(func) lines.push(`\nFunctioning (ADL/IADL/Social):\n${func}`);
-        else lines.push(`\nFunctioning: [not documented]`);
+        
+        let dcSelections = getDCSelected();
+        if(dcSelections.length > 0) {
+            lines.push(`\nDC Summary Assessment:\n- ${dcSelections.join('\n- ')}`);
+        }
+        
         let inter = document.getElementById('interventionContent').value.trim();
         if(inter) lines.push(`\nIntervention provided:\n${inter}`);
         else lines.push(`\nIntervention: [not documented]`);
@@ -582,13 +725,12 @@
     const reportPre = document.getElementById('reportOutput');
     const generateBtn = document.getElementById('generateReportBtn');
     generateBtn.addEventListener('click', () => {
-        const reportText = generateReport();
-        reportPre.innerText = reportText;
+        reportPre.innerText = generateReport();
     });
     const copyBtn = document.getElementById('copyReportBtn');
     copyBtn.addEventListener('click', () => {
         const txt = reportPre.innerText;
-        if (txt) {
+        if (txt && txt !== 'Click "Generate Report" to create a clean, line-based document.') {
             const textarea = document.createElement('textarea');
             textarea.value = txt;
             document.body.appendChild(textarea);
@@ -596,9 +738,9 @@
             document.execCommand('copy');
             document.body.removeChild(textarea);
             alert('Report copied to clipboard!');
-        } else alert('Nothing to copy');
+        } else alert('Generate a report first');
     });
-    // Reset form
+    
     const resetBtn = document.getElementById('resetFormBtn');
     resetBtn.addEventListener('click', () => {
         document.querySelectorAll('input, textarea, select').forEach(el => {
@@ -607,17 +749,19 @@
             else if(el.tagName === 'SELECT') el.selectedIndex = 0;
         });
         document.getElementById('wardType').value = '3C';
+        document.getElementById('interviewDate').value = today;
         document.getElementById('livingSituation').value = 'alone';
         document.getElementById('familyDetails').style.display = 'none';
         document.getElementById('scsReasonYearBlock').style.display = 'none';
         document.getElementById('sinceYearSpan').style.display = 'none';
-        document.getElementById('reportOutput').innerText = 'Form reset. Click "Generate Report" to create new.';
-        // recheck special toggles
+        document.getElementById('suicidalHxEntry').style.display = 'none';
+        document.getElementById('violentHxEntry').style.display = 'none';
+        document.getElementById('saHxEntry').style.display = 'none';
+        reportPre.innerText = 'Form reset. Click "Generate Report" to create new.';
         toggleScsExtra();
         if(mhsSelect.value !== 'Known to private psy' && mhsSelect.value !== 'Known to MHS') sinceSpan.style.display='none';
     });
     
-    // Tab switching
     const tabs = document.querySelectorAll('.tab-btn');
     const contents = document.querySelectorAll('.tab-content');
     tabs.forEach(btn => {
